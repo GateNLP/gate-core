@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2000/10/XMLSchema" elementFormDefault="qualified">
+	<!-- The GATE document root element -->
+	<xsd:element name="GateDocument">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="GateDocumentFeatures"/>
+				<xsd:element ref="TextWithNodes"/>
+				<xsd:choice>
+					<xsd:element ref="AnnotationSet" maxOccurs="unbounded"/>
+				</xsd:choice>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Annotation">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="Feature" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="Type" type="xsd:string" use="required"/>
+			<xsd:attribute name="StartNode" type="xsd:long" use="required"/>
+			<xsd:attribute name="EndNode" type="xsd:long" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="AnnotationSet">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="Annotation" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="Name" type="xsd:string"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Feature">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="Name"/>
+				<xsd:element ref="Value"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="GateDocumentFeatures">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="Feature" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Name" type="xsd:string"/>
+	<xsd:element name="Node">
+		<xsd:complexType>
+			<xsd:attribute name="id" type="xsd:long" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="TextWithNodes">
+		<xsd:complexType mixed="true">
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="Node"/>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Value" type="xsd:string"/>
+</xsd:schema>

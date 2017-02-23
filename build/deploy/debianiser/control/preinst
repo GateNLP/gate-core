@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+. /usr/share/debconf/confmodule
+db_version 2.0
+
+exit 0

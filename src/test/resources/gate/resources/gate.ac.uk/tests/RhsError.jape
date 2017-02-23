@@ -1,0 +1,22 @@
+// RhsError.jape
+// Hamish, 15/11/1
+// $Id: RhsError.jape 2826 2001-11-15 14:05:49Z hamish $
+
+/* NOTE: THIS GRAMMAR WILL THROW A NULL POINTER EXCEPTION
+         FROM THE RHS DURING MATCHING (used by TestJape)
+ */
+
+Phase:	first
+Options: control = appelt
+
+Rule: EmailAddress
+(
+  {Token.orth == upperInitial}
+):aToken -->
+{
+  // Out.prln("ahooba hooba");
+  String nullString = "will be set to null";
+  nullString = null;
+
+  nullString.charAt(999);
+}

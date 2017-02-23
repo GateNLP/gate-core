@@ -1,0 +1,2 @@
+# Spring namespace handler mapping for GATE
+http\://gate.ac.uk/ns/spring=gate.util.spring.xml.NamespaceHandler

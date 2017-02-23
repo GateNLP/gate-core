@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE TEST [
+<!ELEMENT TEST (S)*>
+<!ELEMENT S (W )*>
+<!ELEMENT W (#PCDATA)>
+<!ENTITY Sent "This is an internal entity.">
+]>
+<TEST>
+<!-- A comment -->
+<S><W pos="NN" person="yes">Cristian URSU</W> <W>wrote</W> that program.</S>
+TADA.
+<S>&Sent;</S>
+This is<EMPTYELEMENT/> clear.
+<![CDATA[<S>Hello, world! >>> </S>]]>
+<W>&#xc10;</W>
+<W>&amp;</W>
+<W>&lt;</W>
+</TEST>

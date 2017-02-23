@@ -1,0 +1,12 @@
+This text is created in order to be used with the demo version of the Ontology Gazetteer,a part of GATE. The idea is to determine the gender of a person oby it's first name, and the task is compelted by a onto gazetteer, and NE transducer. 
+Here some names are listed and expected to be recognized as one of the following classes which are from the : gate:/creole/ontology/demo.daml ontology. 
+
+male_person_first_name
+male_person_first_name_upper_case
+male_person_first_name_lower_case
+female_person_first_name
+female_person_first_name_upper_case
+female_person_first_name_lower_case
+
+here are the names:
+Samuel and mary went to the local drug store. they wanted to buy a medicine for JIMMY who isn't able to move right now. They met Maria in front of the FRANK SINATRA's metro station.

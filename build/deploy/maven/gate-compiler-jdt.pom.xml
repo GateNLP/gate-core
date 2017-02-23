@@ -1,0 +1,28 @@
+ <project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>uk.ac.gate</groupId>
+  <artifactId>gate-compiler-jdt</artifactId>
+  <packaging>jar</packaging>
+  <name>Repackaged version of the Eclipse JDT compiler for GATE</name>
+  <version>4.3.2-P20140317-1600</version>
+  <description>Repackaged version of the Eclipse JDT compiler for GATE</description>
+  <url>http://gate.ac.uk</url>
+  <scm>
+    <url>http://sourceforge.net/p/gate/code/HEAD/tree/gate/trunk</url>
+    <connection>scm:svn:http://svn.code.sf.net/p/gate/code/gate/trunk</connection>
+  </scm>
+  <developers>
+    <developer>
+      <id>gate-team</id>
+      <name>GATE Team</name>
+      <email>gate-developers@lists.sourceforge.net</email>
+    </developer>
+  </developers>
+  <licenses>
+    <license>
+      <name>Eclipse Public License</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+</project>

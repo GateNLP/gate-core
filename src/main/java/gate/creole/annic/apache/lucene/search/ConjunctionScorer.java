@@ -1,0 +1,128 @@
+package gate.creole.annic.apache.lucene.search;
+
+/**
+ * Copyright 2004 The Apache Software Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import java.io.IOException;
+import java.util.*;
+
+/** Scorer for conjunctions, sets of queries, all of which are required. */
+@SuppressWarnings({"rawtypes","unchecked","unused"})
+final class ConjunctionScorer extends Scorer {
+  private LinkedList scorers = new LinkedList();
+  private boolean firstTime = true;
+  private boolean more = true;
+  private float coord;
+
+  public ConjunctionScorer(Similarity similarity) {
+    super(similarity);
+  }
+
+  final void add(Scorer scorer) throws IOException {
+    scorers.addLast(scorer);
+  }
+
+  private Scorer first() { return (Scorer)scorers.getFirst(); }
+  private Scorer last() { return (Scorer)scorers.getLast(); }
+
+  @Override
+  public int doc() { return first().doc(); }
+
+  @Override
+  public boolean next(Searcher searcher) throws IOException {
+    this.searcher = searcher;
+    if (firstTime) {
+      init();
+    } else if (more) {
+      more = last().next(this.searcher);                       // trigger further scanning
+    }
+    return doNext();
+  }
+
+  private boolean doNext() throws IOException {
+    while (more && first().doc() < last().doc()) { // find doc w/ all clauses
+      more = first().skipTo(last().doc());      // skip first upto last
+      scorers.addLast(scorers.removeFirst());   // move first to last
+    }
+    return more;                                // found a doc with all clauses
+  }
+
+  @Override
+  public boolean skipTo(int target) throws IOException {
+    Iterator i = scorers.iterator();
+    while (more && i.hasNext()) {
+      more = ((Scorer)i.next()).skipTo(target);
+    }
+    if (more)
+      sortScorers();                              // re-sort scorers
+    return doNext();
+  }
+  
+  @Override
+  public float score(Searcher searcher) throws IOException {
+    this.searcher = searcher;
+    float score = 0.0f;                           // sum scores
+    Iterator i = scorers.iterator();
+    while (i.hasNext())
+      score += ((Scorer)i.next()).score(this.searcher);
+    score *= coord;
+    return score;
+  }
+
+  private void init() throws IOException {
+    more = scorers.size() > 0;
+
+    // compute coord factor
+    coord = getSimilarity().coord(scorers.size(), scorers.size());
+
+    // move each scorer to its first entry
+    Iterator i = scorers.iterator();
+    while (more && i.hasNext()) {
+      more = ((Scorer)i.next()).next(this.searcher);
+    }
+    if (more)
+      sortScorers();                              // initial sort of list
+
+    firstTime = false;
+  }
+
+  private void sortScorers() throws IOException {
+    // move scorers to an array
+    Scorer[] array = (Scorer[])scorers.toArray(new Scorer[scorers.size()]);
+    scorers.clear();                              // empty the list
+
+    // note that this comparator is not consistent with equals!
+    Arrays.sort(array, new Comparator() {         // sort the array
+        @Override
+        public int compare(Object o1, Object o2) {
+          return ((Scorer)o1).doc() - ((Scorer)o2).doc();
+        }
+        public boolean equals(Object o1, Object o2) {
+          return ((Scorer)o1).doc() == ((Scorer)o2).doc();
+        }
+      });
+
+    for (int i = 0; i < array.length; i++) {
+      scorers.addLast(array[i]);                  // re-build list, now sorted
+    }
+  }
+
+  @Override
+  public Explanation explain(int doc) throws IOException {
+    throw new UnsupportedOperationException();
+  }
+
+}

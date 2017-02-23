@@ -1,0 +1,1537 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE cesDoc PUBLIC "-//CES//DTD XML cesDoc//EN"
+                        "./dtd/xcesDoc.dtd" [
+<!ENTITY mdash  "&#x2014;" ><!--=em dash-->
+<!ENTITY zcaron "&#x17E;" ><!--=small z, caron-->
+<!ENTITY hellip "&#x2026;" ><!--=ellipsis (horizontal)-->
+<!ENTITY eacute  "&#233;" ><!-- small e, acute accent -->
+<!ENTITY acirc   "&#226;" ><!-- small a, circumflex accent -->
+]>
+<cesDoc lang="en" version="4.3">
+<cesHeader 
+  version="4.1" 
+  type="text" 
+  lang="en" 
+  creator="NMI" 
+  status="update" 
+  date.created="1995-05-10" 
+  date.updated="1997-12-14">
+<fileDesc>
+<titleStmt>
+<h.title>Multext-East CES1: Nineteen Eighty-Four, English</h.title>
+<respStmt>
+<respName>Nancy Ide</respName>
+<respType>
+Modified ECI tags of first chapter to conform to CES
+Added or modified some sub-paragraph level tagging.
+</respType>
+</respStmt>
+<respStmt>
+<respName>Tomaz Erjavec</respName>
+<respType>Modified full ECI Orwell to conform to CES V3.15</respType>
+</respStmt>
+<respStmt>
+<respName>Greg Priest-Dorman</respName>
+<respType>
+Modified Tomaz Erjavec's full Orwell to conform to CES V3.21
+Checked and modified markup for correctness down to the paragraph level
+</respType>
+</respStmt>
+<respStmt>
+<respName>Greg Priest-Dorman</respName>
+<respType>
+Added tagging of sentences in paragraphs using MtSeg and english resources.
+</respType>
+</respStmt>
+</titleStmt>
+<editionStmt version="1.0">MTE Final Release</editionStmt>
+<extent>
+<wordCount>104302</wordCount>
+<byteCount units="bytes">928772</byteCount>
+<extNote>
+WordCount represents the number of words in this text exclusive
+of tags and header information.  ByteCount reflects the approximate
+size of the file containing the doctype and cesDoc element including
+all text, tags and header information.
+</extNote>
+</extent>
+<publicationStmt>
+<distributor>Vassar College Computer Science Department</distributor>
+<pubAddress>124 Raymond Avenue, Poughkeepsie, New York, USA 12604</pubAddress>
+<availability status="restricted">
+Available for research purposes upon receipt of signed agreement
+</availability>
+<pubDate value="1997-10-01">October 1st, 1997</pubDate>
+</publicationStmt>
+<sourceDesc>
+<biblFull>
+<titleStmt>
+<h.title>
+The European Corpus Initiative
+Multilingual Corpus 1:
+1984 by George Orwell (English)
+</h.title>
+<respStmt>
+<respName>Association for Computational Linguistics</respName>
+<respType>Converted from OTA's DTD to ECI DTD</respType>
+</respStmt>
+</titleStmt>
+<publicationStmt>
+<distributor>ACL</distributor>
+<pubAddress>ACL</pubAddress>
+<availability status="restricted">
+Available for research purposes upon receipt of signed agreement
+</availability>
+<pubDate>1994</pubDate>
+</publicationStmt>
+<sourceDesc>
+<biblFull>
+<titleStmt>
+<h.title>Orwell's 1984: electronic edition</h.title>
+<respStmt>
+<respName>Oxford Text Archive</respName>
+<respType>
+The four versions of Orwell's 1984 in the OTA were all prepared by the
+OUCS KDEM service in 1985 for Dr David C Bennett of the School of
+Oriental And African Studies at London University.  The texts here
+have not been encoded or proofread in any way since they were produced
+(other than the English text, which was converted to an SGML like
+encoding by John Price-Wilkin, and subsequently automatically
+converted to conform to the OTA's dtd by myself and Alan Morrison. The
+other languages were converted to TEI conformant SGML by the ECI
+project 1993.) &mdash;&mdash;LB, Nov 1992
+</respType>
+</respStmt>
+</titleStmt>
+<editionStmt>
+Public Domain TEI edition prepared at the Oxford Text Archive
+</editionStmt>
+<publicationStmt>
+<distributor>Oxford Text Archive</distributor>
+<pubAddress>
+Oxford University Computing Service
+13 Banbury Road
+Oxford OX2 6NN UK
+archive@ox.ac.uk
+</pubAddress>
+<availability status="restricted">
+Freely available for non-commercial use provided that this header is
+included in its entirety with any copy distributed
+</availability>
+<pubDate>19 Nov 1992</pubDate>
+</publicationStmt>
+<sourceDesc>
+<biblStruct>
+<monogr>
+<h.title>Nineteen Eighty Four</h.title>
+<imprint>
+<pubDate>1949; reprinted 1961</pubDate>
+<publisher>New American Library</publisher>
+<pubPlace>New York</pubPlace>
+</imprint>
+</monogr>
+</biblStruct>
+</sourceDesc>
+</biblFull>
+</sourceDesc>
+</biblFull>
+</sourceDesc>
+</fileDesc>
+<encodingDesc>
+<projectDesc>
+This English version of Orwell's 1984 is encoded conformant to level 1
+specifications of the Corpus Encoding Standard for the MULTEXT-EAST
+project. The English is to serve as the base for the parallel corpus,
+which will include aligned versions of the text in Romanian,
+Bulgarian, Estonian, Slovenian, Czech, and Hungarian.
+</projectDesc>
+<editorialDecl>
+<conformance level="1">Corpus Encoding Standard, Version 2.0</conformance>
+<correction status="medium" method="silent">
+</correction>
+<quotation marks="none" form="nonstd">
+Rendition attribute values on Q, QUOTE, MENTIONED and TERM tags are
+adapted from ISOpub and ISOnum standard entity set names when used.
+If the rend attribute is ommited in the markup the rendition on the
+first set of Q, QUOTE, MENTIONED or TERM tags is "PRE lsquo POST
+rsquo" and the rendition on Q, MENTIONED or TERM tag nested in a Q or
+QUOTE tag is "PRE ldquo POST rdquo"
+</quotation>
+<segmentation>
+Marked up to the level of paragraph: P, QUOTE plus marking of
+sub-paragraph element Q. Some marking of particular sub-paragraph
+elements: NAME, DATE, ABBR, MENTIONED, DISTINCT, FOREIGN.
+</segmentation>
+<hyphenation>
+No end-of-line hyphenation present in the ECI original.
+</hyphenation>
+</editorialDecl>
+<tagsDecl>
+<tagUsage gi="abbr" occurs="38">
+Abbreviations are marked only within marked names. Other abbreviations
+are not marked.
+</tagUsage>
+<tagUsage gi="body" occurs="1"></tagUsage>
+<tagUsage gi="date" occurs="40">
+All dates which contain one or more digits (the characters 0-9) are
+marked, including dates specifying day/month/year and dates consisting
+only of a year. No attempt was made to identify or mark dates in other forms.
+</tagUsage>
+<tagUsage gi="distinct" occurs="1"></tagUsage>
+<tagUsage gi="div" occurs="28"></tagUsage>
+<tagUsage gi="foreign" occurs="39">
+The Newspeak words "thoughtcrime" and "doublethink" are consistently
+marked as FOREIGN, when they do not appear in some other tag where the
+lang attribute provides the language information. Latin and French
+words are also marked.
+</tagUsage>
+<tagUsage gi="head" occurs="1"></tagUsage>
+<tagUsage gi="hi" occurs="103">
+The highlighting tag is used to mark words and phrases which were
+typographically distinguished in the printed version of the text, and
+for which no other more precise tag is applicable. In most of these
+cases, such highlighting signifies emphasis.
+</tagUsage>
+<tagUsage gi="item" occurs="4"></tagUsage>
+<tagUsage gi="l" occurs="32"></tagUsage>
+<tagUsage gi="list" occurs="1"></tagUsage>
+<tagUsage gi="mentioned" occurs="261">Rendition information has not been
+systematically retained.  When no rendition information is provided,
+rendering is generally in italics in the 1949 Harcourt, Brace and World
+Edition of Ninteeen Eighty-Four.  The original
+electronic version contained rendition information inconsistent with
+the 1949 Harcourt edition.</tagUsage>
+<tagUsage gi="name" occurs="1744">
+Frequently occurring names of people, places, organizations,
+products, languages, and events, are marked.  If a name is marked, every
+occurrence of that name is marked.
+Person names in the genitive are not marked to include the English genitive
+suffix "'s". For other names, only those occurrences which function as
+stand-alone proper nouns are marked; adjectival uses (e.g., "Newspeak
+words") are not marked.
+</tagUsage>
+<tagUsage gi="note" occurs="2"></tagUsage>
+<tagUsage gi="num" occurs="52">
+Anything containing one or more digits (the characters 0-9) that is
+not part of a date, and all roman numerals, are marked as a
+number. In cases where a ratio is expressed (per cent, per thousand),
+the entire phrase (e.g., "10 per cent") is marked as a number.
+</tagUsage>
+<tagUsage gi="p" occurs="1286"></tagUsage>
+<tagUsage gi="poem" occurs="10"></tagUsage>
+<tagUsage gi="ptr" occurs="2"></tagUsage>
+<tagUsage gi="q" occurs="2209">
+The Q tag is used to mark quoted dialogue. The attribute
+"type=indirect" is used when attributed speech is marked
+typographically in the printed text (e.g., "I know you," he seemed to
+say). The attribute "type=written" is used in those cases where
+Winston's writing in his diary is represented as quoted thought (e.g.,
+"If there is hope," he wrote, "it lies in the Proles.").  If no "rend"
+attribute is provided on the Q tag, the value is assumed to be "PRE
+ldquo" on the first Q in a series of Qs within the same P unbroken by
+#PCDATA and "POST rdquo" on the last Q in the series.  The attribute
+"broken=yes" is used when no sentence terminating punctuation (either
+inside the Q itself or in the intervening text between two Qs) appears
+between two dialogue fragments by the same speaker.
+</tagUsage>
+<tagUsage gi="quote" occurs="35">
+QUOTE marks quotations from outside sources, including extensive
+quotations from Winston's diary and Goldstein's treatise.
+</tagUsage>
+<tagUsage gi="s" occurs="6701">
+S tags have been inserted automatically and then cleaned up by hand 
+in the locations (character offsets) provided by MTSeg version 1.3.1
+using the english resource files.
+</tagUsage>
+<tagUsage gi="text" occurs="1"></tagUsage>
+<tagUsage gi="title" occurs="46">Rendition information has not been
+systematically retained.  The original
+electronic version contained rendition information inconsistent with
+the 1949 Harcourt, Brace and World edition.</tagUsage>
+</tagsDecl>
+</encodingDesc>
+<profileDesc>
+<langUsage>
+	<!-- [ %ONECOMPONENT [ &ISOlang; ]] -->
+<language id="ns" iso639="none">Newspeak</language>
+<language id="ns-jg" iso639="none">Newspeak official jargon</language>
+<language id="en-ck" iso639="none">British Cockney English</language>
+</langUsage>
+<wsdUsage>
+<writingSystem id="ISO8859-1">
+ISO Latin-1
+character set for Western European languages
+</writingSystem>
+</wsdUsage>
+</profileDesc>
+<revisionDesc>
+<change>
+<changeDate>9/5/96</changeDate>
+<respName>Toma&zcaron; Erjavec, IJS</respName>
+<h.item>Corrected the chapter 1 (esp header) to CES V2 conformance</h.item>
+<h.item>
+with spelling cheker corrected a number of original OCR typos:
+           I instead of l, rn instead of m
+</h.item>
+<h.item>inserted Qs</h.item>
+<h.item>inserted some missing apostrophes</h.item>
+<h.item>changed '. . .' to '...', ' !' to '!', ' ?' to '?'</h.item>
+<h.item>
+changed a number of GIs, as CES does not support ECI ones:
+EMPH to HI
+MENTION to MENTIONED and removed punctuation on single words therein
+GLOSS to TERM (best I could come up with, without loosing distinction)
+</h.item>
+</change>
+<change>
+<changeDate>14/5/96</changeDate>
+<respName>Toma&zcaron; Erjavec, IJS</respName>
+<h.item>Deleted apostrophes from chapter 2 and onwards</h.item>
+<h.item>Changed some TERM into FOREIGN</h.item>
+</change>
+<change>
+<changeDate>14/7/96</changeDate>
+<respName>Greg Priest-Dorman</respName>
+<h.item>Changed dashes to entity mdash (not complete)</h.item>
+<h.item>Added additional q tags where appropriate</h.item>
+<h.item>Added quote tages</h.item>
+<h.item>Changed q tags to quote tags where appropriate</h.item>
+<h.item>All quotation marks repalced with markup</h.item>
+<h.item>Replaced q tags with mentioned tags where appropriate</h.item>
+<h.item>Standardized the markup of poems in the text</h.item>
+<h.item>
+Marked broken Q tags as such (linking of broken Q tags with
+next and prev attributes is not yet done)
+</h.item>
+</change>
+<change>
+<changeDate>15/09/96</changeDate>
+<respName>Greg Priest-Dorman</respName>
+<h.item>linked broken Q tags with "prev" and "next" attributes</h.item>
+<h.item>
+all occurrences of "..." and ". . ." have been replaced with the
+ISO_8879:1986 Publishing entity "hellip"
+</h.item>
+<h.item>
+changes of P and QUOTE tags since version .3 logged in file
+p.and.quote.changes, available on request
+</h.item>
+<h.item>names tagged with NAME as stated above in tagUsage "gi=name"</h.item>
+<h.item>
+quoted text tagged as stated above in tagUsage "gi=q" and tagUsage "gi=quote"
+</h.item>
+<h.item>
+dates and numbers tagged as stated above in tagUsage "gi=num" and
+tagUsage "gi=date"
+</h.item>
+<h.item>
+abbreviations are tagged as stated above in tagUsage "gi=abbr"
+</h.item>
+<h.item>
+OCR errors have been corrected when found, most noticeably, the "p"
+at the beginning of "Party" was usually incorrectly in lower case.
+</h.item>
+<h.item>
+"rend" if added has been checked against the 1949 Harcourt,
+Brace &amp; World, Inc. edition of Nineteen Eighty-Four
+</h.item>
+</change>
+<change>
+<changeDate>15/01/97</changeDate>
+<respName>Greg Priest-Dorman</respName>
+<h.item>Changed IDs, PREV and NEXT attributes using "1984en" to "Oen"</h.item>
+<h.item>
+Fixed tagging error in Part 1 Chapter 4 QUOTE 2
+(see mte1984-en.ces.V1.1.CHANGES) and reduced tagUsage for P by 2
+</h.item>
+<h.item>fixed some typos in the header</h.item>
+<h.item>replaced any tab(^I) characters in the text (there was one)</h.item>
+<h.item>reformated the text for readability and consistency</h.item>
+<h.item>updated BYTECOUNT</h.item>
+</change>
+<change>
+<changeDate>03/03/97</changeDate>
+<respName>Greg Priest-Dorman</respName>
+<h.item>
+Corrected markup: marked broken Qs part 1 chapter 8 paragraph 3
+(pointed out by O. Csaba).
+</h.item>
+<h.item>
+Corrected markup: Part 1 chapter 4, in the list of newspeak quotes
+from the times part of the last list item was not in the list, it
+is now (pointed out by T. Erjavec)
+</h.item>
+<h.item>corected punctuation error: Part 1 chapter 4, on two occasions
+the newspeak quote which ends "fullwise upsub antefiling" occurs.  In
+the printed edition this is followed by a period, so I added the period.
+</h.item>
+</change>
+<change>
+<changeDate>30/04/97</changeDate>
+<respName>Greg Priest-Dorman</respName>
+<h.item>inserted S tags in the locations given by MtSeg</h.item>
+<h.item>
+inserted Q and HI tags where necessary as a result of S tag insertion
+</h.item>
+</change>
+<change>
+<changeDate>12/05/97</changeDate>
+<respName>Greg Priest-Dorman</respName>
+<h.item>
+Corrected several tagging errors pointed out by T. Erjavec and V. Petkevic
+</h.item>
+<h.item>modifed header to comply with T. Erjavec's header style</h.item>
+<h.item>updated tagUsage</h.item>
+<h.item>removed blank lines</h.item>
+</change>
+<change>
+<changeDate>14/05/97</changeDate>
+<respName>Greg Priest-Dorman</respName>
+<h.item>added Ss to two newspeak paragraphs to aid in alignment</h.item>
+<h.item>updated tagUsage</h.item>
+</change>
+<change>
+<changeDate>19/05/97</changeDate>
+<respName>Greg Priest-Dorman</respName>
+<h.item>
+Corrected several tagging errors pointed out by T. Erjavec
+</h.item>
+<h.item>
+Corrected several typos in the text pointed out by T. Erjavec and V. Petkevic
+</h.item>
+<h.item>updated tagUsage</h.item>
+</change>
+<change>
+<changeDate>20/06/97</changeDate>
+<respName>Greg Priest-Dorman</respName>
+<h.item>
+Corrected several tagging errors pointed out by Vladimir Petkevic
+where a sentence boundry was inserted 2 characters ahead of where
+it should have been.
+</h.item>
+</change>
+<change>
+<changeDate>1997-12-14</changeDate>
+<respName>Tomaz Erjavec</respName>
+<h.item>Corrected several errors in the header</h.item>
+</change>
+</revisionDesc>
+</cesHeader>
+<text lang="en">
+<body lang="en" id="Oen">
+<div id="Oen.1" type="part" n="1">
+<div id="Oen.1.1" type="chapter" n="1"><p id="Oen.1.1.1">
+<s id="Oen.1.1.1.1">It was a bright cold day in April, 
+and the clocks were striking thirteen.</s>
+<s id="Oen.1.1.1.2"><name type="person">Winston Smith</name>,
+his chin nuzzled into his breast in an effort to escape the vile wind,
+slipped quickly through the glass doors of
+<name type="place">Victory Mansions</name>,
+though not quickly enough to prevent a swirl of gritty dust from entering 
+along with him.</s>
+</p>
+<p id="Oen.1.1.2">
+<s id="Oen.1.1.2.1">The hallway smelt of boiled cabbage and old rag mats.</s>
+<s id="Oen.1.1.2.2">At one end of it a coloured poster, 
+too large for indoor display, had been tacked to the wall.</s>
+<s id="Oen.1.1.2.3">It depicted simply an enormous face, more than a metre 
+wide: the face of a man of about forty-five, with a heavy black moustache
+and ruggedly handsome features.</s>
+<s id="Oen.1.1.2.4"><name type="person">Winston</name> made for the stairs.</s>
+<s id="Oen.1.1.2.5">It was no use trying the lift.</s>
+<s id="Oen.1.1.2.6">Even at the best of times it was seldom working, 
+and at present the electric current was cut off during daylight hours.</s>
+<s id="Oen.1.1.2.7">It was part of the economy drive in preparation for
+<name type="event">Hate Week</name>.</s>
+<s id="Oen.1.1.2.8">The flat was seven flights up, and
+<name type="person">Winston</name>,
+who was thirty-nine and had a varicose ulcer above his right ankle,
+went slowly, resting several times on the way.</s>
+<s id="Oen.1.1.2.9">On each landing,
+opposite the lift-shaft, the poster with the enormous face gazed from
+the wall.</s>
+<s id="Oen.1.1.2.10">It was one of those pictures which are so contrived 
+that the eyes follow you about when you move.</s>
+<s id="Oen.1.1.2.11"><q id="Oen.1.1.2.11.1" rend="CA" type="slogan">
+<name type="person">Big Brother</name>
+is watching you</q>,
+the caption beneath it ran.</s>
+</p><p id="Oen.1.1.3">
+<s id="Oen.1.1.3.1">Inside the flat a fruity voice was reading out a list
+of figures which had something to do with the production of pig-iron.</s>
+<s id="Oen.1.1.3.2">The voice came
+from an oblong metal plaque like a dulled mirror which formed part of
+the surface of the right-hand wall.</s>
+<s id="Oen.1.1.3.3"><name type="person">Winston</name>
+turned a switch and the voice sank somewhat, though the words were
+still distinguishable.</s>
+<s id="Oen.1.1.3.4">The instrument (the telescreen, it was called)
+could be dimmed, but there was no way of shutting it off
+completely.</s>
+<s id="Oen.1.1.3.5">He moved over to the window: a smallish, frail figure, the
+meagreness of his body merely emphasized by the blue overalls which
+were the uniform of the
+<name type="org">Party</name>.</s>
+<s id="Oen.1.1.3.6">His hair was very fair, his face naturally sanguine, his
+skin roughened by coarse soap and blunt razor blades and the cold of the
+winter that had just ended.</s>
+</p><p id="Oen.1.1.4">
+<s id="Oen.1.1.4.1">Outside, even through the shut window-pane, the world
+looked cold.</s>
+<s id="Oen.1.1.4.2">Down in the street little eddies of wind were whirling
+dust and torn paper into spirals, and though the sun was shining and the 
+sky a harsh blue, there seemed to be no colour in anything, except the
+posters that were plastered everywhere.</s>
+<s id="Oen.1.1.4.3">The blackmoustachio'd face
+gazed down from every commanding corner.</s>
+<s id="Oen.1.1.4.4">There was one on the
+house-front immediately opposite.</s>
+<s id="Oen.1.1.4.5"><q id="Oen.1.1.4.5.1" rend="CA" type="slogan">
+<name type="person">Big Brother</name>
+is watching you,
+</q>
+the caption said, while the dark eyes looked deep into
+<name type="person">Winston</name>'s
+own.</s>
+<s id="Oen.1.1.4.6">Down at streetlevel another poster, torn at one corner,
+flapped fitfully in the wind, alternately covering and uncovering the single
+word
+<mentioned><name lang="ns">Ingsoc</name></mentioned>.</s>
+<s id="Oen.1.1.4.7">In the far distance a helicopter skimmed down between the
+roofs, hovered for an instant like a bluebottle, and darted away again with a
+curving flight.</s> 
+<s id="Oen.1.1.4.8">It was the police patrol, snooping into people's
+windows.</s> 
+<s id="Oen.1.1.4.9">The patrols did not matter, however.</s>
+<s id="Oen.1.1.4.10">Only the
+<name type="org">Thought Police</name>
+mattered.</s>
+</p><p id="Oen.1.1.5">
+<s id="Oen.1.1.5.1">Behind
+<name type="person">Winston</name>'s
+back the voice from the telescreen was still babbling away about
+pig-iron and the overfulfillment of the Ninth Three-Year Plan.</s>
+<s id="Oen.1.1.5.2">The
+telescreen received and transmitted simultaneously.</s>
+<s id="Oen.1.1.5.3">Any sound that
+<name type="person">Winston</name>
+made, above the level of a very low whisper, would be picked up by it,
+moreover, so long as he remained within the field of vision which the
+metal plaque commanded, he could be seen as well as heard.</s>
+<s id="Oen.1.1.5.4">There was
+of course no way of knowing whether you were being watched at any
+given moment.</s>
+<s id="Oen.1.1.5.5">How often, or on what system, the
+<name type="org">Thought Police</name>
+plugged in on any individual wire was guesswork.</s>
+<s id="Oen.1.1.5.6">It was even
+conceivable that they watched everybody all the time.</s>
+<s id="Oen.1.1.5.7">But at any rate
+they could plug in your wire whenever they wanted to.</s>
+<s id="Oen.1.1.5.8">You had to live
+&mdash; did live, from habit that became instinct &mdash; in the
+assumption that every sound you made was overheard, and, except in
+darkness, every movement scrutinized.</s>
+</p><p id="Oen.1.1.6">
+<s id="Oen.1.1.6.1"><name type="person">Winston</name>
+kept his back turned to the telescreen.</s>
+<s id="Oen.1.1.6.2">It was safer, though, as he
+well knew, even a back can be revealing.</s>
+<s id="Oen.1.1.6.3">A kilometre away the
+<name type="org">Ministry of Truth</name>,
+his place of work, towered vast and white above the grimy landscape.</s>
+<s id="Oen.1.1.6.4">This, he thought with a sort of vague distaste &mdash;
+this was
+<name type="place">London</name>,
+chief city of
+<name type="place">Airstrip One</name>,
+itself the third most populous of the provinces of
+<name type="place">Oceania</name>.</s>
+<s id="Oen.1.1.6.5">He tried to squeeze out some childhood memory that should
+tell him whether
+<name type="place">London</name>
+had always been quite like this.</s>
+<s id="Oen.1.1.6.6">Were there always these vistas of
+rotting nineteenth-century houses, their sides shored up with baulks
+of timber, their windows patched with cardboard and their roofs with
+corrugated iron, their crazy garden walls sagging in all directions?</s>
+<s id="Oen.1.1.6.7">And the bombed sites where the plaster dust swirled in
+the air and the
+willow-herb straggled over the heaps of rubble; and the places where
+the bombs had cleared a larger patch and there had sprung up sordid
+colonies of wooden dwellings like chicken-houses?</s>
+<s id="Oen.1.1.6.8">But it was no use,
+he could not remember: nothing remained of his childhood except a
+series of bright-lit tableaux occurring against no background and
+mostly unintelligible.</s>
+</p><p id="Oen.1.1.7">
+<s id="Oen.1.1.7.1"><name type="org">Ministry of Truth</name>,
+&mdash;
+<name type="org" lang="ns">Minitrue</name>,
+in
+<name type="language">Newspeak</name><ptr id="Oen.1.1.7.1.4" target="Oen.1.1.8" rend="asterisk"/>
+&mdash; was startlingly different from any other object in sight.</s>
+<s id="Oen.1.1.7.2">It
+was an enormous pyramidal structure of glittering white concrete,
+soaring up, terrace after terrace,
+<num>300</num>
+metres into the air.</s>
+<s id="Oen.1.1.7.3">From where
+<name type="person">Winston</name>
+stood it was just possible to read, picked out on its white face in
+elegant lettering, the three slogans of the
+<name type="org">Party</name>:
+<q id="Oen.1.1.7.3.3" rend="CE CA" type="slogan">War is peace</q>
+<q id="Oen.1.1.7.3.4" rend="CE CA" type="slogan">Freedom is slavery</q>
+<q id="Oen.1.1.7.3.5" rend="CE CA" type="slogan">Ignorance is strength.</q></s>
+</p>
+<note id="Oen.1.1.8" place="foot">
+<name type="language">Newspeak</name>
+was the official language of
+<name type="place">Oceania</name>.
+For an account of its structure and etymology see Appendix.
+</note><p id="Oen.1.1.9">
+<s id="Oen.1.1.9.1"><name type="org">Ministry of Truth</name>,
+contained, it was said, three thousand rooms above ground level, and
+corresponding ramifications below.</s>
+<s id="Oen.1.1.9.2">Scattered about
+<name type="place">London</name>
+there were just three other buildings of similar appearance and
+size.</s>
+<s id="Oen.1.1.9.3">So completely did they dwarf the surrounding architecture
+that from the roof of
+<name type="place">Victory Mansions</name>
+you could see all four of them simultaneously.</s>
+<s id="Oen.1.1.9.4">They were the homes of
+the four Ministries between which the entire apparatus of government
+was divided.</s>
+<s id="Oen.1.1.9.5">The
+<name type="org">Ministry of Truth</name>,
+which concerned itself with news, entertainment, education, and the
+fine arts.</s>
+<s id="Oen.1.1.9.6">The
+<name type="org">Ministry of Peace</name>,
+which concerned itself with war.</s> 
+<s id="Oen.1.1.9.7">The
+<name type="org">Ministry of Love</name>,
+which maintained law and order.</s>
+<s id="Oen.1.1.9.8">And the
+<name type="org">Ministry of Plenty</name>,
+which was responsible for economic affairs.</s>
+<s id="Oen.1.1.9.9">Their names, in
+<name type="language">Newspeak</name>:
+<name type="org" lang="ns">Minitrue</name>,
+<name type="org" lang="ns">Minipax</name>,
+<name type="org" lang="ns">Miniluv</name>,
+and
+<name type="org" lang="ns">Miniplenty</name>.</s>
+</p><p id="Oen.1.1.10">
+<s id="Oen.1.1.10.1">The
+<name type="org">Ministry of Love</name>
+was the really frightening one.</s> 
+<s id="Oen.1.1.10.2">There were no windows in it at all.</s>
+<s id="Oen.1.1.10.3"><name type="person">Winston</name>
+had never been inside the
+<name type="org">Ministry of Love</name>,
+nor within half a kilometre of it.</s>
+<s id="Oen.1.1.10.4">It was a place impossible to enter
+except on official business, and then only by penetrating through a
+maze of barbed-wire entanglements, steel doors, and hidden machine-gun
+nests.</s>
+<s id="Oen.1.1.10.5">Even the streets leading up to its outer barriers
+were roamed by gorilla-faced guards in black uniforms, armed with jointed
+truncheons.</s>
+</p><p id="Oen.1.1.11">
+<s id="Oen.1.1.11.1"><name type="person">Winston</name>
+turned round abruptly.</s>
+<s id="Oen.1.1.11.2">He had set his features into the expression of
+quiet optimism which it was advisable to wear when facing the
+telescreen.</s>
+<s id="Oen.1.1.11.3">He crossed the room into the tiny kitchen.</s>
+<s id="Oen.1.1.11.4">By leaving the
+<name type="org">Ministry</name>
+at this time of day he had sacrificed his lunch in the canteen, and he
+was aware that there was no food in the kitchen except a hunk of
+dark-coloured bread which had got to be saved for tomorrow's
+breakfast.</s>
+<s id="Oen.1.1.11.5">He took down from the shelf a bottle of colourless liquid
+with a plain white label marked
+<name rend="CA" type="product">Victory Gin</name>.</s>
+<s id="Oen.1.1.11.6">It gave off a sickly, oily smell, as of Chinese rice
+spirit.</s>
+<s id="Oen.1.1.11.7"><name type="person">Winston</name>
+poured out nearly a teacupful, nerved himself for a shock, and gulped
+it down like a dose of medicine.</s>
+</p><p id="Oen.1.1.12">
+<s id="Oen.1.1.12.1">Instantly his face turned scarlet and the water ran out of
+his eyes.</s>
+<s id="Oen.1.1.12.2">The stuff was like nitric acid, and moreover, in
+swallowing it one had the sensation of being hit on the back of the head
+with a rubber club.</s>
+<s id="Oen.1.1.12.3">The next moment, however, the burning in his belly died
+down and the world began to look more cheerful.</s>
+<s id="Oen.1.1.12.4">He took a cigarette
+from a crumpled packet marked
+<mentioned rend="CA"><name type="product">Victory Cigarettes</name></mentioned>
+and incautiously held it upright, whereupon the tobacco fell out on to
+the floor.</s>
+<s id="Oen.1.1.12.5">With the next he was more successful.</s>
+<s id="Oen.1.1.12.6">He went back to the
+living-room and sat down at a small table that stood to the left of
+the telescreen.</s>
+<s id="Oen.1.1.12.7">From the table drawer he took out a penholder, a
+bottle of ink, and a thick, quarto-sized blank book with a red back
+and a marbled cover.</s>
+</p><p id="Oen.1.1.13">
+<s id="Oen.1.1.13.1">For some reason the telescreen in the living-room
+was in an unusual position.</s>
+<s id="Oen.1.1.13.2">Instead of being placed, as was normal, in the end wall,
+where it could command the whole room, it was in the longer wall,
+opposite the window.</s>
+<s id="Oen.1.1.13.3">To one side of it there was a shallow alcove in
+which
+<name type="person">Winston</name>
+was now sitting, and which, when the flats were built, had probably
+been intended to hold bookshelves.</s>
+<s id="Oen.1.1.13.4">By sitting in the alcove, and
+keeping well back,
+<name type="person">Winston</name>
+was able to remain outside the range of the telescreen, so far as
+sight went.</s>
+<s id="Oen.1.1.13.5">He could be heard, of course, but so long as he stayed in
+his present position he could not be seen.</s>
+<s id="Oen.1.1.13.6">It was partly the unusual
+geography of the room that had suggested to him the thing that he was
+now about to do.</s>
+</p><p id="Oen.1.1.14">
+<s id="Oen.1.1.14.1">But it had also been suggested by the book that he had
+just taken out of the drawer.</s>
+<s id="Oen.1.1.14.2">It was a peculiarly beautiful book.</s>
+<s id="Oen.1.1.14.3">Its smooth creamy
+paper, a little yellowed by age, was of a kind that had not been
+manufactured for at least forty years past.</s>
+<s id="Oen.1.1.14.4">He could guess, however,
+that the book was much older than that.</s>
+<s id="Oen.1.1.14.5">He had seen it lying in the
+window of a frowsy little junk-shop in a slummy quarter of the town
+(just what quarter he did not now remember) and had been stricken
+immediately by an overwhelming desire to possess it.</s> 
+<s id="Oen.1.1.14.6">Party members
+were supposed not to go into ordinary shops
+(<mentioned rend="PRE lsquo POST rsquo">dealing on the free market</mentioned>,
+it was called), but the rule was not strictly kept, because there
+were various things, such as shoelaces and razor blades, which it was
+impossible to get hold of in any other way.</s>
+<s id="Oen.1.1.14.7">He had given a quick
+glance up and down the street and then had slipped inside and bought
+the book for two dollars fifty.</s>
+<s id="Oen.1.1.14.8">At the time he was not conscious of
+wanting it for any particular purpose.</s>
+<s id="Oen.1.1.14.9">He had carried it guiltily home
+in his briefcase.</s> 
+<s id="Oen.1.1.14.10">Even with nothing written in it, it was a
+compromising possession.</s>
+</p><p id="Oen.1.1.15">
+<s id="Oen.1.1.15.1">The thing that he was about to do was to open a
+diary.</s>
+<s id="Oen.1.1.15.2">This was not illegal (nothing was illegal, since
+there were no longer any laws),
+but if detected it was reasonably certain that it would be punished by
+death, or at least by twenty-five years in a forced labour camp.</s>
+<s id="Oen.1.1.15.3"><name type="person">Winston</name>
+fitted a nib into the penholder and sucked it to get the grease off.</s>
+<s id="Oen.1.1.15.4">The pen was an archaic instrument, seldom used even
+for signatures,
+and he had procured one, furtively and with some difficulty, simply
+because of a feeling that the beautiful creamy paper deserved to be
+written on with a real nib instead of being scratched with an
+ink-pencil.</s>
+<s id="Oen.1.1.15.5">Actually he was not used to writing by hand.</s>
+<s id="Oen.1.1.15.6">Apart from
+very short notes, it was usual to dictate everything into the
+speakwrite which was of course impossible for his present purpose.</s>
+<s id="Oen.1.1.15.7">He
+dipped the pen into the ink and then faltered for just a second.</s>
+<s id="Oen.1.1.15.8">A
+tremor had gone through his bowels.</s>
+<s id="Oen.1.1.15.9">To mark the paper was the decisive
+act.</s>
+<s id="Oen.1.1.15.10">In small clumsy letters he wrote:</s>
+</p>
+<quote id="Oen.1.1.16" rend="IT"><p id="Oen.1.1.16.1"><s id="Oen.1.1.16.1.1">
+<date ISO8601="04-04-1984">April 4th, 1984</date>.</s>
+</p></quote>
+<p id="Oen.1.1.17">
+<s id="Oen.1.1.17.1">He sat back.</s>
+<s id="Oen.1.1.17.2">A sense of complete helplessness had descended upon
+him.</s>
+<s id="Oen.1.1.17.3">To begin with, he did not know with any certainty
+that this was
+<date>1984</date>.</s>
+<s id="Oen.1.1.17.4">It must be round about that date, since he was
+fairly sure that his age was thirty-nine, and he believed that he had
+been born in
+<date>1944</date>
+or
+<date>1945</date>;
+but it was never possible nowadays to pin down any date within a year
+or two.</s>
+</p><p id="Oen.1.1.18">
+<s id="Oen.1.1.18.1">For whom, it suddenly occurred to him to wonder,
+was he writing this diary?</s>
+<s id="Oen.1.1.18.2">For the future, for the unborn.</s>
+<s id="Oen.1.1.18.3">His mind hovered for a moment
+round the doubtful date on the page, and then fetched up with a bump
+against the Newspeak word
+<mentioned lang="ns" rend="IT">doublethink</mentioned>.</s>
+<s id="Oen.1.1.18.4">For the first time the magnitude of what he had
+undertaken came home to him.</s>
+<s id="Oen.1.1.18.5">How could you communicate with the future?</s>
+<s id="Oen.1.1.18.6">It was of its
+nature impossible.</s>
+<s id="Oen.1.1.18.7">Either the future would resemble the present, in
+which case it would not listen to him: or it would be different from
+it, and his predicament would be meaningless.</s>
+</p><p id="Oen.1.1.19">
+<s id="Oen.1.1.19.1">For some time he sat gazing stupidly at the paper.</s>
+<s id="Oen.1.1.19.2">The telescreen had
+changed over to strident military music.</s>
+<s id="Oen.1.1.19.3">It was curious that he seemed
+not merely to have lost the power of expressing himself, but even to
+have forgotten what it was that he had originally intended to say.</s>
+<s id="Oen.1.1.19.4">For
+weeks past he had been making ready for this moment, and it had never
+crossed his mind that anything would be needed except courage.</s>
+<s id="Oen.1.1.19.5">The
+actual writing would be easy.</s>
+<s id="Oen.1.1.19.6">All he had to do was to transfer to
+paper the interminable restless monologue that had been running inside
+his head, literally for years.</s> 
+<s id="Oen.1.1.19.7">At this moment, however, even the
+monologue had dried up.</s> 
+<s id="Oen.1.1.19.8">Moreover his varicose ulcer had begun itching
+unbearably.</s>
+<s id="Oen.1.1.19.9">He dared not scratch it, because if he did so it always
+became inflamed.</s>
+<s id="Oen.1.1.19.10">The seconds were ticking by.</s>
+<s id="Oen.1.1.19.11">He was conscious of
+nothing except the blankness of the page in front of him, the itching
+of the skin above his ankle, the blaring of the music, and a slight
+booziness caused by the gin.</s>
+</p><p id="Oen.1.1.20">
+<s id="Oen.1.1.20.1">Suddenly he began writing in sheer panic, only
+imperfectly aware of
+what he was setting down.</s>
+<s id="Oen.1.1.20.2">His small but childish handwriting straggled
+up and down the page, shedding first its capital letters and finally
+even its full stops:</s>
+</p>
+<quote id="Oen.1.1.21" type="stream of consciousness" rend="IT"><p id="Oen.1.1.21.1">
+<s id="Oen.1.1.21.1.1"><date ISO8601="04-04-1984">April 4th, 1984</date>.</s>
+<s id="Oen.1.1.21.1.2">Last night to the flicks.</s>
+<s id="Oen.1.1.21.1.3">All war films.</s>
+<s id="Oen.1.1.21.1.4">One very good one of a
+ship full of refugees being bombed somewhere in the
+Mediterranean.</s>
+<s id="Oen.1.1.21.1.5">Audience much amused by shots of a great huge fat man
+trying to swim away with a helicopter after him, first you saw him
+wallowing along in the water like a porpoise, then you saw him through
+the helicopters gunsights, then he was full of holes and the sea round
+him turned pink and he sank as suddenly as though the holes had let in
+the water, audience shouting with laughter when he sank.</s>
+<s id="Oen.1.1.21.1.6">then you saw
+a lifeboat full of children with a helicopter hovering over it.</s>
+<s id="Oen.1.1.21.1.7">there
+was a middle-aged woman might have been a jewess sitting up in the bow
+with a little boy about three years old in her arms.</s> 
+<s id="Oen.1.1.21.1.8">little boy
+screaming with fright and hiding his head between her breasts as if he
+was trying to burrow right into her and the woman putting her arms
+round him and comforting him although she was blue with fright
+herself, all the time covering him up as much as possible as if she
+thought her arms could keep the bullets off him.</s> 
+<s id="Oen.1.1.21.1.9">then the helicopter
+planted a
+<num>20</num>
+kilo bomb in among them terrific flash and the boat went all to
+matchwood.</s> 
+<s id="Oen.1.1.21.1.10">then there was a wonderful shot of a child's
+arm going up
+up up right up into the air a helicopter with a camera in its nose
+must have followed it up and there was a lot of applause from the
+party seats but a woman down in the prole part of the house suddenly
+started kicking up a fuss and shouting they didnt oughter of showed it
+not in front of kids they didnt it aint right not in front of kids it
+aint until the police turned her out i dont suppose anything happened
+to her nobody cares what the proles say typical prole reaction they
+never &mdash;</s>
+</p></quote><p id="Oen.1.1.22">
+<s id="Oen.1.1.22.1"><name type="person">Winston</name>
+stopped writing, partly because he was suffering from cramp.</s>
+<s id="Oen.1.1.22.2">He did
+not know what had made him pour out this stream of rubbish.</s>
+<s id="Oen.1.1.22.3">But the
+curious thing was that while he was doing so a totally different
+memory had clarified itself in his mind, to the point where he almost
+felt equal to writing it down.</s>
+<s id="Oen.1.1.22.4">It was, he now realized, because of
+this other incident that he had suddenly decided to come home and
+begin the diary today.</s>
+</p><p id="Oen.1.1.23">
+<s id="Oen.1.1.23.1">It had happened that morning at the
+<name type="org">Ministry</name>,
+if anything so nebulous could be said to happen.</s>
+</p><p id="Oen.1.1.24">
+<s id="Oen.1.1.24.1">It was nearly eleven hundred, and in the
+<name type="org">Records Department</name>,
+where
+<name type="person">Winston</name>
+worked, they were dragging the chairs out of the cubicles and grouping
+them in the centre of the hall opposite the big telescreen, in
+preparation for the
+<name type="event">Two Minutes Hate</name>.</s>
+<s id="Oen.1.1.24.2"><name type="person">Winston</name>
+was just taking his place in one of the middle rows when two people
+whom he knew by sight, but had never spoken to, came unexpectedly into
+the room.</s>
+<s id="Oen.1.1.24.3">One of them was a girl whom he often passed in the
+corridors.</s>
+<s id="Oen.1.1.24.4">He did not know her name, but he knew that she worked in
+the
+<name type="org">Fiction Department</name>.</s>
+<s id="Oen.1.1.24.5">Presumably &mdash; since he had sometimes seen
+her with oily hands and
+carrying a spanner she had some mechanical job on one of the
+novel-writing machines.</s>
+<s id="Oen.1.1.24.6">She was a bold-looking girl, of about
+twenty-seven, with thick hair, a freckled face, and swift, athletic
+movements.</s>
+<s id="Oen.1.1.24.7">A narrow scarlet sash, emblem of the
+<name type="org">Junior Anti-Sex League</name>,
+was wound several times round the waist of her overalls, just tightly
+enough to bring out the shapeliness of her hips.</s>
+<s id="Oen.1.1.24.8"><name type="person">Winston</name>
+had disliked her from the very first moment of seeing her.</s>
+<s id="Oen.1.1.24.9">He knew the
+reason.</s>
+<s id="Oen.1.1.24.10">It was because of the atmosphere of hockey-fields
+and cold baths and community hikes and general clean-mindedness which she
+managed to carry about with her.</s>
+<s id="Oen.1.1.24.11">He disliked nearly all women, and
+especially the young and pretty ones.</s>
+<s id="Oen.1.1.24.12">It was always the women, and
+above all the young ones, who were the most bigoted adherents of the
+<name type="org">Party</name>,
+the swallowers of slogans, the amateur spies and nosers-out of
+unorthodoxy.</s>
+<s id="Oen.1.1.24.13">But this particular girl gave him the impression
+of being more dangerous than most.</s>
+<s id="Oen.1.1.24.14">Once when they passed in the corridor she
+gave him a quick sidelong glance which seemed to pierce right into him
+and for a moment had filled him with black terror.</s>
+<s id="Oen.1.1.24.15">The idea had even
+crossed his mind that she might be an agent of the
+<name type="org">Thought Police</name>.</s>
+<s id="Oen.1.1.24.16">That, it was true, was very unlikely.</s>
+<s id="Oen.1.1.24.17">Still, he continued to feel a
+peculiar uneasiness, which had fear mixed up in it as well as
+hostility, whenever she was anywhere near him.</s>
+</p><p id="Oen.1.1.25">
+<s id="Oen.1.1.25.1">The other person was a man named
+<name type="person">O'Brien</name>,
+a member of the
+<name type="org">Inner Party</name>
+and holder of some post so important and remote that
+<name type="person">Winston</name>
+had only a dim idea of its nature.</s>
+<s id="Oen.1.1.25.2">A momentary hush passed over the
+group of people round the chairs as they saw the black overalls of an
+<name type="org">Inner Party</name>
+member approaching.</s>
+<s id="Oen.1.1.25.3"><name type="person">O'Brien</name>
+was a large, burly man with a thick neck and a coarse, humorous,
+brutal face.</s>
+<s id="Oen.1.1.25.4">In spite of his formidable appearance he had a certain
+charm of manner.</s>
+<s id="Oen.1.1.25.5">He had a trick of resettling his spectacles on his
+nose which was curiously disarming &mdash; in some indefinable way,
+curiously civilized.</s>
+<s id="Oen.1.1.25.6">It was a gesture which, if anyone had still
+thought in such terms, might have recalled an eighteenth-century
+nobleman offering his snuffbox.</s>
+<s id="Oen.1.1.25.7"><name type="person">Winston</name>
+had seen
+<name type="person">O'Brien</name>
+perhaps a dozen times in almost as many years.</s>
+<s id="Oen.1.1.25.8">He felt deeply drawn to
+him, and not solely because he was intrigued by the contrast between
+<name type="person">O'Brien</name>'s
+urbane manner and his prize-fighter's physique.</s>
+<s id="Oen.1.1.25.9">Much more it was
+because of a secretly held belief &mdash; or perhaps not even a
+belief, merely a hope &mdash; that
+<name type="person">O'Brien</name>'s
+political orthodoxy was not perfect.</s>
+<s id="Oen.1.1.25.10">Something in his face suggested
+it irresistibly.</s>
+<s id="Oen.1.1.25.11">And again, perhaps it was not even unorthodoxy that
+was written in his face, but simply intelligence.</s>
+<s id="Oen.1.1.25.12">But at any rate he
+had the appearance of being a person that you could talk to if somehow
+you could cheat the telescreen and get him alone.</s>
+<s id="Oen.1.1.25.13"><name type="person">Winston</name>
+had never made the smallest effort to verify this guess: indeed, there
+was no way of doing so.</s>
+<s id="Oen.1.1.25.14">At this moment
+<name type="person">O'Brien</name>
+glanced at his wrist-watch, saw that it was nearly eleven hundred, and
+evidently decided to stay in the
+<name type="org">Records Department</name>
+until the
+<name type="event">Two Minutes Hate</name>
+was over.</s> 
+<s id="Oen.1.1.25.15">He took a chair in the same row as
+<name type="person">Winston</name>,
+a couple of places away.</s>
+<s id="Oen.1.1.25.16">A small, sandy-haired woman who worked in the
+next cubicle to
+<name type="person">Winston</name>
+was between them.</s>
+<s id="Oen.1.1.25.17">The girl with dark hair was sitting immediately
+behind.</s>
+</p><p id="Oen.1.1.26">
+<s id="Oen.1.1.26.1">The next moment a hideous, grinding speech, as
+of some monstrous
+machine running without oil, burst from the big telescreen at the end
+of the room.</s>
+<s id="Oen.1.1.26.2">It was a noise that set one's teeth on edge and bristled
+the hair at the back of one's neck.</s>
+<s id="Oen.1.1.26.3">The
+<name type="event">Hate</name>
+had started.</s>
+</p><p id="Oen.1.1.27">
+<s id="Oen.1.1.27.1">As usual, the face of
+<name type="person">Emmanuel Goldstein</name>,
+the Enemy of the People, had flashed on to the screen.</s>
+<s id="Oen.1.1.27.2">There were
+hisses here and there among the audience.</s>
+<s id="Oen.1.1.27.3">The little sandy-haired
+woman gave a squeak of mingled fear and disgust.</s>
+<s id="Oen.1.1.27.4"><name type="person">Goldstein</name>
+was the renegade and backslider who once, long ago (how long ago,
+nobody quite remembered), had been one of the leading figures of the
+<name type="org">Party</name>,
+almost on a level with
+<name type="person">Big Brother</name>
+himself, and then had engaged in counter-revolutionary activities, had
+been condemned to death, and had mysteriously escaped and
+disappeared.</s>
+<s id="Oen.1.1.27.5">The programmes of the
+<name type="event">Two Minutes Hate</name>
+varied from day to day, but there was none in which
+<name type="person">Goldstein</name>
+was not the principal figure.</s>
+<s id="Oen.1.1.27.6">He was the primal traitor, the earliest
+defiler of the
+<name type="org">Party</name>'s
+purity.</s> 
+<s id="Oen.1.1.27.7">All subsequent crimes against the
+<name type="org">Party</name>,
+all treacheries, acts of sabotage, heresies, deviations, sprang
+directly out of his teaching.</s>
+<s id="Oen.1.1.27.8">Somewhere or other he was still alive
+and hatching his conspiracies: perhaps somewhere beyond the sea, under
+the protection of his foreign paymasters, perhaps even &mdash; so it
+was occasionally rumoured &mdash; in some hiding-place in
+<name type="place">Oceania</name>
+itself.</s>
+</p><p id="Oen.1.1.28">
+<s id="Oen.1.1.28.1"><name type="person">Winston</name>'s
+diaphragm was constricted.</s>
+<s id="Oen.1.1.28.2">He could never see the face of
+<name type="person">Goldstein</name>
+without a painful mixture of emotions.</s> 
+<s id="Oen.1.1.28.3">It was a lean Jewish face,
+with a great fuzzy aureole of white hair and a small goatee beard
+&mdash; a clever face, and yet somehow inherently despicable, with a
+kind of senile silliness in the long thin nose, near the end of which
+a pair of spectacles was perched.</s>
+<s id="Oen.1.1.28.4">It resembled the face of a sheep,
+and the voice, too, had a sheep-like quality.</s>
+<s id="Oen.1.1.28.5"><name type="person">Goldstein</name>
+was delivering his usual venomous attack upon the doctrines of the
+<name type="org">Party</name>
+&mdash; an attack so exaggerated and perverse that a child should have
+been able to see through it, and yet just plausible enough to fill one
+with an alarmed feeling that other people, less level-headed than
+oneself, might be taken in by it.</s>
+<s id="Oen.1.1.28.6">He was abusing
+<name type="person">Big Brother</name>,
+he was denouncing the dictatorship of the
+<name type="org">Party</name>,
+he was demanding the immediate conclusion of peace with
+<name type="place">Eurasia</name>,
+he was advocating freedom of speech, freedom of the Press, freedom
+of assembly, freedom of thought, he was crying hysterically that the
+revolution had been betrayed &mdash; and all this in rapid
+polysyllabic speech which was a sort of parody of the habitual style
+of the orators of the
+<name type="org">Party</name>,
+and even contained Newspeak words: more Newspeak words, indeed, than any
+<name type="org">Party</name>
+member would normally use in real life.</s>
+<s id="Oen.1.1.28.7">And all the while, lest one
+should be in any doubt as to the reality which
+<name type="person">Goldstein</name>'s
+specious claptrap covered, behind his head on the telescreen there
+marched the endless columns of the Eurasian army &mdash; row after row
+of solid-looking men with expressionless Asiatic faces, who swam up to
+the surface of the screen and vanished, to be replaced by others
+exactly similar.</s>
+<s id="Oen.1.1.28.8">The dull rhythmic tramp of the soldiers' boots formed
+the background to
+<name type="person">Goldstein</name>'s
+bleating voice.</s>
+</p><p id="Oen.1.1.29">
+<s id="Oen.1.1.29.1">Before the
+<name type="event">Hate</name>
+had proceeded for thirty seconds, uncontrollable exclamations of rage
+were breaking out from half the people in the room.</s>
+<s id="Oen.1.1.29.2">The self-satisfied
+sheep-like face on the screen, and the terrifying power of the
+Eurasian army behind it, were too much to be borne: besides, the sight
+or even the thought of
+<name type="person">Goldstein</name>
+produced fear and anger automatically.</s>
+<s id="Oen.1.1.29.3">He was an object of hatred more
+constant than either
+<name type="place">Eurasia</name>
+or
+<name type="place">Eastasia</name>,
+since when
+<name type="place">Oceania</name>
+was at war with one of these Powers it was generally at peace with the
+other.</s>
+<s id="Oen.1.1.29.4">But what was strange was that although
+<name type="person">Goldstein</name>
+was hated and despised by everybody, although every day and a thousand
+times a day, on platforms, on the telescreen, in newspapers, in books,
+his theories were refuted, smashed, ridiculed, held up to the general
+gaze for the pitiful rubbish that they were in spite of all this, his
+influence never seemed to grow less.</s>
+<s id="Oen.1.1.29.5">Always there were fresh dupes
+waiting to be seduced by him.</s>
+<s id="Oen.1.1.29.6">A day never passed when spies and
+saboteurs acting under his directions were not unmasked by the
+<name type="org">Thought Police</name>.</s>
+<s id="Oen.1.1.29.7">He was the commander of a vast shadowy army, an
+underground network
+of conspirators dedicated to the overthrow of the State.</s>
+<s id="Oen.1.1.29.8">The
+<name type="org">Brotherhood</name>,
+its name was supposed to be.</s>
+<s id="Oen.1.1.29.9">There were also whispered stories of a
+terrible book, a compendium of all the heresies, of which
+<name type="person">Goldstein</name>
+was the author and which circulated clandestinely here and there.</s>
+<s id="Oen.1.1.29.10">It
+was a book without a title.</s>
+<s id="Oen.1.1.29.11">People referred to it, if at all, simply
+as
+<mentioned rend="IT">the book</mentioned>.</s>
+<s id="Oen.1.1.29.12">But one knew of such things only through vague
+rumours.</s>
+<s id="Oen.1.1.29.13">Neither the
+<name type="org">Brotherhood</name>
+nor
+<mentioned rend="IT">the book</mentioned>
+was a subject that any ordinary
+<name type="org">Party</name>
+member would mention if there was a way of avoiding it.</s>
+</p><p id="Oen.1.1.30">
+<s id="Oen.1.1.30.1">In its second minute the
+<name type="event">Hate</name>
+rose to a frenzy.</s>
+<s id="Oen.1.1.30.2">People were leaping up and down in their places and
+shouting at the tops of their voices in an effort to drown the
+maddening bleating voice that came from the screen.</s>
+<s id="Oen.1.1.30.3">The little
+sandy-haired woman had turned bright pink, and her mouth was opening
+and shutting like that of a landed fish.</s>
+<s id="Oen.1.1.30.4">Even
+<name type="person">O'Brien</name>'s
+heavy face was flushed.</s>
+<s id="Oen.1.1.30.5">He was sitting very straight in his chair,
+his powerful chest swelling and quivering as though he were standing
+up to the assault of a wave.</s>
+<s id="Oen.1.1.30.6">The dark-haired girl behind
+<name type="person">Winston</name>
+had begun crying out
+<q id="Oen.1.1.30.6.2" rend="PRE lsquo">Swine! Swine! Swine!</q>
+and suddenly she picked up a heavy
+Newspeak dictionary and flung it at the screen.</s>
+<s id="Oen.1.1.30.7">It struck
+<name type="person">Goldstein</name>'s
+nose and bounced off; the voice continued inexorably.</s>
+<s id="Oen.1.1.30.8">In a lucid moment
+<name type="person">Winston</name>
+found that he was shouting with the others and kicking his heel
+violently against the rung of his chair.</s>
+<s id="Oen.1.1.30.9">The horrible thing about the
+<name type="event">Two Minutes Hate</name>
+was not that one was obliged to act a part, but, on the contrary, that
+it was impossible to avoid joining in.</s>
+<s id="Oen.1.1.30.10">Within thirty seconds any
+pretence was always unnecessary.</s>
+<s id="Oen.1.1.30.11">A hideous ecstasy of fear and
+vindictiveness, a desire to kill, to torture, to smash faces in with a
+sledge-hammer, seemed to flow through the whole group of people like
+an electric current, turning one even against one's will into a
+grimacing, screaming lunatic.</s>
+<s id="Oen.1.1.30.12">And yet the rage that one felt was an
+abstract, undirected emotion which could be switched from one object
+to another like the flame of a blowlamp.</s>
+<s id="Oen.1.1.30.13">Thus, at one moment
+<name type="person">Winston</name>'s
+hatred was not turned against
+<name type="person">Goldstein</name>
+at all, but, on the contrary, against
+<name type="person">Big Brother</name>,
+the
+<name type="org">Party</name>,
+and the
+<name type="org">Thought Police</name>;
+and at such moments his heart went out to the lonely, derided
+heretic on the screen, sole guardian of truth and sanity in a world of
+lies.</s>
+<s id="Oen.1.1.30.14">And yet the very next instant he was at one with
+the people
+about him, and all that was said of
+<name type="person">Goldstein</name>
+seemed to him to be true.</s>
+<s id="Oen.1.1.30.15">At those moments his secret loathing of
+<name type="person">Big Brother</name>
+changed into adoration, and
+<name type="person">Big Brother</name>
+seemed to tower up, an invincible, fearless protector, standing like a
+rock against the hordes of Asia, and
+<name type="person">Goldstein</name>,
+in spite of his isolation, his helplessness, and the doubt that hung
+about his very existence, seemed like some sinister enchanter, capable
+by the mere power of his voice of wrecking the structure of
+civilization.</s>
+</p><p id="Oen.1.1.31">
+<s id="Oen.1.1.31.1">It was even possible, at moments, to switch one's hatred
+this way or that by a voluntary act.</s>
+<s id="Oen.1.1.31.2">Suddenly, by the sort
+of violent effort with which one wrenches one's head away
+from the pillow in a nightmare,
+<name type="person">Winston</name>
+succeeded in transferring his hatred from the face on the screen to
+the dark-haired girl behind him.</s>
+<s id="Oen.1.1.31.3">Vivid, beautiful hallucinations
+flashed through his mind.</s>
+<s id="Oen.1.1.31.4">He would flog her to death with a rubber
+truncheon.</s>
+<s id="Oen.1.1.31.5">He would tie her naked to a stake and shoot her full of
+arrows like
+<name type="person">Saint Sebastian</name>.</s>
+<s id="Oen.1.1.31.6">He would ravish her and cut her throat at the moment of climax.</s>
+<s id="Oen.1.1.31.7">Better than before, moreover, he realized why it was that he hated
+her.</s>
+<s id="Oen.1.1.31.8">He hated her because she was young and pretty and sexless,
+because he wanted to go to bed with her and would never do so, because
+round her sweet supple waist, which seemed to ask you to encircle it
+with your arm, there was only the odious scarlet sash, aggressive
+symbol of chastity.</s>
+</p><p id="Oen.1.1.32">
+<s id="Oen.1.1.32.1">The
+<name type="event">Hate</name>
+rose to its climax.</s>
+<s id="Oen.1.1.32.2">The voice of
+<name type="person">Goldstein</name>
+had become an actual sheep's bleat, and for an instant the face
+changed into that of a sheep.</s>
+<s id="Oen.1.1.32.3">Then the sheep-face melted into the
+figure of a Eurasian soldier who seemed to be advancing, huge and
+terrible, his sub-machine gun roaring, and seeming to spring out of
+the surface of the screen, so that some of the people in the front row
+actually flinched backwards in their seats.</s>
+<s id="Oen.1.1.32.4">But in the same moment,
+drawing a deep sigh of relief from everybody, the hostile figure
+melted into the face of
+<name type="person">Big Brother</name>,
+black-haired, blackmoustachio'd, full of power and mysterious calm,
+and so vast that it almost filled up the screen.</s>
+<s id="Oen.1.1.32.5">Nobody heard what
+<name type="person">Big Brother</name>
+was saying.</s>
+<s id="Oen.1.1.32.6">It was merely a few words of encouragement, the sort of
+words that are uttered in the din of battle, not distinguishable
+individually but restoring confidence by the fact of being
+spoken.</s>
+<s id="Oen.1.1.32.7">Then the face of
+<name type="person">Big Brother</name>
+faded away again, and instead the three slogans of the
+<name type="org">Party</name>
+stood out in bold capitals:
+<q id="Oen.1.1.32.7.3" rend="CE CA" type="slogan">War is peace</q>
+<q id="Oen.1.1.32.7.4" rend="CE CA" type="slogan">Freedom is slavery</q>
+<q id="Oen.1.1.32.7.5" rend="CE CA" type="slogan">Ignorance is strength.</q></s>
+</p><p id="Oen.1.1.33">
+<s id="Oen.1.1.33.1">But the face of
+<name type="person">Big Brother</name>
+seemed to persist for several seconds on the screen, as though the
+impact that it had made on everyone's eyeballs was too vivid to wear
+off immediately.</s>
+<s id="Oen.1.1.33.2">The little sandyhaired woman had flung herself
+forward over the back of the chair in front of her.</s>
+<s id="Oen.1.1.33.3">With a tremulous
+murmur that sounded like
+<q id="Oen.1.1.33.3.1" rend="PRE lsquo POST rsquo">My Saviour!</q>
+she extended her arms towards the screen.</s>
+<s id="Oen.1.1.33.4">Then she buried her face in
+her hands.</s>
+<s id="Oen.1.1.33.5">It was apparent that she was uttering a prayer.</s>
+</p><p id="Oen.1.1.34">
+<s id="Oen.1.1.34.1">At this moment the entire group of people broke into a deep, slow,
+rhythmical chant of
+<q id="Oen.1.1.34.1.1" rend="PRE lsquo POST rsquo">
+<name type="person"><abbr expan="Big Brother">B-B</abbr></name>!
+&hellip;
+<name type="person"><abbr expan="Big Brother">B-B</abbr></name>!
+&hellip;
+<name type="person"><abbr expan="Big Brother">B-B</abbr></name>!</q>
+&mdash; over and over again, very slowly, with a long pause between
+the first
+<mentioned rend="PRE lsquo POST rsquo">B</mentioned>
+and the second &mdash; a heavy, murmurous sound, somehow curiously
+savage, in the background of which one seemed to hear the stamp of
+naked feet and the throbbing of tom-toms.</s> 
+<s id="Oen.1.1.34.2">For perhaps as much as
+thirty seconds they kept it up.</s>
+<s id="Oen.1.1.34.3">It was a refrain that was often heard
+in moments of overwhelming emotion.</s>
+<s id="Oen.1.1.34.4">Partly it was a sort of hymn to
+the wisdom and majesty of
+<name type="person">Big Brother</name>,
+but still more it was an act of self-hypnosis, a deliberate drowning
+of consciousness by means of rhythmic noise.</s>
+<s id="Oen.1.1.34.5"><name type="person">Winston</name>'s
+entrails seemed to grow cold.</s>
+<s id="Oen.1.1.34.6">In the
+<name type="event">Two Minutes Hate</name>
+he could not help sharing in the general delirium, but this sub-human
+chanting of
+<q id="Oen.1.1.34.6.2" rend="PRE lsquo POST rsquo">
+<name type="person"><abbr expan="Big Brother">B-B</abbr></name>!
+&hellip;
+<name type="person"><abbr expan="Big Brother">B-B</abbr></name>!
+</q>
+always filled him with horror.</s>
+<s id="Oen.1.1.34.7">Of course he chanted with the rest: it
+was impossible to do otherwise.</s>
+<s id="Oen.1.1.34.8">To dissemble your feelings, to control
+your face, to do what everyone else was doing, was an instinctive
+reaction.</s>
+<s id="Oen.1.1.34.9">But there was a space of a couple of seconds during which
+the expression of his eyes might conceivably have betrayed him.</s> 
+<s id="Oen.1.1.34.10">And
+it was exactly at this moment that the significant thing happened
+&mdash; if, indeed, it did happen.</s>
+</p><p id="Oen.1.1.35">
+<s id="Oen.1.1.35.1">Momentarily he caught
+<name type="person">O'Brien</name>'s
+eye.</s>
+<s id="Oen.1.1.35.2"><name type="person">O'Brien</name>
+had stood up.</s>
+<s id="Oen.1.1.35.3">He had taken off his spectacles and was in the act of
+resettling them on his nose with his characteristic gesture.</s> 
+<s id="Oen.1.1.35.4">But
+there was a fraction of a second when their eyes met, and for as long
+as it took to happen
+<name type="person">Winston</name>
+knew &mdash; yes, he
+<hi rend="IT">knew!</hi>
+&mdash; that
+<name type="person">O'Brien</name>
+was thinking the same thing as himself.</s>
+<s id="Oen.1.1.35.5">An unmistakable message had
+passed.</s>
+<s id="Oen.1.1.35.6">It was as though their two minds had opened and
+the thoughts were flowing from one into the other through their eyes.</s>
+<s id="Oen.1.1.35.7"><q id="Oen.1.1.35.7.1" rend="PRE lsquo POST rsquo">I
+am with you,</q>
+<name type="person">O'Brien</name>
+seemed to be saying to him.</s>
+<s id="Oen.1.1.35.8"><q id="Oen.1.1.35.8.1" rend="PRE lsquo POST rsquo">
+I know precisely what you are feeling.</q></s>
+<s id="Oen.1.1.35.9"><q id="Oen.1.1.35.9.1">I know all about your contempt,
+your hatred, your disgust.</q></s>
+<s id="Oen.1.1.35.10"><q id="Oen.1.1.35.10.1">But don't worry, I am
+on your side!</q></s>
+<s id="Oen.1.1.35.11">
+And then the flash of intelligence was gone, and
+<name type="person">O'Brien</name>'s
+face was as inscrutable as everybody else's.</s>
+</p><p id="Oen.1.1.36">
+<s id="Oen.1.1.36.1">That was all, and he was already uncertain whether it had
+happened.</s>
+<s id="Oen.1.1.36.2">Such incidents never had any sequel.</s>
+<s id="Oen.1.1.36.3">All that they did was
+to keep alive in him the belief, or hope, that others besides himself
+were the enemies of the
+<name type="org">Party</name>.</s>
+<s id="Oen.1.1.36.4">Perhaps the rumours of vast underground conspiracies
+were true
+after all &mdash; perhaps the
+<name type="org">Brotherhood</name>
+really existed!</s> 
+<s id="Oen.1.1.36.5">It was impossible, in spite of the endless arrests
+and confessions and executions, to be sure that the
+<name type="org">Brotherhood</name>
+was not simply a myth.</s>
+<s id="Oen.1.1.36.6">Some days he believed in it, some days not.</s>
+<s id="Oen.1.1.36.7">There was no evidence, only fleeting glimpses that
+might mean anything
+or nothing: snatches of overheard conversation, faint scribbles on
+lavatory walls &mdash; once, even, when two strangers met, a small
+movement of the hand which had looked as though it might be a signal
+of recognition.</s>
+<s id="Oen.1.1.36.8">It was all guesswork: very likely he had imagined
+everything.</s>
+<s id="Oen.1.1.36.9">He had gone back to his cubicle without looking at
+<name type="person">O'Brien</name>
+again.</s>
+<s id="Oen.1.1.36.10">The idea of following up their momentary contact
+hardly crossed his mind.</s>
+<s id="Oen.1.1.36.11">It would have been inconceivably dangerous even if he had
+known how to set about doing it.</s>
+<s id="Oen.1.1.36.12">For a second, two seconds, they had
+exchanged an equivocal glance, and that was the end of the story.</s>
+<s id="Oen.1.1.36.13">But
+even that was a memorable event, in the locked loneliness in which one
+had to live.</s>
+</p><p id="Oen.1.1.37">
+<s id="Oen.1.1.37.1"><name type="person">Winston</name>
+roused himself and sat up straighter.</s>
+<s id="Oen.1.1.37.2">He let out a belch.</s>
+<s id="Oen.1.1.37.3">The gin was
+rising from his stomach.</s>
+</p><p id="Oen.1.1.38">
+<s id="Oen.1.1.38.1">His eyes re-focused on the page.</s>
+<s id="Oen.1.1.38.2">He discovered that while he sat
+helplessly musing he had also been writing, as though by automatic
+action.</s>
+<s id="Oen.1.1.38.3">And it was no longer the same cramped, awkward
+handwriting as before.</s>
+<s id="Oen.1.1.38.4">His pen had slid voluptuously over the smooth paper,
+printing in large neat capitals
+<q id="Oen.1.1.38.4.1" rend="CE CA" type="slogan">
+Down with
+<name type="person">Big Brother</name>
+</q>
+<q id="Oen.1.1.38.4.2" rend="CE CA" type="slogan">
+Down with
+<name type="person">Big Brother</name>
+</q>
+<q id="Oen.1.1.38.4.3" rend="CE CA" type="slogan">
+Down with
+<name type="person">Big Brother</name>
+</q>
+<q id="Oen.1.1.38.4.4" rend="CE CA" type="slogan">
+Down with
+<name type="person">Big Brother</name>
+</q>
+<q id="Oen.1.1.38.4.5" rend="CE CA" type="slogan">
+Down with
+<name type="person">Big Brother</name>
+</q>
+over and over again, filling half a page.</s>
+</p><p id="Oen.1.1.39">
+<s id="Oen.1.1.39.1">He could not help feeling a twinge of panic.</s>
+<s id="Oen.1.1.39.2">It was absurd, since the
+writing of those particular words was not more dangerous than the
+initial act of opening the diary, but for a moment he was tempted to
+tear out the spoiled pages and abandon the enterprise altogether.</s>
+</p><p id="Oen.1.1.40">
+<s id="Oen.1.1.40.1">He did not do so, however, because he knew that it was
+useless.</s>
+<s id="Oen.1.1.40.2">Whether he wrote
+<q id="Oen.1.1.40.2.1" rend="CA">
+Down with
+<name type="person">Big Brother</name>,
+</q>
+or whether he refrained from writing it, made no difference.</s>
+<s id="Oen.1.1.40.3">Whether
+he went on with the diary, or whether he did not go on with it, made
+no difference.</s>
+<s id="Oen.1.1.40.4">The
+<name type="org">Thought Police</name>
+would get him just the same.</s>
+<s id="Oen.1.1.40.5">He had committed &mdash; would still have
+committed, even if he had never set pen to paper &mdash; the essential
+crime that contained all others in itself.</s>
+<s id="Oen.1.1.40.6"><foreign lang="ns">Thoughtcrime</foreign>,
+they called it.</s>
+<s id="Oen.1.1.40.7"><foreign lang="ns">Thoughtcrime</foreign>
+was not a thing that could be concealed for ever.</s>
+<s id="Oen.1.1.40.8">You might dodge
+successfully for a while, even for years, but sooner or later they
+were bound to get you.</s>
+</p><p id="Oen.1.1.41">
+<s id="Oen.1.1.41.1">It was always at night &mdash; the arrests invariably
+happened at night.</s>
+<s id="Oen.1.1.41.2">The sudden jerk out of sleep, the rough hand shaking your
+shoulder, the lights glaring in your eyes, the ring of hard faces
+round the bed.</s>
+<s id="Oen.1.1.41.3">In the vast majority of cases there was no trial, no
+report of the arrest.</s>
+<s id="Oen.1.1.41.4">People simply disappeared, always during the
+night.</s>
+<s id="Oen.1.1.41.5">Your name was removed from the registers, every record of
+everything you had ever done was wiped out, your one-time existence
+was denied and then forgotten.</s>
+<s id="Oen.1.1.41.6">You were abolished, annihilated:
+<mentioned rend="IT">vaporized</mentioned>
+was the usual word.</s>
+</p><p id="Oen.1.1.42">
+<s id="Oen.1.1.42.1">For a moment he was seized by a kind of hysteria.</s>
+<s id="Oen.1.1.42.2">He began writing in
+a hurried untidy scrawl:</s>
+</p>
+<quote id="Oen.1.1.43" type="stream of consciousness" rend="IT"><p id="Oen.1.1.43.1">
+<s id="Oen.1.1.43.1.1">theyll shoot me i don't care theyll shoot me
+in the back of the neck i dont care down with
+<name type="person">big brother</name>
+they always shoot you in the back of the neck i dont care down with
+<name type="person">big brother</name></s>
+</p></quote><p id="Oen.1.1.44">
+<s id="Oen.1.1.44.1">He sat back in his chair, slightly ashamed of himself,
+and laid down the pen.</s>
+<s id="Oen.1.1.44.2">The next moment he started violently.</s> 
+<s id="Oen.1.1.44.3">There was a knocking
+at the door.</s>
+</p><p id="Oen.1.1.45">
+<s id="Oen.1.1.45.1">Already!</s>
+<s id="Oen.1.1.45.2">He sat as still as a mouse, in the futile hope
+that whoever it was might go away after a single attempt.</s> 
+<s id="Oen.1.1.45.3">But no, the knocking was
+repeated.</s>
+<s id="Oen.1.1.45.4">The worst thing of all would be to delay.</s>
+<s id="Oen.1.1.45.5">His heart was
+thumping like a drum, but his face, from long habit, was probably
+expressionless.</s>
+<s id="Oen.1.1.45.6">He got up and moved heavily towards the door.</s>
+</p>
+</div>
+	<div n="2" complete="y" type="chapter">
+	  <p>...</p>
+	</div>
+	<div n="3" complete="y" type="chapter">
+	  <p>...</p>
+	</div>
+</div>
+</body>
+</text>
+</cesDoc>

@@ -1,0 +1,7 @@
+8f2f1c6dcc2fa5cdfd78d3db509f775b  preinst
+54ff9a0fab836ca1ab655de240e810eb  md5sums
+23e4d9902e13b1b5040bcf5a3315745a  postinst
+8defc32b6e9ac714332db35703956586  postrm
+231aba4655a3f8f2bb5481313f8b8eee  config
+635292a20c9b00aca16a17028e4d75bc  control
+7beb83fc273f18982f9b0789b0e9ca68  prerm

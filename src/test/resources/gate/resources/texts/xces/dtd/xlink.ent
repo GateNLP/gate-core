@@ -1,0 +1,134 @@
+
+<!-- Namespace URI for XML Links -->
+
+<!ENTITY % xmlns.xlink 'xmlns:xlink CDATA #FIXED "http://www.w3.org/XML/XLink/0.9"'>
+
+<!-- Default declaration -->
+
+<!ENTITY % xlink.simple		"IGNORE" >
+<!ENTITY % xlink.extended	"IGNORE" >
+<!ENTITY % xlink.locator	"IGNORE" >
+<!ENTITY % xlink.arc		"IGNORE" >
+
+
+<!-- Simple Links -->
+
+<![ %xlink.simple; [
+
+<!-- Explicit simple linking element -->
+
+<!ELEMENT xlink:simple ANY>
+<!ATTLIST xlink:simple
+	href		CDATA			#REQUIRED
+	role		CDATA			#IMPLIED
+	title		CDATA			#IMPLIED
+	show		(new|parsed|replace)	"replace"
+	actuate		(user|auto)		"user">
+
+<!-- arbitrary element into a simple link -->
+
+<!ENTITY % xlink.simple.a '
+	%xmlns.xlink;
+	xlink:type	(simple|extended|locator|arc)   #FIXED "simple" 
+	xlink:href	CDATA                           #REQUIRED
+	xlink:role	CDATA                           #IMPLIED
+	xlink:title	CDATA                           #IMPLIED
+	xlink:show	(new|parsed|replace)            "replace"
+	xlink:actuate	(user|auto)                     "user"'>
+
+]]>
+
+
+
+<!-- Extended Links -->
+
+<![ %xlink.extended; [
+
+<!-- Explicit extended link -->
+<!ELEMENT xlink:extended ((xlink:arc | xlink:locator)*)>
+<!ATTLIST xlink:extended
+	role		CDATA                           #IMPLIED
+	title		CDATA                           #IMPLIED
+	showdefault	(new|parsed|replace)            #IMPLIED
+	actuatedefault	(user|auto)                     #IMPLIED>
+
+<!-- Arbitrary element being used an extended link -->
+
+<!ENTITY % xlink.extended.a '
+	%xmlns.xlink;
+	xlink:type              (simple|extended|locator|arc)   #FIXED "extended"
+	xlink:role              CDATA                           #IMPLIED
+	xlink:title             CDATA                           #IMPLIED
+	xlink:showdefault       (new|parsed|replace)            #IMPLIED
+	xlink:actuatedefault    (user|auto)                     #IMPLIED'>
+
+<!ENTITY % xlink.locator	"INCLUDE" >
+<!ENTITY % xlink.arc		"INCLUDE" >
+
+]]>
+
+
+
+<!-- Locator Elements -->
+
+<![ %xlink.locator; [
+
+<!-- Explicit XLink locator element -->
+<!ELEMENT xlink:locator ANY>
+<!ATTLIST xlink:locator
+	id		ID                              #REQUIRED
+	href		CDATA                           #REQUIRED
+	role		CDATA                           #IMPLIED
+	title		CDATA                           #IMPLIED >
+
+<!-- Arbitrary element into a locator -->
+<!-- Remark: add 'id	ID	#REQUIRED' -->
+<!ENTITY % xlink.locator.a '
+	%xmlns.xlink;
+	xlink:type              (locator)                       #FIXED "locator"
+	xlink:href              CDATA                           #REQUIRED
+	xlink:role              CDATA                           #IMPLIED
+	xlink:title             CDATA                           #IMPLIED'>
+
+]]>
+
+
+<!-- Arc Elements -->
+
+<![ %xlink.arc; [
+
+<!-- Explicit Arc Element -->
+
+<!ELEMENT xlink:arc ANY>
+<!ATTLIST xlink:arc
+	from	IDREF	#REQUIRED
+	to	IDREF	#REQUIRED	>
+
+<!-- For arbitrary arc elements -->
+
+<!ENTITY % xlink.arc.a '
+	%xmlns.xlink;
+        xlink:type	(arc)			#FIXED "arc"
+        xlink:from	IDREF			#REQUIRED
+        xlink:to	IDREF			#REQUIRED
+        show		(new|parsed|replace)	"replace"
+        actuate		(user|auto)		"user"' >
+]]>
+
+
+<!-- Extended Link Groups -->
+
+<![ %xlink.groups; [
+
+<!ELEMENT xlink:group (xlink:document*)>
+<!ATTLIST xlink:group
+	steps           CDATA                   #IMPLIED >
+
+<!ELEMENT xlink:document EMPTY>
+<!ATTLIST xlink:document
+	href            CDATA                   #REQUIRED >
+
+]]>
+
+
+<!-- EOF -->

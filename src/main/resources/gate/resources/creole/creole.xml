@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<!-- $Id: creole.xml 18262 2014-08-20 17:55:21Z markagreenwood $ -->
+<!-- creole.xml directory file for GATE builtins -->
+<CREOLE-DIRECTORY>
+  <!-- Language Resources -->
+  <CREOLE>
+    <!-- Documents -->
+    <RESOURCE>
+      <CLASS>gate.corpora.DocumentImpl</CLASS>
+    </RESOURCE>
+    
+    <!-- Schemas -->
+    <RESOURCE>
+      <CLASS>gate.creole.AnnotationSchema</CLASS>
+    </RESOURCE>
+    
+    <!-- Corpora -->
+    <RESOURCE>
+      <CLASS>gate.corpora.CorpusImpl</CLASS>
+    </RESOURCE>
+    <RESOURCE>
+      <CLASS>gate.corpora.SerialCorpusImpl</CLASS>
+    </RESOURCE>
+    
+    <!-- Document Formats -->
+    <RESOURCE>
+      <CLASS>gate.corpora.XmlDocumentFormat</CLASS>
+    </RESOURCE>
+    <RESOURCE>
+      <CLASS>gate.corpora.TextualDocumentFormat</CLASS>
+    </RESOURCE>
+    <RESOURCE>
+      <CLASS>gate.corpora.NekoHtmlDocumentFormat</CLASS>
+    </RESOURCE>
+    <RESOURCE>
+      <CLASS>gate.corpora.SgmlDocumentFormat</CLASS>
+    </RESOURCE>
+    <RESOURCE>
+      <CLASS>gate.corpora.TikaFormat</CLASS>
+    </RESOURCE>
+    <RESOURCE>
+      <CLASS>gate.corpora.EmailDocumentFormat</CLASS>
+    </RESOURCE>
+    <RESOURCE>
+      <CLASS>gate.corpora.ConllDocumentFormat</CLASS>
+    </RESOURCE>
+    <RESOURCE>
+      <CLASS>gate.corpora.UimaDocumentFormat</CLASS>
+    </RESOURCE>
+    
+    <!-- Document Exporters -->
+    <RESOURCE>
+      <CLASS>gate.corpora.export.GateXMLExporter</CLASS>
+    </RESOURCE>
+     <RESOURCE>
+      <CLASS>gate.corpora.export.InlineXMLExporter</CLASS>
+    </RESOURCE>
+  </CREOLE>
+
+  <!-- creole.xml for Controllers -->
+  <CREOLE>
+    <RESOURCE>
+      <CLASS>gate.creole.SerialController</CLASS>
+    </RESOURCE>
+    <RESOURCE>
+      <CLASS>gate.creole.SerialAnalyserController</CLASS>
+    </RESOURCE>
+    <RESOURCE>
+      <CLASS>gate.creole.ConditionalSerialController</CLASS>
+    </RESOURCE>
+    <RESOURCE>
+      <CLASS>gate.creole.ConditionalSerialAnalyserController</CLASS>
+    </RESOURCE>
+    <RESOURCE>
+      <CLASS>gate.creole.RealtimeCorpusController</CLASS>
+    </RESOURCE>
+  </CREOLE>
+
+  <!-- creole.xml for Visual Resources -->
+  <CREOLE>
+    <RESOURCE>
+      <CLASS>gate.gui.FeaturesSchemaEditor</CLASS>
+    </RESOURCE>
+
+
+    <RESOURCE>
+      <CLASS>gate.gui.PRViewer</CLASS>
+    </RESOURCE>
+
+    <RESOURCE>
+      <CLASS>gate.gui.docview.DocumentEditor</CLASS>
+    </RESOURCE>
+
+    <RESOURCE>
+      <NAME>Text</NAME>
+      <CLASS>gate.gui.docview.TextualDocumentView</CLASS>
+    </RESOURCE>
+    <RESOURCE>
+      <NAME>Annotation Sets</NAME>
+      <CLASS>gate.gui.docview.AnnotationSetsView</CLASS>
+    </RESOURCE>
+    <RESOURCE>
+      <NAME>Annotations List</NAME>
+      <CLASS>gate.gui.docview.AnnotationListView</CLASS>
+    </RESOURCE>
+    <RESOURCE>
+      <NAME>Annotations Stack</NAME>
+      <CLASS>gate.gui.docview.AnnotationStackView</CLASS>
+    </RESOURCE>
+
+    <RESOURCE>
+      <NAME>Co-reference Editor</NAME>
+      <CLASS>gate.gui.docview.CorefEditor</CLASS>
+    </RESOURCE>
+
+		<!-- The default annotation editor -->
+    <RESOURCE>
+      <NAME>Annotations Editor</NAME>
+      <CLASS>gate.gui.docview.AnnotationEditor</CLASS>
+    </RESOURCE>
+
+    <RESOURCE>
+      <CLASS>gate.gui.CorpusQualityAssurance</CLASS>
+    </RESOURCE>
+
+    <RESOURCE>
+      <CLASS>gate.gui.CorpusEditor</CLASS>
+    </RESOURCE>
+
+    <RESOURCE>
+      <CLASS>gate.gui.SerialControllerEditor</CLASS>
+    </RESOURCE>
+
+    <RESOURCE>
+      <CLASS>gate.gui.SerialDatastoreViewer</CLASS>
+    </RESOURCE>
+
+    <RESOURCE>
+      <CLASS>gate.gui.LuceneDataStoreSearchGUI</CLASS>
+    </RESOURCE>
+
+    <RESOURCE>
+      <CLASS>gate.gui.ControllerMetadataViewer</CLASS>
+    </RESOURCE>
+    
+    <RESOURCE>
+      <CLASS>gate.gui.docview.RelationSetView</CLASS>
+    </RESOURCE>
+
+  </CREOLE>
+</CREOLE-DIRECTORY>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ *  gate-spring.xsd
+ *
+ *  Copyright (c) 1995-2010, The University of Sheffield. See the file
+ *  COPYRIGHT.txt in the software or at http://gate.ac.uk/gate/COPYRIGHT.txt
+ *
+ *  This file is part of GATE (see http://gate.ac.uk/), and is free
+ *  software, licenced under the GNU Library General Public License,
+ *  Version 2, June 1991 (in the distribution as file licence.html,
+ *  and also available at http://gate.ac.uk/gate/licence.html).
+ *
+ *  Ian Roberts, 22/Jan/2008
+ *
+ *  $Id: Init.java 8929 2007-07-12 16:49:55Z ian_roberts $
+ */ 
+-->
+<xsd:schema xmlns="http://gate.ac.uk/ns/spring"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:beans="http://www.springframework.org/schema/beans"
+            xmlns:tns="http://gate.ac.uk/ns/spring"
+            targetNamespace="http://gate.ac.uk/ns/spring"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+  <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+
+  <xsd:element name="init">
+    <xsd:annotation>
+      <xsd:documentation>
+        Initializes GATE, optionally loading some plugins
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="beans:identifiedType">
+          <xsd:all>
+            <xsd:element name="preload-plugins" type="beans:listOrSetType"
+                         minOccurs="0" maxOccurs="1"/>
+          </xsd:all>
+          <xsd:attribute name="gate-home" type="xsd:string" use="optional" />
+          <xsd:attribute name="plugins-home" type="xsd:string" use="optional" />
+          <xsd:attribute name="site-config-file" type="xsd:string" use="optional" />
+          <xsd:attribute name="user-config-file" type="xsd:string" use="optional" />
+          <xsd:attribute name="builtin-creole-dir" type="xsd:string" use="optional" />
+          <xsd:attribute name="run-in-sandbox" type="xsd:boolean" use="optional" />
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="url">
+    <xsd:annotation>
+      <xsd:documentation>
+        Defines a URL, given a string representing a Spring resource.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:anyURI">
+          <xsd:attribute name="id" type="xsd:ID" use="optional" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="extra-plugin">
+    <xsd:annotation>
+      <xsd:documentation>
+        Defines a URL to an extra plugin (to be loaded after Gate.init),
+        given a string representing a Spring resource.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:anyURI">
+          <xsd:attribute name="id" type="xsd:ID" use="optional" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="feature-map">
+    <xsd:annotation>
+      <xsd:documentation>
+        Defines a GATE feature map.
+      </xsd:documentation>
+    </xsd:annotation>
+  	<xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="beans:mapType">
+          <xsd:attribute name="id" type="xsd:ID" use="optional"/>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="resource">
+    <xsd:annotation>
+      <xsd:documentation>
+        Defines a GATE Resource, to be created by the GATE Factory.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="beans:identifiedType">
+          <xsd:all>
+            <xsd:element name="parameters" type="beans:mapType"
+                         minOccurs="0" maxOccurs="1" />
+            <xsd:element name="features" type="beans:mapType"
+                         minOccurs="0" maxOccurs="1" />
+            <xsd:element ref="tns:customisers"
+                         minOccurs="0" maxOccurs="1" />
+          </xsd:all>
+          <xsd:attribute name="resource-class" type="xsd:string" use="required" />
+          <xsd:attribute name="resource-name" type="xsd:string" use="optional" />
+          <xsd:attribute name="scope" type="xsd:string" use="optional" />
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="saved-application">
+    <xsd:annotation>
+      <xsd:documentation>
+        Loads a GATE saved application from a spring Resource.
+        Supports a nested customisers element giving transformations
+        to carry out on the application once it is loaded (e.g. to
+        override particular runtime parameters with values from
+        the Spring context).
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="beans:identifiedType">
+          <xsd:all>
+            <xsd:element ref="tns:customisers" 
+                         minOccurs="0" maxOccurs="1"/>
+          </xsd:all>
+          <xsd:attribute name="location" type="xsd:string" use="required" />
+          <xsd:attribute name="scope" type="xsd:string" use="optional" />
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="duplicate">
+    <xsd:annotation>
+      <xsd:documentation>
+        Defines a factory bean that returns a new duplicate copy of
+        its template resource every time it is injected or fetched.
+        Supports a nested customisers element giving transformations
+        to carry out on the duplicate once it is created (e.g. to
+        override particular runtime parameters with values from
+        the Spring context).
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="beans:identifiedType">
+          <xsd:sequence>
+            <xsd:choice minOccurs="0" maxOccurs="1">
+              <xsd:element ref="beans:ref" />
+              <xsd:element ref="beans:bean" />
+              <xsd:any namespace="##any" processContents="strict"/>
+            </xsd:choice>
+            <xsd:element ref="tns:customisers" 
+                         minOccurs="0" maxOccurs="1"/>
+          </xsd:sequence>
+          <xsd:attribute name="template-ref" type="xsd:string" use="optional" />
+          <xsd:attribute name="return-template" type="xsd:string" use="optional" />
+          <xsd:attribute name="scope" type="xsd:string" use="optional" />
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+    
+  <xsd:element name="customisers">
+    <xsd:annotation>
+      <xsd:documentation>
+        Defines either an inline list of customisers, or a reference
+        to a list defined elsewhere (typically by a top-level
+        <![CDATA[<util:list>]]> element).
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="beans:listOrSetType">
+          <xsd:attribute name="ref" type="xsd:string" use="optional" />
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="set-parameter">
+    <xsd:annotation>
+      <xsd:documentation>
+        Resource customiser that sets a runtime parameter on the resource
+        being customised.  Optionally takes a "pr-name" parameter, in which
+        case it assumes that the resource being customised is a Controller
+        and sets the parameter on the first PR with the given name in the
+        controller, rather than on the controller itself.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="beans:propertyType">
+          <xsd:attribute name="pr-name" type="xsd:string" use="optional" />
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="add-pr">
+    <xsd:annotation>
+      <xsd:documentation>
+        Resource customiser that adds a PR to a serial controller.  The PR
+        to add is defined by either a ref attribute, or a bean, ref, or
+        custom namespace sub-element.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:choice minOccurs="0" maxOccurs="1">
+        <xsd:element ref="beans:ref" />
+        <xsd:element ref="beans:bean" />
+        <xsd:any namespace="##any" processContents="strict"/>
+      </xsd:choice>
+      <xsd:attribute name="ref" type="xsd:string" use="optional" />
+      <xsd:attribute name="add-before" type="xsd:string" use="optional" />
+      <xsd:attribute name="add-after" type="xsd:string" use="optional" />
+      <xsd:attribute name="index" type="xsd:nonNegativeInteger" use="optional" />
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="pooled-proxy">
+    <xsd:annotation>
+      <xsd:documentation>
+        Decorator element that replaces a singleton bean definition with
+        a proxy backed by a pool of instances of the original bean
+        definition converted to prototype scope.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:attribute name="target-source-class" type="xsd:string" use="optional" />
+      <xsd:attribute name="proxy-target-class" type="xsd:boolean" use="optional" />
+      <xsd:attribute name="initial-size" type="xsd:string" use="optional" />
+      <!-- Allow any attributes, as they can pass through to the target source -->
+      <xsd:anyAttribute processContents="skip"/>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

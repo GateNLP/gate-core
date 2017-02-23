@@ -1,0 +1,2 @@
+# Spring schema mappings for GATE
+http\://gate.ac.uk/ns/spring.xsd=gate/util/spring/xml/gate-spring.xsd

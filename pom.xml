@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<name>GATE Core</name>
+
+	<groupId>uk.ac.gate</groupId>
+	<artifactId>gate-core</artifactId>
+	<version>8.5-SNAPSHOT</version>
+
+	<description>
+        GATE - general architecture for text engineering - is open source
+        software capable of solving almost any text processing problem.  This
+        artifact enables you to embed the core GATE Embedded with its essential
+        dependencies.  You will able to use the GATE Embedded API and load and
+        store GATE XML documents. This artifact is the perfect dependency for
+        CREOLE plugins or for applications that need to customize the GATE
+        dependencies due to conflict with their own dependencies or for lower
+        footprint.
+    </description>
+	<url>http://gate.ac.uk/</url>
+
+	<organization>
+		<name>GATE</name>
+		<url>http://gate.ac.uk</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>gate-team</id>
+			<name>GATE Team</name>
+			<email>gate-developers@lists.sourceforge.net</email>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License (LGPL), Version 3</name>
+			<url>http://www.gnu.org/licenses/lgpl.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<mailingLists>
+		<mailingList>
+			<name>GATE Users</name>
+			<post>gate-users@lists.sourceforge.net</post>
+			<archive>http://news.gmane.org/gmane.comp.ai.gate.general</archive>
+		</mailingList>
+	</mailingLists>
+
+	<scm>
+		<connection>
+            scm:svn:http://svn.code.sf.net/p/gate/code/gate/trunk</connection>
+		<developerConnection>
+            scm:svn:svn+ssh://svn.code.sf.net/p/gate/code/gate/trunk</developerConnection>
+		<url>http://sourceforge.net/p/gate/code/HEAD/tree/gate/trunk</url>
+	</scm>
+
+	<packaging>jar</packaging>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+
+	<dependencies>
+		<!-- things that we repackage under an alternative package name -->
+		<dependency>
+			<groupId>uk.ac.gate</groupId>
+			<artifactId>gate-asm</artifactId>
+			<version>5.0.3</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- aether and it's dependencies for loading CREOLE plugins via Maven -->
+		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-api</artifactId>
+			<version>1.1.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-util</artifactId>
+			<version>1.1.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-impl</artifactId>
+			<version>1.1.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-connector-basic</artifactId>
+			<version>1.1.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-transport-file</artifactId>
+			<version>1.1.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-transport-http</artifactId>
+			<version>1.1.0</version>
+			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>jcl-over-slf4j</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-transport-wagon</artifactId>
+			<version>1.1.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-aether-provider</artifactId>
+			<version>3.3.9</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.maven.wagon</groupId>
+			<artifactId>wagon-ssh</artifactId>
+			<version>2.10</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-settings-builder</artifactId>
+			<version>3.3.9</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- needed to ensure the same version across configurations -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.3</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- used for escaping strings in the Annotation Stack and elsewhere -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- used to load files into String variables as well as helping to close 
+			streams etc. -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- the logging framework GATE uses -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- used extensively throughout GATE for processing XML files -->
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>1.1.3</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- used to parse and load HTML documents into GATE -->
+		<dependency>
+			<groupId>net.sourceforge.nekohtml</groupId>
+			<artifactId>nekohtml</artifactId>
+			<version>1.9.14</version>
+			<scope>compile</scope>
+			<exclusions>
+				<!-- exclude stuff that is now part of Java -->
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- the actual Tika pased format parsers -->
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-parsers</artifactId>
+			<version>1.7</version>
+			<scope>compile</scope>
+
+			<exclusions>
+				<!-- we don't currently use the RSS/ATOM aspects of Tika so we don't 
+					need ROME -->
+				<exclusion>
+					<groupId>rome</groupId>
+					<artifactId>rome</artifactId>
+				</exclusion>
+
+				<!-- we don't currently support netCDF documents so we don't need this -->
+				<exclusion>
+					<groupId>edu.ucar</groupId>
+					<artifactId>netcdf</artifactId>
+				</exclusion>
+
+				<!-- we don't use Tika to parse HTML so we don't need it's HTML parser -->
+				<exclusion>
+					<groupId>org.ccil.cowan.tagsoup</groupId>
+					<artifactId>tagsoup</artifactId>
+				</exclusion>
+
+				<!-- we don't use Tika to parse Java classes so we don't need ASM -->
+				<exclusion>
+					<groupId>asm</groupId>
+					<artifactId>asm</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.ow2.asm</groupId>
+					<artifactId>asm-debug-all</artifactId>
+				</exclusion>
+
+				<!-- we aren't using any of the GUI aspects of tika so we don't need 
+					to be able to do syntax highlighting -->
+				<exclusion>
+					<groupId>com.uwyn</groupId>
+					<artifactId>jhighlight</artifactId>
+				</exclusion>
+
+				<!-- we exclude boilerpipe as it isn't required for Tika given the way 
+					we currently configure it, and it contains a copy of NekoHTML which causes 
+					HTML parsing in GATE to change, and the tests to break -->
+				<exclusion>
+					<groupId>de.l3s.boilerpipe</groupId>
+					<artifactId>boilerpipe</artifactId>
+				</exclusion>
+
+				<!-- we don't handle audio files so we don't need the following -->
+				<exclusion>
+					<groupId>org.gagravarr</groupId>
+					<artifactId>vorbis-java-tika</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.gagravarr</groupId>
+					<artifactId>vorbis-java-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.googlecode.mp4parser</groupId>
+					<artifactId>isoparser</artifactId>
+				</exclusion>
+
+				<!-- no idea what these are used for internally to tika but we don't 
+					seem to need them -->
+				<exclusion>
+					<groupId>com.googlecode.juniversalchardet</groupId>
+					<artifactId>juniversalchardet</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.tukaani</groupId>
+					<artifactId>xz</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.adobe.xmp</groupId>
+					<artifactId>xmpcore</artifactId>
+				</exclusion>
+
+				<!-- exclude stuff that is part of Java 6 core -->
+				<exclusion>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-stax-api_1.0_spec</artifactId>
+				</exclusion>
+
+				<!-- we are not handling Matlab files so we don't need this -->
+				<exclusion>
+					<groupId>net.sourceforge.jmatio</groupId>
+					<artifactId>jmatio</artifactId>
+				</exclusion>
+
+				<!-- we are most certainly not supporting the parsing of Outlook PST 
+					files! -->
+				<exclusion>
+					<groupId>com.pff</groupId>
+					<artifactId>java-libpst</artifactId>
+				</exclusion>
+
+				<!-- we don't support images so we don't need their metadata -->
+				<exclusion>
+					<groupId>com.drewnoakes</groupId>
+					<artifactId>metadata-extractor</artifactId>
+				</exclusion>
+
+			</exclusions>
+
+		</dependency>
+
+		<!-- We use Woodstox instead of the default Sun StAX implementation as 
+			it seems to behave better. NOTE: I don't know if this is still the case but 
+			it seems safer not to break things! -->
+		<dependency>
+			<groupId>org.codehaus.woodstox</groupId>
+			<artifactId>woodstox-core-lgpl</artifactId>
+			<version>4.2.0</version>
+			<scope>compile</scope>
+			<exclusions>
+				<!-- exclude stuff that is part of core Java -->
+				<exclusion>
+					<groupId>javax.xml.stream</groupId>
+					<artifactId>stax-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- ANT is used internally by GATE for some tasks, such as the export 
+			for GATECloud.net -->
+		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant</artifactId>
+			<version>1.9.3</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!--required for loading and saving .gapp files and by some plugins. we 
+			pull in the full XPP3 so we only need XStream's master artifact -->
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.7</version>
+			<scope>compile</scope>
+			<exclusions>
+				<!-- we will pull in the full xpp3 so we don't need these -->
+				<exclusion>
+					<groupId>xmlpull</groupId>
+					<artifactId>xmlpull</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xpp3</groupId>
+					<artifactId>xpp3_min</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- XPP3 provides the actual implementation under pinning our use of XStream -->
+		<dependency>
+			<groupId>xpp3</groupId>
+			<artifactId>xpp3</artifactId>
+			<version>1.1.4c</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- needed by CreoleAnnotationHandler at runtime -->
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+			<version>1.1.6</version>
+			<scope>runtime</scope>
+			<exclusions>
+				<!-- we don't need any of these dependencies -->
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xerces</groupId>
+					<artifactId>xercesImpl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xom</groupId>
+					<artifactId>xom</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>jdom</groupId>
+					<artifactId>jdom</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- used to parse command line options passed to the GATE GUI -->
+		<dependency>
+			<groupId>gnu.getopt</groupId>
+			<artifactId>java-getopt</artifactId>
+			<version>1.0.13</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- required for Spring Framework support in GATE -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>2.5.6.SEC01</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- required for outputting documents as JSON -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.8.7</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- required for the new controller metadata viewer -->
+		<dependency>
+			<groupId>org.xhtmlrenderer</groupId>
+			<artifactId>flying-saucer-core</artifactId>
+			<version>9.0.4</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Used for comparing XML files during some of the GATE tests -->
+		<dependency>
+			<groupId>xmlunit</groupId>
+			<artifactId>xmlunit</artifactId>
+			<version>1.5</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Used for date parsing and formatting -->
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.9.2</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Used for testing GATE -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<followSymLinks>false</followSymLinks>
+					<filesets>
+						<fileset>
+							<directory>${basedir}/lib</directory>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.6.201602180812</version>
+				<executions>
+					<execution>
+						<id>default-prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.basedir}/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+
+		<resources>
+			<!-- this adds the version number into the right file in the jar -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>gate/resources/version.txt</include>
+				</includes>
+			</resource>
+
+			<!-- copy all the other resources without altering them so we don't accidentally 
+				corrupt any binary formats -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>gate/resources/version.txt</exclude>
+				</excludes>
+			</resource>
+		</resources>
+	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.19.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.4</version>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>3.0.3</version>
+				<configuration>
+					<findbugsXmlOutput>true</findbugsXmlOutput>
+					<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+					<excludeFilterFile>findbugs-excluded.xml</excludeFilterFile>
+					<xmlOutput>true</xmlOutput>
+					<effort>Max</effort>
+					<threshold>Low</threshold>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.6.201602180812</version>
+				<configuration>
+					<excludes>
+						<!-- this excludes known GUI code from the code coverage results as 
+							we know we aren't testing them so will likely have a 0% coverage -->
+						<exclude>**/gui/**/*</exclude>
+						<exclude>**/swing/**/*</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+					<systemPropertyVariables>
+						<jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<!-- in theory we should only need one of these and it would be nice 
+						to get rid of them alltogether but that's for another day -->
+					<failOnError>false</failOnError>
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>gate.snapshots</id>
+			<name>GATE Snapshots Repository</name>
+			<url>http://repo.gate.ac.uk/content/repositories/snapshots</url>
+			<layout>default</layout>
+		</snapshotRepository>
+	</distributionManagement>
+
+</project>

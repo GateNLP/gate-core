@@ -1,0 +1,24 @@
+<CREOLE-DIRECTORY>
+  <RESOURCE>
+    <CLASS>gate.creole.metadata.test.TestUnannotatedProcessingResource</CLASS>
+  </RESOURCE>
+
+  <CREOLE>
+    <RESOURCE>
+      <CLASS>gate.creole.metadata.test.TestAnnotatedProcessingResource</CLASS>
+    </RESOURCE>
+
+    <RESOURCE>
+      <CLASS>gate.creole.metadata.test.TestSuperclassProcessingResource</CLASS>
+      <NAME>Name from XML</NAME>
+    </RESOURCE>
+
+    <RESOURCE>
+      <CLASS>gate.creole.metadata.test.TestSubclassProcessingResource</CLASS>
+    </RESOURCE>
+
+    <RESOURCE>
+      <CLASS>gate.creole.metadata.test.TestFieldAnnotatedProcessingResource</CLASS>
+    </RESOURCE>
+  </CREOLE>
+</CREOLE-DIRECTORY>

@@ -1,0 +1,17 @@
+<!ELEMENT GateDocument (GateDocumentFeatures, TextWithNodes, (AnnotationSet+))>
+<!ELEMENT GateDocumentFeatures (Feature+)>
+<!ELEMENT Feature (Name, Value)>
+<!ELEMENT Name (#PCDATA)>
+<!ELEMENT Value (#PCDATA)>
+<!ELEMENT TextWithNodes (#PCDATA | Node)*>
+<!ELEMENT AnnotationSet (Annotation*)>
+<!ATTLIST AnnotationSet
+	Name CDATA #IMPLIED>
+<!ELEMENT Annotation (Feature*)>
+<!ATTLIST Annotation
+	Type CDATA #REQUIRED
+	StartNode CDATA #REQUIRED
+	EndNode CDATA #REQUIRED>
+<!ELEMENT Node EMPTY>
+<!ATTLIST Node
+	id CDATA #REQUIRED>

@@ -1,0 +1,422 @@
+<!--                                                          -->
+<!--                                                          -->
+<!--                Corpus Encoding Standard                  -->
+<!--                                                          -->
+<!--                          CES                             -->
+<!--                                                          -->
+<!--            Encoding conventions for level 1              -->
+<!--                                                          -->
+<!--                                                          -->
+<!--                                                          -->
+<!--
+     $Date: 2000-10-16 12:51:53 +0100 (Mon, 16 Oct 2000) $
+     $Revision: 598 $
+                                                              -->
+<!--                                                          -->
+<!--                   ENTITY DECLARATIONS                    -->
+<!--                                                          -->
+
+<!--                  Global attributes                       -->
+
+<!ENTITY % a.global '
+           id                 ID                  #IMPLIED
+           n                  CDATA               #IMPLIED
+           xml:lang           CDATA               #IMPLIED
+           lang               IDREF               #IMPLIED'     >
+
+<!ENTITY % a.text '%a.global;
+           rend               CDATA               #IMPLIED
+           wsd                CDATA               #IMPLIED'     >
+
+<!--      Elements that can appear between paragraphs         -->
+
+<!ENTITY % m.inter ' bibl | quote | list |
+                    poem | note | caption | figure | table '    >
+
+
+<!--                Sub-paragraph elements                    -->
+
+<!ENTITY % m.token  'abbr | date | num |measure |
+                     name | term | time |'                      >
+
+<!ENTITY % m.phrase '%m.token; foreign | mentioned |
+                     distinct | title | hi | list |
+                     corr | gap | reg | ptr | ref'              >
+
+<!ENTITY % m.phrase.hi '%m.token; foreign | mentioned |
+                     distinct | title | list |
+                     corr | gap | reg | ptr | ref'              >
+
+<!ENTITY % m.phrase.foreign '%m.token; mentioned |
+                     distinct | title | hi | list |
+                     corr | gap | reg | ptr | ref'              >
+
+<!ENTITY % m.phrase.distinct '%m.token; foreign | mentioned |
+                     title | hi | list |
+                     corr | gap | reg | ptr | ref'              >
+
+<!ENTITY % m.phrase.mentioned '%m.token; foreign |
+                     distinct | title | hi | list |
+                     corr | gap | reg | ptr | ref'              >
+
+<!ENTITY % m.phrase.title '%m.token; foreign | mentioned |
+                     distinct | hi | list |
+                     corr | gap | reg | ptr | ref'              >
+
+<!--              Content model declarations                  -->
+
+<!ENTITY % base.seq   '#PCDATA | num | abbr'                 >
+
+<!ENTITY % phrase.seq '#PCDATA | %m.phrase;'                 >
+
+<!ENTITY % phrase.hi.seq '#PCDATA | %m.phrase.hi;'                 >
+
+<!ENTITY % phrase.foreign.seq '#PCDATA | %m.phrase.foreign;'                 >
+
+<!ENTITY % phrase.distinct.seq '#PCDATA | %m.phrase.distinct;'                 >
+
+<!ENTITY % phrase.mentioned.seq '#PCDATA | %m.phrase.mentioned;'                 >
+
+<!ENTITY % phrase.title.seq '#PCDATA | %m.phrase.title;'                 >
+
+<!ENTITY % par.seq    '(%m.inter; | p | sp )*'                   >
+
+<!ENTITY % subpar.seq '%phrase.seq; | s | q'               >
+
+
+<!--                                                          -->
+<!--                  ELEMENT DECLARATIONS                    -->
+<!--                                                          -->
+
+
+<!--                  HIGH-LEVEL COMPONENTS                   -->
+
+
+<!ELEMENT cesCorpus     (cesHeader,(cesDoc+ | cesCorpus+)) >
+<!ATTLIST cesCorpus          %a.global;
+          TEIform            CDATA               'teiCorpus.2'  >
+
+
+<!ELEMENT cesDoc        (cesHeader, text)                  >
+<!ATTLIST cesDoc             %a.global;
+          type               CDATA               "text"
+          version            CDATA               #REQUIRED
+          TEIform            CDATA               'TEI.2'        >
+
+<!ENTITY % xces.header SYSTEM 'xheader.elt'                       >
+%xces.header;
+
+
+<!--                     WRITTEN TEXTS                        -->
+
+<!ELEMENT text          (body | group)                     >
+<!ATTLIST text               %a.global;
+          complete           (y |n )             "y"
+          decls              IDREFS              #IMPLIED       >
+
+
+<!ELEMENT body          (%par.seq;, div*)                  >
+<!ATTLIST body               %a.text;
+          decls              IDREFS              #IMPLIED       >
+
+
+<!ELEMENT group         (%par.seq;, body+)                 >
+<!ATTLIST group              %a.text;
+          decls              IDREFS              #IMPLIED       >
+
+
+<!ELEMENT div           ((opener | head | byline)*,
+                             (((p | sp | %m.inter;)+, div*)
+                             | div+), (closer | byline)*  )     >
+<!ATTLIST div                %a.text;
+          complete           (y | n)             "y"
+          type               CDATA               #REQUIRED
+          decls              IDREFS              #IMPLIED       >
+
+
+<!--                     Opening elements                     -->
+
+<!ELEMENT opener        (%phrase.seq; | dateline | keywords)*	>
+<!ATTLIST opener             %a.text;                           >
+
+<!ELEMENT head          (%phrase.seq;)*                       >
+<!ATTLIST head               %a.text;
+          type               ( byline | display |
+                             attached | unspec )    "unspec"      >
+
+<!--             Keyword lists, bylines, datelines            -->
+
+<!ELEMENT keywords      (term+ | list)                     >
+<!ATTLIST keywords           %a.text;
+          scheme             IDREF               #IMPLIED       >
+
+
+<!ELEMENT byline        (%phrase.seq; | docAuthor)*        >
+<!ATTLIST byline             %a.text;                           >
+
+<!ELEMENT docAuthor     (%base.seq;)*                       >
+<!ATTLIST docAuthor          %a.text;                           >
+
+<!ELEMENT dateline      (%base.seq; | date | time | name | address)*                       >
+<!ATTLIST dateline           %a.text;                           >
+
+<!ELEMENT address       (%base.seq;)*                       >
+<!ATTLIST address            %a.text;                           >
+
+<!--                    Closing element                       -->
+
+<!ELEMENT closer        (%phrase.seq; | dateline | keywords)*                     >
+<!ATTLIST closer             %a.text;                           >
+
+
+<!--      PARAGRAPH-LEVEL ELEMENTS  THE CLASS M.INTER         -->
+
+<!--                     Written paragraphs                   -->
+
+<!ELEMENT p             (%subpar.seq;)*                     >
+
+<!ATTLIST p                  %a.text;                           >
+
+
+<!--                       Quotations                         -->
+
+<!ELEMENT quote         (%subpar.seq; | p)*              >
+<!ATTLIST quote              %a.text;
+          type               CDATA               #IMPLIED       >
+
+
+<!--                          Lists                           -->
+
+<!ELEMENT list          (head?, (item+ | (label, item)+))  >
+<!ATTLIST list               %a.text;                           >
+
+<!ELEMENT item          (%subpar.seq; | p)*              >
+<!ATTLIST item               %a.text;                           >
+
+<!ELEMENT label         (%phrase.seq;)*                       >
+<!ATTLIST label              %a.text;                           >
+
+
+<!--                       Annotations                        -->
+
+<!ELEMENT note          (%subpar.seq; | p)*              >
+<!ATTLIST note               %a.text;
+          place              (side | foot | end | unspec)
+                                                 "unspec"         >
+
+
+<!ELEMENT bibl          (%phrase.seq; | author)*           >
+<!ATTLIST bibl               %a.text;
+                             %a.declarable;                     >
+
+<!ELEMENT author        (%base.seq;)*                       >
+<!ATTLIST author             %a.text;                           >
+
+
+<!--                         Poems                            -->
+
+<!ELEMENT poem          (head?, (lg | l )+ )               >
+<!ATTLIST poem               %a.text;                           >
+
+<!ELEMENT lg            (l | lg)+                          >
+<!ATTLIST lg                 %a.text;
+          type               CDATA               #IMPLIED
+          part               (y | n | u)         "u"              >
+
+<!ELEMENT l             (%phrase.seq;)*                       >
+<!ATTLIST l                  %a.text;
+          part               (y | n | u)         "u"              >
+
+
+<!--                         Figures                          -->
+
+<!ELEMENT figure        (head?, p*, figDesc?, text?)       >
+<!ATTLIST figure             %a.text;
+          entity             ENTITY              #IMPLIED       >
+
+<!ELEMENT figDesc       (%phrase.seq;)*                       >
+<!ATTLIST figDesc            %a.text;                           >
+
+
+<!--                         Tables                           -->
+
+<!ELEMENT table         (head?, row+)                      >
+<!ATTLIST table              %a.text;
+          rows               NMTOKEN             #IMPLIED
+          cols               NMTOKEN             #IMPLIED       >
+
+<!ELEMENT row           (cell | table)+                    >
+<!ATTLIST row                %a.text;
+          role               CDATA               "data"           >
+
+<!ELEMENT cell          (%phrase.seq;)*                      >
+<!ATTLIST cell               %a.text;
+          role               CDATA               "data"
+          rows               NMTOKEN             "1"
+          cols               NMTOKEN             "1"              >
+
+
+<!--                         Captions                         -->
+
+<!ELEMENT caption       (%phrase.seq;)*                       >
+<!ATTLIST caption            %a.text;                           >
+
+
+
+<!--      Transcriptions of dialogues, speeches, debates,     -->
+<!--               interviews, etc., and drama                -->
+
+<!ELEMENT sp            (speaker | p | stage)+>
+<!ATTLIST sp                 %a.text;
+          who                NMTOKEN             #IMPLIED       >
+
+<!ELEMENT speaker       (%base.seq;)*                       >
+<!ATTLIST speaker            %a.text;                           >
+
+<!ELEMENT stage         (%base.seq;)*                       >
+<!ATTLIST stage              %a.text;
+          type               CDATA               #IMPLIED       >
+
+
+
+<!--      SENTENCES, QUOTED DIALOGUE WITHIN PARAGRAPHS        -->
+
+<!ELEMENT s             (%subpar.seq;)*                     >
+<!ATTLIST s                  %a.text;
+          next               IDREF               #IMPLIED
+          prev               IDREF               #IMPLIED
+          type               CDATA               #IMPLIED
+          broken             (yes | no)          "no"             >
+
+
+<!ELEMENT q             (%subpar.seq;)*                     >
+<!ATTLIST q                  %a.text;
+          next               IDREF               #IMPLIED
+          prev               IDREF               #IMPLIED
+          type               CDATA               #IMPLIED
+          direct             (y | n | unspecified)
+                                                 "unspecified"
+          who                CDATA               #IMPLIED
+          broken             (yes | no)          "no"             >
+
+
+
+<!--       PHRASE-LEVEL ELEMENTS  THE CLASS M.PHRASE          -->
+
+
+<!--                    Editorial Changes                     -->
+
+<!ELEMENT gap           EMPTY                              >
+<!ATTLIST gap                %a.text;
+          desc               CDATA               #IMPLIED
+          reason             CDATA               #IMPLIED
+          resp               CDATA               #IMPLIED
+          cert               CDATA               #IMPLIED       >
+
+<!ELEMENT reg           (%phrase.seq;)*                     >
+<!ATTLIST reg                %a.text;
+          orig               CDATA               #IMPLIED
+          resp               CDATA               #IMPLIED
+          cert               CDATA               #IMPLIED       >
+
+<!ELEMENT corr          (%phrase.seq;)*                     >
+<!ATTLIST corr               %a.text;
+          sic                CDATA               #IMPLIED
+          resp               CDATA               #IMPLIED
+          cert               CDATA               #IMPLIED       >
+
+
+<!--                     Highlighted text                     -->
+
+<!ELEMENT hi            (%phrase.hi.seq;)*>
+<!ATTLIST hi                 %a.text;                           >
+
+
+
+<!--               Other Phrase-level Elements                -->
+
+<!ELEMENT date          (%base.seq;)*                       >
+<!ATTLIST date               %a.text;
+          ISO8601            CDATA               #IMPLIED       >
+
+<!ELEMENT foreign       (%phrase.foreign.seq;)*			>
+<!ATTLIST foreign            %a.text;                           >
+
+<!ELEMENT distinct      (%phrase.distinct.seq;)*		>
+<!ATTLIST distinct           %a.text;
+          type               CDATA               #IMPLIED       >
+
+<!ELEMENT mentioned     (%phrase.mentioned.seq;)*		>
+<!ATTLIST mentioned           %a.text;                          >
+
+<!ELEMENT measure       (%base.seq;)*                       >
+<!ATTLIST measure       %a.text;
+          type          (weight | length | count | area | volume | currency)   #IMPLIED
+          value              CDATA               #IMPLIED       >
+
+<!ELEMENT name          (%base.seq;)*                       >
+<!ATTLIST name               %a.text;
+          type               ( person | place | org )
+                                                 #IMPLIED       >
+
+<!ELEMENT term          (%base.seq;)*                       >
+<!ATTLIST term               %a.text;
+          type               CDATA               #IMPLIED       >
+
+<!ELEMENT time          (%base.seq;)*                       >
+<!ATTLIST time               %a.text;
+          ISO8601            CDATA               #IMPLIED
+          type               (am | pm | 24hour | descriptive)
+                                                 #IMPLIED       >
+
+<!ELEMENT title         (%phrase.title.seq;)*			>
+<!ATTLIST title              %a.text;
+          type               CDATA               #IMPLIED       >
+
+<!ELEMENT abbr          (#PCDATA)                          >
+<!ATTLIST abbr               %a.text;
+          expan              CDATA               #IMPLIED
+          resp               IDREF               #IMPLIED
+          cert               CDATA               #IMPLIED
+          type               CDATA               #IMPLIED       >
+
+<!ELEMENT num           (#PCDATA)                          >
+<!ATTLIST num                %a.text;
+          type               CDATA               #IMPLIED
+          value              CDATA               #IMPLIED       >
+
+
+
+
+
+
+<!--              SEGMENTATION, LINKING, ALIGNMENT            -->
+
+<!--                 Simple cross references                  -->
+
+<!ELEMENT ptr           EMPTY                              >
+<!ATTLIST ptr                %a.text;
+          corresp            IDREFS              #IMPLIED
+          next               IDREF               #IMPLIED
+          prev               IDREF               #IMPLIED
+          type               CDATA               #IMPLIED
+          resp               CDATA               #IMPLIED
+          crdate             CDATA               #IMPLIED
+          targType           NMTOKENS            #IMPLIED
+          targOrder          (y | n | u)         "u"
+          evaluate           (all | one | none)  #IMPLIED
+          target             IDREFS              #REQUIRED      >
+
+<!ELEMENT ref           (%phrase.seq;)*                     >
+<!ATTLIST ref                %a.text;
+          corresp            IDREFS              #IMPLIED
+          next               IDREF               #IMPLIED
+          prev               IDREF               #IMPLIED
+          type               CDATA               #IMPLIED
+          resp               CDATA               #IMPLIED
+          crdate             CDATA               #IMPLIED
+          targType           NMTOKENS            #IMPLIED
+          targOrder          (y | n | u)         "u"
+          evaluate           (all | one | none)  #IMPLIED
+          target             IDREFS              #IMPLIED       >
+

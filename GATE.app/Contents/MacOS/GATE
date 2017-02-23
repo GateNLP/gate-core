@@ -1,0 +1,37 @@
+#!/bin/sh
+#  Main.java
+#
+#  Copyright (c) 1995-2012, The University of Sheffield. See the file
+#  COPYRIGHT.txt in the software or at http://gate.ac.uk/gate/COPYRIGHT.txt
+#
+#  This file is part of GATE (see http://gate.ac.uk/), and is free
+#  software, licenced under the GNU Library General Public License,
+#  Version 2, June 1991 (in the distribution as file licence.html,
+#  and also available at http://gate.ac.uk/gate/licence.html).
+#
+#  Hamish Cunningham, 1/Nov/00
+#
+#  $Id: Main.java 15843 2012-05-25 09:50:41Z markagreenwood $
+
+PRG=$0
+
+while [ -h "$PRG" ]; do
+    ls=`ls -ld "$PRG"`
+    link=`expr "$ls" : '^.*-> \(.*\)$' 2>/dev/null`
+    if expr "$link" : '^/' 2> /dev/null >/dev/null; then
+        PRG="$link"
+    else
+        PRG="`dirname "$PRG"`/$link"
+    fi
+done
+
+progdir=`dirname "$PRG"`
+
+exec "$progdir/../../../bin/gate.sh" \
+      -Dapple.laf.useScreenMenuBar=true \
+      -Dcom.apple.mrj.application.growbox.intrudes=true \
+      -Dapple.awt.antialiasing=true \
+      -Dcom.apple.mrj.application.live-resize=true \
+      -Dsun.java2d.opengl=true \
+      -Xdock:name=GATE \
+      -Xdock:icon=$progdir/../Resources/gate-icon.icns

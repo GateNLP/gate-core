@@ -1,0 +1,30 @@
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir></chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.sun.com/javase/downloads/</downloadUrl>
+  <supportUrl>http://gate.ac.uk</supportUrl>
+  <customProcName>false</customProcName>
+  <stayAlive>false</stayAlive>
+  <icon>gate-installer.ico</icon>
+  <jre>
+    <minVersion>1.6.0</minVersion>
+    <dontUsePrivateJres>false</dontUsePrivateJres>
+    <initialHeapSize>0</initialHeapSize>
+    <maxHeapSize>0</maxHeapSize>
+  </jre>
+  <splash>
+    <file>splash.bmp</file>
+    <waitForWindow>true</waitForWindow>
+    <timeout>60</timeout>
+  </splash>
+  <messages>
+    <startupErr>An error occurred while starting the installer.</startupErr>
+    <bundledJreErr>This application was configured to use a bundled Java Runtime Environment but the runtime is missing or corrupted.</bundledJreErr>
+    <jreVersionErr>GATE requires a Java Runtime Environment, and works best with a JDK.  Click OK to download one - minimum version</jreVersionErr>
+    <launcherErr>The registry refers to a nonexistent Java Runtime Environment installation or the runtime is corrupted.  Please ensure you have a valid installation of Java 5.0 or later.</launcherErr>
+  </messages>
+</launch4jConfig>

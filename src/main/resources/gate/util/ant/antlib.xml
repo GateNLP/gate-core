@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Antlib defining the tasks and types provided by GATE -->
+<antlib>
+  <!-- Expand creole.xml (used to regenerate the plugins.html page) -->
+  <taskdef name="expandcreoles" classname="gate.util.ant.ExpandCreoleXmls" />
+  
+  <!-- Expand CREOLE plugins to include local copies of Ivy dependencies -->
+  <taskdef name="expandivy" classname="gate.util.ant.ExpandIvy" />
+  
+  <!-- sync a folder of jars with an Eclipse .classpath file -->
+  <taskdef name="synceclipse" classname="gate.util.ant.SyncEclipse" />
+
+  <!-- GAPP file packager -->
+  <taskdef name="packagegapp" classname="gate.util.ant.packager.PackageGappTask" />
+  <typedef name="gazetteerlists" classname="gate.util.ant.packager.GazetteerLists" />
+</antlib>

@@ -1,0 +1,66 @@
+<project name="GATE-launcher" basedir="." default="jar" >
+
+	<!-- Prevent Ant from warning about includeantruntime not being set -->
+	<property name="build.sysclasspath" value="ignore" />
+
+  <!-- If gate.home is not set from build.properties or the 
+       environment variable GATE_HOME, assume that this
+       plugin is in GATE Developer's plugin directory -->
+  <property name="src.dir" location="src" />
+  <property name="classes.dir" location="classes" />
+  <property name="lib.dir" location="lib" />
+  <property name="jar.location" location="../../bin/gateLauncher.jar" />
+
+  <!-- The libraries -->
+   <fileset id="libs" dir="${lib.dir}">
+     <include name="*.jar" />
+   </fileset>
+
+   <!-- The build CLASSPATH -->
+   <path id="launcher.build.class.path">
+     <fileset refid="libs" />
+   </path>
+  
+  <!-- create build directory structure -->
+  <target name="prepare">
+    <mkdir dir="${classes.dir}" />
+  </target>
+
+  <!-- compile the source -->
+  <target name="compile" depends="prepare">
+    <javac srcdir="${src.dir}"
+           destdir="${classes.dir}"
+           classpathref="launcher.build.class.path"
+           debug="true"
+           debuglevel="lines,source"
+           encoding="UTF-8"
+           source="1.6" 
+           target="1.6" />
+  </target>
+
+  <!-- create the JAR file -->
+  <target name="jar" depends="compile" >
+    <jar destfile="${jar.location}"
+         update="false">
+    	<manifest>
+    		<attribute name="Main-Class" value="gate.Launcher" />
+  	  </manifest>
+      <fileset dir="${classes.dir}" />
+      <archives>
+        <zips>
+          <fileset dir="${lib.dir}" includes="*.jar" />
+        </zips>
+      </archives>  
+    </jar>
+  </target>
+
+  <!-- remove the generated .class files -->
+  <target name="clean.classes" >
+    <delete dir="${classes.dir}" />
+  </target>
+
+  <!-- Clean up - remove .class and .jar files -->
+  <target name="clean" depends="clean.classes" >
+    <delete file="${jar.location}" />
+  </target>
+</project>

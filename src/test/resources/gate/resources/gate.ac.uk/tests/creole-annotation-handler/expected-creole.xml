@@ -1,0 +1,48 @@
+<CREOLE-DIRECTORY>
+  <RESOURCE>
+    <CLASS>gate.creole.metadata.test.TestUnannotatedProcessingResource</CLASS>
+  </RESOURCE>
+
+  <CREOLE>
+    <RESOURCE>
+      <CLASS>gate.creole.metadata.test.TestAnnotatedProcessingResource</CLASS>
+      <NAME>TestAnnotatedProcessingResource</NAME>
+      <COMMENT>A processing resource that takes document and corpus parameters</COMMENT>
+      <PARAMETER NAME="document" RUNTIME="true" COMMENT="The document to process">gate.Document</PARAMETER>
+      <PARAMETER NAME="corpus" RUNTIME="true" OPTIONAL="true" COMMENT="The corpus containing the document to process">gate.Corpus</PARAMETER>
+    </RESOURCE>
+
+    <RESOURCE>
+      <CLASS>gate.creole.metadata.test.TestSuperclassProcessingResource</CLASS>
+      <NAME>Name from XML</NAME>
+      <COMMENT>Superclass comment</COMMENT>
+      <PRIVATE/>
+      <PARAMETER NAME="document" RUNTIME="true" COMMENT="The document to process">gate.Document</PARAMETER>
+      <PARAMETER NAME="corpus" RUNTIME="true" OPTIONAL="true" COMMENT="The corpus containing the document to process">gate.Corpus</PARAMETER>
+      <PARAMETER NAME="firstParameter" RUNTIME="true" COMMENT="First parameter comment">java.net.URL</PARAMETER>
+      <PARAMETER NAME="secondParameter" OPTIONAL="true" DEFAULT="default" ITEM_CLASS_NAME="java.lang.String" COMMENT="Second parameter">java.util.List</PARAMETER>
+      <PARAMETER NAME="thirdParameter" COMMENT="Should be hidden in subclass">java.lang.Integer</PARAMETER>
+    </RESOURCE>
+
+    <RESOURCE>
+      <CLASS>gate.creole.metadata.test.TestSubclassProcessingResource</CLASS>
+      <NAME>Subclass PR</NAME>
+      <COMMENT>Superclass comment</COMMENT>
+      <PARAMETER NAME="document" RUNTIME="true" COMMENT="The document to process">gate.Document</PARAMETER>
+      <PARAMETER NAME="firstParameter" RUNTIME="false" DEFAULT="default/value" COMMENT="First parameter comment">java.net.URL</PARAMETER>
+      <PARAMETER NAME="secondParameter" OPTIONAL="true" DEFAULT="default" ITEM_CLASS_NAME="java.lang.String" COMMENT="Second parameter">java.util.List</PARAMETER>
+      <PARAMETER NAME="fourthParameter">java.lang.Boolean</PARAMETER>
+    </RESOURCE>
+
+    <RESOURCE>
+      <CLASS>gate.creole.metadata.test.TestFieldAnnotatedProcessingResource</CLASS>
+      <NAME>Name from Annotation</NAME>
+      <COMMENT>Field annotation comment</COMMENT>
+      <PARAMETER NAME="corpus" RUNTIME="true" OPTIONAL="true" COMMENT="The corpus containing the document to process">gate.Corpus</PARAMETER>
+
+      <PARAMETER NAME="document" RUNTIME="true" COMMENT="The document to process">gate.Document</PARAMETER>
+      <PARAMETER NAME="firstParameter" RUNTIME="true" COMMENT="First parameter comment">java.net.URL</PARAMETER>
+      <PARAMETER NAME="secondParameter" OPTIONAL="true" DEFAULT="default" ITEM_CLASS_NAME="java.lang.String" COMMENT="Second parameter">java.util.List</PARAMETER>
+    </RESOURCE>
+  </CREOLE>
+</CREOLE-DIRECTORY>

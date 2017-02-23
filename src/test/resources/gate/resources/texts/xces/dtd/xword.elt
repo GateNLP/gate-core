@@ -1,0 +1,46 @@
+<!--                                                          -->
+<!--                                                          -->
+<!--               THE CES LINGUISTIC SEGMENTS                -->
+<!--                                                          -->
+<!--        This is the entity word.elt used in the           -->
+<!--            Corpus Encoding Standard DTDs.                -->
+<!--                                                          -->
+<!--      It is referred to in  Part 4.5 as word.elt.         -->
+<!--                                                          -->
+<!--                                                          -->
+<!--  
+      $Date: 2000-06-13 16:33:08 +0100 (Tue, 13 Jun 2000) $
+      $Revision: 345 $
+                                                              -->
+<!--                                                          -->
+
+
+<!ENTITY % m.token  'phr | w | m | c | cl '                     >
+
+<!--                  Global attributes                       -->
+<!ENTITY % a.ana  '
+          id                 ID                  #IMPLIED
+          n                  CDATA               #IMPLIED
+          lang               IDREF               #IMPLIED
+          type               CDATA               #IMPLIED
+          wsd                CDATA               #IMPLIED'      >
+
+<!ELEMENT cl           (%phrase.seq;)                     >
+<!ATTLIST cl           %a.ana;                            >
+
+
+<!ELEMENT phr          (%phrase.seq;)                     >
+<!ATTLIST phr          %a.ana;                            >
+
+
+<!ELEMENT w            (#PCDATA | w | m | c )*            >
+<!ATTLIST w            %a.ana;
+          ctag         CDATA               #IMPLIED
+          base         CDATA               #IMPLIED       >
+
+<!ELEMENT m            (#PCDATA | c)*                     >
+<!ATTLIST m            %a.ana;                            >
+
+<!ELEMENT c            (#PCDATA)                          >
+<!ATTLIST c            %a.ana;                            >
+

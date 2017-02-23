@@ -1,0 +1,85 @@
+<!--                                                          -->
+<!--                                                          -->
+<!--                Corpus Encoding Standard                  -->
+<!--                                                          -->
+<!--                          CES                             -->
+<!--                                                          -->
+<!--          Encoding conventions for aligned data           -->
+<!--                                                          -->
+<!--                                                          -->
+<!--
+     $Date: 2000-06-13 16:33:08 +0100 (Tue, 13 Jun 2000) $
+     $Revision: 345 $ 
+                                                              -->
+<!--                                                          -->
+<!--                  Global attributes                       -->
+
+
+<!ENTITY % a.global '
+           id                 ID                  #IMPLIED
+           n                  CDATA               #IMPLIED
+           xml:lang           CDATA               #IMPLIED
+           lang               IDREF               #IMPLIED'     >
+
+<!ENTITY % a.align '%a.global
+          wsd                CDATA               #IMPLIED'      >
+ 
+
+<!ELEMENT cesAlign      (cesHeader?, linkList)             >
+<!ATTLIST cesAlign           %a.align;                         
+          type               (par | sent | tok)  #IMPLIED       
+          fromDoc            CDATA               #IMPLIED
+          toDoc              CDATA               #IMPLIED
+          version            CDATA               #REQUIRED      >
+
+<!ENTITY % xces.header SYSTEM 'xheader.elt'                       >
+%xces.header;
+
+<!ELEMENT linkList     (linkGrp+)                          >
+<!ATTLIST linkList          %a.align;                           >
+
+<!ELEMENT linkGrp      (link | xptr | ptr)+             >
+<!ATTLIST linkGrp              %a.align;                            
+          type               CDATA               #IMPLIED
+          fromDoc            CDATA               #IMPLIED
+          toDoc              CDATA               #IMPLIED
+          fromLoc            CDATA               #IMPLIED
+          toLoc              CDATA               #IMPLIED    
+          targType           NMTOKENS            #IMPLIED
+          domains            CDATA               #IMPLIED       >
+
+
+
+<!ELEMENT link          EMPTY                              >
+<!ATTLIST link               %a.align;                            
+          targType           NMTOKENS            #IMPLIED
+          targOrder          (y | n | u)         "u"
+          evaluate           (all | one | none)  #IMPLIED
+          fromDoc            CDATA               #IMPLIED
+          toDoc              CDATA               #IMPLIED
+          fromLoc            CDATA               #IMPLIED
+          toLoc              CDATA               #IMPLIED       
+          targets            IDREFS              #IMPLIED       
+          xtargets           CDATA               #IMPLIED
+          certainty          CDATA               #IMPLIED       >
+
+
+<!ELEMENT xptr          EMPTY                              >
+<!ATTLIST xptr               
+          id                 ID                  #IMPLIED
+          n                  CDATA               #IMPLIED
+          lang               CDATA               #IMPLIED
+          wsd                CDATA               #IMPLIED
+          targType           NMTOKENS            #IMPLIED
+          doc                CDATA               #IMPLIED
+          from               CDATA               #IMPLIED
+          to                 CDATA               #IMPLIED       >
+
+<!ELEMENT ptr           EMPTY                              >
+<!ATTLIST ptr                %a.align;
+          type               CDATA               #IMPLIED
+          targType           NMTOKENS            #IMPLIED
+          targOrder          (y | n | u)         "u"
+          evaluate           (all | one | none)  #IMPLIED
+          targets            IDREFS              #REQUIRED      >
+

@@ -1,0 +1,20 @@
+// RhsError2.jape
+// Hamish, 16/11/1
+// $Id: RhsError2.jape 2836 2001-11-16 10:02:31Z hamish $
+
+/* NOTE: THIS GRAMMAR WILL THROW A COMPILER ERROR
+         FROM THE RHS DURING COMPILATION (used by TestJape)
+ */
+
+Phase:	first
+Options: control = appelt
+
+Rule: EmailAddress
+(
+  {Token.orth == upperInitial}
+):aToken -->
+:aToken.Name = { thing = "otherthing" },
+{
+  // Out.prln("ahooba hooba");
+  String nullString = 400;
+}

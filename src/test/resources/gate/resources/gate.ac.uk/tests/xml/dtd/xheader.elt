@@ -1,0 +1,364 @@
+<!--                                                          -->
+<!--                                                          -->
+<!--                      THE CES HEADER                      -->
+<!--                                                          -->
+<!--        This is the entity ces.header used in the         -->
+<!--            Corpus Encoding Standard DTDs.                -->
+<!--                                                          -->
+<!--      It is referred to in those DTDs as header.elt.      -->
+<!--                                                          -->
+<!--                                                          -->
+<!--  
+      $Date: 2000-10-16 12:51:53 +0100 (Mon, 16 Oct 2000) $
+      $Revision: 598 $
+                                                              -->
+<!--                                                          -->
+
+<!ENTITY % a.header	'%a.global;'				>
+
+<!ENTITY % a.declarable '
+	Default		(y | n)			"n"'		>
+
+<!ELEMENT cesHeader	(fileDesc, encodingDesc?,
+			 profileDesc?, revisionDesc?)		>
+<!ATTLIST cesHeader		%a.header;
+	type		CDATA               "text"
+	creator		CDATA               #IMPLIED
+	status		(new | update)      "new"
+	date.created	CDATA               #IMPLIED
+	date.updated	CDATA               #IMPLIED
+	version		CDATA               #REQUIRED      
+	TEIform		CDATA               "teiHeader"		>
+
+<!--          File Description                                -->
+
+<!ELEMENT fileDesc	(titleStmt, editionStmt?,
+                         extent?, publicationStmt,
+                         sourceDesc+ )				>
+<!ATTLIST fileDesc       %a.header;				>
+
+<!--          Title statement                                 -->
+
+<!ELEMENT titleStmt	(h.title, respStmt* )			>
+<!ATTLIST titleStmt	%a.header;				>
+
+<!ELEMENT h.title	( #PCDATA )				>
+<!ATTLIST h.title	%a.header;				>
+
+<!ELEMENT respStmt	(respType | respName)+			>
+<!ATTLIST respStmt           %a.header;                         >
+
+<!ELEMENT respType      (#PCDATA)                          >
+<!ATTLIST respType           %a.header;                         >
+
+<!ELEMENT respName      (#PCDATA)                          >
+<!ATTLIST respName           %a.header;                         >
+
+
+<!--          Edition Statement                               -->
+
+<!ELEMENT editionStmt   (#PCDATA)                          >
+<!ATTLIST editionStmt        %a.header;
+          version            CDATA                #IMPLIED      >
+
+<!--          Extent statement                                -->
+
+<!ELEMENT extent	(wordCount, byteCount, extNote* )  >
+<!ATTLIST extent	%a.header;                         >
+
+<!ELEMENT wordCount     (#PCDATA)                         >
+<!ATTLIST wordCount	%a.header;                         >
+
+<!ELEMENT byteCount     (#PCDATA)                         >
+<!ATTLIST byteCount	%a.header;
+	units		(bytes | kb | mb | gb)	"kb"		>
+
+<!ELEMENT extNote       (#PCDATA)                         >
+<!ATTLIST extNote            %a.header;                         >
+
+
+<!--          Publication statement                           -->
+
+<!ELEMENT publicationStmt
+                        (distributor, pubAddress,
+                             telephone*, fax*, 
+                             eAddress*, idno*,
+                             availability, pubDate )            >
+<!ATTLIST publicationStmt    %a.header;                         >
+
+<!ELEMENT distributor   (#PCDATA)                         >
+<!ATTLIST distributor        %a.header;                         >
+
+
+<!ELEMENT pubAddress    (#PCDATA)                         >
+<!ATTLIST pubAddress         %a.header;                         >
+
+<!ELEMENT telephone     (#PCDATA)                         >
+<!ATTLIST telephone          %a.header;                         >
+
+<!ELEMENT fax           (#PCDATA)                         >
+<!ATTLIST fax                %a.header;                         >
+
+
+<!ELEMENT eAddress      (#PCDATA)                         >
+<!ATTLIST eAddress           %a.header;
+          type               CDATA               "email"          >
+
+<!ELEMENT idno          (#PCDATA)                         >
+<!ATTLIST idno               %a.header;
+          type               CDATA               "ISBN"           >
+
+<!ELEMENT availability  (#PCDATA )                         >
+<!ATTLIST availability       %a.header;
+          region             CDATA               "world"
+          status             (free | unknown | restricted)
+                                               "unknown"          >
+
+<!ELEMENT pubDate       (#PCDATA )                         >
+<!ATTLIST pubDate            %a.header;
+          value              CDATA               #IMPLIED       >
+
+<!--          Source description                              -->
+
+<!ELEMENT sourceDesc    ((biblFull | biblStruct)+)         >
+<!ATTLIST sourceDesc         %a.header;
+                             %a.declarable;                     >
+
+<!--   Bibliographic citation for non-electronic source       -->
+
+<!ELEMENT biblStruct    (analytic?, monogr+)               >
+<!ATTLIST biblStruct         %a.header;
+                             %a.declarable;                     >
+
+<!ELEMENT analytic      (h.author | respStmt |
+                             h.title)*                          >
+<!ATTLIST analytic           %a.header;                         >
+
+<!ELEMENT monogr        (h.title+,
+                             (h.author | respStmt)*,
+                             (edition, respStmt?)*, imprint+,
+                             (biblNote | biblScope)* )          >
+<!ATTLIST monogr             %a.header;                         >
+
+<!ELEMENT h.author      (#PCDATA)                          >
+<!ATTLIST h.author           %a.header;                         >
+
+<!ELEMENT edition       (#PCDATA )                         >
+<!ATTLIST edition            %a.header;                         >
+
+<!ELEMENT imprint       (pubPlace | publisher | pubDate)*  >
+<!ATTLIST imprint            %a.header;                         >
+
+<!ELEMENT pubPlace      (#PCDATA)                          >
+<!ATTLIST pubPlace           %a.header;                         >
+
+<!ELEMENT publisher     (#PCDATA)                          >
+<!ATTLIST publisher          %a.header;
+          type               (place | org | person)
+                                                 #IMPLIED       >
+
+<!ELEMENT biblScope     (#PCDATA)                          >
+<!ATTLIST biblScope          %a.header;
+          type               (pp | vol | issue)  #IMPLIED       >
+
+<!ELEMENT biblNote      (#PCDATA)                          >
+<!ATTLIST biblNote           %a.header;                         >
+
+
+<!--    Bibliographical info for source in electronic form    -->
+
+<!ELEMENT biblFull      (titleStmt, editionStmt?,
+                             extent?, publicationStmt,
+                             sourceDesc+ )                      >
+<!ATTLIST biblFull           %a.header;                         >
+
+
+<!--        Encoding description                              -->
+
+<!ELEMENT encodingDesc  (projectDesc, samplingDecl*,
+                             editorialDecl*, tagsDecl?,
+                             refsDecl*, classDecl?)             >
+<!ATTLIST encodingDesc       %a.header;                         >
+
+<!ELEMENT projectDesc   (#PCDATA)                          >
+<!ATTLIST projectDesc        %a.header;
+                             %a.declarable;                     >
+
+<!ELEMENT samplingDecl  (#PCDATA)                          >
+<!ATTLIST samplingDecl       %a.header;
+                             %a.declarable;                     >
+
+<!--          Editorial declaration                           -->
+
+<!ELEMENT editorialDecl (correction | quotation
+                             | hyphenation | segmentation |
+                             transduction | normalization |
+                             conformance)+                      >
+<!ATTLIST editorialDecl      %a.header;
+                             %a.declarable;                     >
+
+<!ELEMENT correction    (#PCDATA)                          >
+<!ATTLIST correction         %a.header;
+                             %a.declarable;
+          status             (high | medium | low | unknown)
+                                                 "unknown"
+          method             (silent | tags)     "silent"         >
+
+<!ELEMENT quotation     (#PCDATA)                          >
+<!ATTLIST quotation          %a.header;
+                             %a.declarable;
+          marks              (none | some | all) "all"
+          form               (data | rend | std | 
+                              nonstd | unknown)  "unknown"        >
+
+<!ELEMENT hyphenation   (#PCDATA)                          >
+<!ATTLIST hyphenation        %a.header;
+                             %a.declarable;                     >
+
+<!ELEMENT segmentation  (#PCDATA)                          >
+<!ATTLIST segmentation       %a.header;
+                             %a.declarable;                     >
+
+<!ELEMENT transduction  (#PCDATA)                          >
+<!ATTLIST transduction       %a.header;
+                             %a.declarable;                     >
+
+<!ELEMENT normalization (#PCDATA)                          >
+<!ATTLIST normalization      %a.header;
+                             %a.declarable;
+          source             CDATA               #IMPLIED
+          method             (silent | tags)     "silent"         >
+
+<!ELEMENT conformance   (#PCDATA)                          >
+<!ATTLIST conformance        %a.header;
+          level              (0 | 1 | 2 | 3)     "1"              >
+
+
+<!--          Tag declaration                                 -->
+
+<!ELEMENT tagsDecl      (tagUsage+)                        >
+<!ATTLIST tagsDecl           %a.header;                         
+
+>
+
+<!ELEMENT tagUsage      (#PCDATA)                          >
+<!ATTLIST tagUsage           %a.header;
+          gi                 NMTOKEN             #REQUIRED
+          occurs             NMTOKEN             #IMPLIED       
+          wsd                CDATA               #IMPLIED  >
+
+<!--          References declaration                          -->
+
+<!ELEMENT refsDecl      (#PCDATA)                          >
+<!ATTLIST refsDecl           %a.header;
+          doctype            NMTOKEN                #IMPLIED  >
+
+<!--          Classify texts declaration                      -->
+
+<!ELEMENT classDecl     (taxonomy+)                        >
+<!ATTLIST classDecl            %a.header;                  >
+
+<!ELEMENT taxonomy      (category+)                        >
+<!ATTLIST taxonomy            %a.header;                   >
+
+<!ELEMENT category      (catDesc, category*)               >
+<!ATTLIST category            
+           id                 ID                  #REQUIRED
+           n                  CDATA               #IMPLIED
+           lang               IDREF               #IMPLIED >
+
+<!ELEMENT catDesc       (#PCDATA)                          >
+<!ATTLIST catDesc            %a.header;                    >
+
+<!--        Profile description                               -->
+
+<!ELEMENT profileDesc   (creation?, langUsage?, wsdUsage?,
+                             textClass?, translations?,
+                             annotations?)                 >
+<!ATTLIST profileDesc        %a.header;                    >
+
+<!--          Creation element                                -->
+
+<!ELEMENT creation      (#PCDATA )                         >
+<!ATTLIST creation           %a.header;
+          date               CDATA               #REQUIRED >
+
+<!ELEMENT langUsage     (language+ )                       >
+<!ATTLIST langUsage          %a.header;                    >
+
+<!ELEMENT language      (#PCDATA)                          >
+<!ATTLIST language            
+          id                 ID                  #IMPLIED
+          wsd                CDATA               #IMPLIED
+          n                  CDATA               #IMPLIED     
+          type               CDATA               #IMPLIED
+          iso639             CDATA               #REQUIRED >
+
+<!ELEMENT wsdUsage      (writingSystem+)                   >
+<!ATTLIST wsdUsage           %a.header;                    >
+
+<!ELEMENT writingSystem (#PCDATA)                          >
+<!ATTLIST writingSystem      
+          id                 ID                  #IMPLIED
+          lang               CDATA               #IMPLIED
+          wsd                ENTITY              #IMPLIED
+          n                  CDATA               #IMPLIED  >
+
+<!--          Text Class                                      -->
+
+<!ELEMENT textClass     (catRef , h.keywords)              >
+<!ATTLIST textClass          %a.header;
+                             %a.declarable;                >
+
+<!ELEMENT catRef        EMPTY                              >
+<!ATTLIST catRef             %a.header;
+          target             IDREFS              #REQUIRED      
+          scheme             CDATA               #IMPLIED  >
+
+<!ELEMENT h.keywords    (keyTerm+)                         >
+<!ATTLIST h.keywords         %a.header;                    >
+
+<!ELEMENT keyTerm       (#PCDATA)                          >
+<!ATTLIST keyTerm            %a.header;                    >
+
+<!--          Translations                                    -->
+
+<!ELEMENT translations  (translation, translator)          >
+<!ATTLIST translations       %a.header;                    >
+
+<!ELEMENT translation   (#PCDATA)                          >
+<!ATTLIST translation        
+          id                 ID                  #IMPLIED
+          lang               CDATA               #REQUIRED
+          wsd                CDATA               #REQUIRED
+          n                  CDATA               #IMPLIED
+          trans.loc          ENTITY              #IMPLIED  >
+
+<!ELEMENT translator    (#PCDATA)                          >
+<!ATTLIST translator         %a.header;                    >
+
+<!--          Annotations                                     -->
+
+<!ELEMENT annotations   (annotation+)                      >
+<!ATTLIST annotations        %a.header;                    >
+
+<!ELEMENT annotation    (#PCDATA)                          >
+<!ATTLIST annotation         %a.header; 
+          type               CDATA               #IMPLIED             
+          ann.loc            ENTITY              #IMPLIED     
+          trans.loc          ENTITY              #IMPLIED  >
+
+<!--       Revision description                               -->
+
+<!ELEMENT revisionDesc  (change+)                          >
+<!ATTLIST revisionDesc       %a.header;                    >
+
+<!ELEMENT change        (changeDate, respName, h.item+)     >
+<!ATTLIST change             %a.header;                    >
+
+<!ELEMENT changeDate    (#PCDATA)                          >
+<!ATTLIST changeDate         %a.header;
+          value               CDATA              #IMPLIED  >
+
+<!ELEMENT h.item        (#PCDATA)                          >
+<!ATTLIST h.item             %a.header;                    >

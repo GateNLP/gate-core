@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<!-- TESTS TESTS TESTS TESTS TESTS -->
+<!-- creole.xml directory file for testing resources -->
+<!-- $Id: creole.xml 19624 2016-10-04 09:25:59Z markagreenwood $ -->
+<CREOLE-DIRECTORY>
+	<!-- creole.xml resource metadata file for test resources -->
+	<CREOLE>
+		<!-- Don't change this one - TestCreole assumes certain values here -->
+		<RESOURCE>
+			<NAME>Sheffield Test PR 1</NAME>
+			<JAR>TestResources.jar</JAR>
+			<CLASS>testpkg.TestPR1</CLASS>
+			<PARAMETER DEFAULT="a default value" COMMENT="a param comment" OPTIONAL="true" NAME="thing2">java.lang.String</PARAMETER>
+			<OR>
+				<PARAMETER RUNTIME="trUe" NAME="HOOPY DOOPY">java.lang.String</PARAMETER>
+				<PARAMETER DEFAULT="a default" OPTIONAL="true" NAME="thing">java.lang.String</PARAMETER>
+			</OR>
+			<SOME-ARBITRARY-RESOURCE-FEATURE/>
+		</RESOURCE>
+    		<RESOURCE>
+      		<NAME>Sheffield Test PR 2</NAME>
+      		<JAR>TestResources.jar</JAR>
+      		<CLASS>testpkg.TestPR2</CLASS>
+      		<AUTOLOAD/>
+      		<AUTOINSTANCE/>
+      		<ICON>anIconForTPR2</ICON>
+    		</RESOURCE>
+		<RESOURCE>
+			<NAME>Sheffield Test PR 3 (Print Out Tokens)</NAME>
+			<JAR>TestResources.jar</JAR>
+			<CLASS>testpkg.PrintOutTokens</CLASS>
+			<PARAMETER NAME="document" RUNTIME="true">gate.corpora.DocumentImpl</PARAMETER>
+			<TOOL/>
+		</RESOURCE>
+    		<RESOURCE>
+      		<NAME>Sheffield Test PR 3</NAME>
+      		<JAR>TestResources.jar</JAR>
+      		<CLASS>testpkg.TestPR3</CLASS>
+      		<AUTOLOAD/>
+      		<AUTOINSTANCE/>
+      		<PARAMETER NAME ="paramList" DEFAULT="Location;Person; String 3;String 4" RUNTIME="true">java.util.LinkedList</PARAMETER>
+      		<PARAMETER NAME ="paramSet" DEFAULT="Location;Person; String 3;String 4" ITEM_CLASS_NAME="java.lang.String" RUNTIME="true">java.util.TreeSet</PARAMETER>
+      		<PARAMETER NAME ="paramArrayList" DEFAULT="123;12;3;34" ITEM_CLASS_NAME="java.lang.Integer" RUNTIME="true">java.util.ArrayList</PARAMETER>
+      		<PARAMETER NAME ="paramHashSet" DEFAULT="string123;12;3;34"  RUNTIME="true">java.util.HashSet</PARAMETER>
+    		</RESOURCE>
+	</CREOLE>
+	<!-- creole.xml for tokeniser -->
+	<!-- <CREOLE>
+		<RESOURCE>
+			<NAME>ANNIE Unicode Tokeniser</NAME>
+			<CLASS>gate.creole.tokeniser.DefaultTokeniser</CLASS>
+			<COMMENT>A customisable tokeniser.</COMMENT>
+			<PARAMETER NAME="tokeniserRulesURL" DEFAULT="gate:/creole/tokeniser/DefaultTokeniser.rules" COMMENT="The URL for the rules file">java.net.URL</PARAMETER>
+			<PARAMETER NAME="transducerGrammarURL" DEFAULT="gate:/creole/tokeniser/postprocess.jape" COMMENT="The URL for the postprocessing transducer">java.net.URL</PARAMETER>
+			<PARAMETER NAME="encoding" COMMENT="The encoding used for reading the definitions" DEFAULT="UTF-8">java.lang.String</PARAMETER>
+			<PARAMETER NAME="document" COMMENT="The document to be tokenised" RUNTIME="true">gate.corpora.DocumentImpl</PARAMETER>
+			<PARAMETER NAME="annotationSetName" RUNTIME="true" COMMENT="The annotation set to be used for the generated annotations" OPTIONAL="true">java.lang.String</PARAMETER>
+			<ICON>shefTokeniser</ICON>
+		</RESOURCE>
+	</CREOLE> -->
+	<!-- creole.xml for doc formats -->
+	<CREOLE>
+		<RESOURCE>
+			<NAME>Sheffield XML Document Format</NAME>
+			<CLASS>gate.corpora.XmlDocumentFormat</CLASS>
+			<AUTOLOAD/>
+			<AUTOINSTANCE/>
+			<PRIVATE/>
+		</RESOURCE>
+		<RESOURCE>
+			<NAME>Sheffield Email Document Format</NAME>
+			<CLASS>gate.corpora.EmailDocumentFormat</CLASS>
+			<AUTOLOAD/>
+			<AUTOINSTANCE/>
+			<PRIVATE/>
+		</RESOURCE>
+	</CREOLE>
+	<!-- documents -->
+	<CREOLE>
+		<RESOURCE>
+			<NAME>GATE document</NAME>
+			<CLASS>gate.corpora.DocumentImpl</CLASS>
+			<INTERFACE>gate.Document</INTERFACE>
+			<COMMENT>GATE document</COMMENT>
+			<PARAMETER NAME="sourceUrlName" COMMENT="Source URL name">java.lang.String</PARAMETER>
+			<PARAMETER NAME="encoding" OPTIONAL="true" COMMENT="Encoding">java.lang.String</PARAMETER>
+			<PARAMETER NAME="sourceUrlStartOffset" COMMENT="Start offset for documents based on ranges" OPTIONAL="true">java.lang.Long</PARAMETER>
+			<PARAMETER NAME="sourceUrlEndOffset" COMMENT="End offset for documents based on ranges" OPTIONAL="true">java.lang.Long</PARAMETER>
+			<FUNKY-METADATA-THAING>hubba hubba</FUNKY-METADATA-THAING>
+		</RESOURCE>
+	</CREOLE>
+	<!-- creole.xml for Visual Resources -->
+	<CREOLE>
+		<RESOURCE>
+			<NAME>Corpus Editor</NAME>
+			<CLASS>gate.gui.CorpusEditor</CLASS>
+			<!-- type values can be "large" or "small"-->
+			<GUI TYPE="large">
+				<MAIN_VIEWER/>
+				<RESOURCE_DISPLAYED>gate.Corpus</RESOURCE_DISPLAYED>
+			</GUI>
+		</RESOURCE>
+		<RESOURCE>
+			<NAME>Serial Datastore Viewer</NAME>
+			<CLASS>gate.gui.SerialDatastoreViewer</CLASS>
+			<!-- type values can be "large" or "small"-->
+			<GUI TYPE="small">
+				<MAIN_VIEWER/>
+				<RESOURCE_DISPLAYED>gate.persist.SerialDataStore</RESOURCE_DISPLAYED>
+			</GUI>
+		</RESOURCE>
+		<!-- VR def for gate Syntax Tree Editor/Viewer -->
+		<!-- RESOURCE>
+			<NAME>Syntax tree viewer</NAME>
+			<CLASS>gate.gui.SyntaxTreeViewer</CLASS>
+			<GUI>
+				<MAIN_VIEWER/>
+				<ANNOTATION_TYPE_DISPLAYED>Tree</ANNOTATION_TYPE_DISPLAYED>
+			</GUI>
+		</RESOURCE> -->
+	</CREOLE>
+</CREOLE-DIRECTORY>

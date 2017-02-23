@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!-- TEST gate.xml -->
+<!-- $Id: gate.xml 6248 2004-10-06 11:36:26Z valyt $ -->
+
+<!-- this file is used by the test suite; it is read from a
+     web server if we're net connected, or from the gate2/classes
+     directory, or from gate.jar, depending on which day of the
+     week it is -->
+
+<GATE>
+
+<CREOLE-DIRECTORY>http://gate.ac.uk/tests/</CREOLE-DIRECTORY> 
+
+<SYSTEM NAME="Print Out Tokens">
+  <CONTROLLER>none</CONTROLLER>
+  <LR sourceUrl="gate:/gate.ac.uk/tests/doc0.html">gate.corpora.DocumentImpl</LR>
+</SYSTEM>
+
+<!-- The next element may be overwritten by the development environment -->
+<GATECONFIG FULLSIZE="yes"/>
+
+</GATE>

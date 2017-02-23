@@ -1,0 +1,322 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GateDocument>
+<!-- The document's features-->
+
+<GateDocumentFeatures>
+<Feature>
+  <Name className="java.lang.String">gate.SourceURL</Name>
+  <Value className="java.lang.String">file:/C:/yaoyong_h/iaa/wikidoc/beijing-opera.xml</Value>
+</Feature>
+<Feature>
+  <Name className="java.lang.String">MimeType</Name>
+  <Value className="java.lang.String">text/xml</Value>
+</Feature>
+</GateDocumentFeatures>
+<!-- The document content area with serialized nodes -->
+
+<TextWithNodes><Node id="0" />
+<Node id="1" />Beijing<Node id="8" /> opera or <Node id="18" />Peking<Node id="24" /> opera is a form of traditional Chinese theatre which combines music, vocal performance, mime, dance and acrobatics.<Node id="140" /> <Node id="141" />It arose in the late 18th century and became fully developed and recognized by the mid-19th century.<Node id="241" />[1] <Node id="245" />The form<Node id="253" /> was extremely popular in the Qing Dynasty court and has come to be regarded as one of the cultural treasures of <Node id="366" />China<Node id="371" />.<Node id="372" />[2] <Node id="376" />Major performance troupes are based in <Node id="415" />Beijing<Node id="422" /> and <Node id="427" />Tianjin<Node id="434" /> in the north, and <Node id="453" />Shanghai<Node id="461" /> in the south.<Node id="475" />[3] <Node id="479" />The art form is also enjoyed in <Node id="511" />Taiwan<Node id="517" />, and has spread to other countries such as the <Node id="565" />United States<Node id="578" /> and <Node id="583" />Japan<Node id="588" />.<Node id="589" />[4]
+
+<Node id="594" />Beijing<Node id="601" /> opera features four main types of performers.<Node id="647" /> <Node id="648" />Performing troupes often have several of each variety, as well as numerous secondary and tertiary performers.<Node id="757" /> <Node id="758" />With their elaborate and colorful costumes, performers are the only focal points on Beijing opera's characteristically sparse stage.<Node id="890" /> <Node id="891" />They utilize the skills of speech, song, dance, and combat in movements that are symbolic and suggestive, rather than realistic.<Node id="1019" /> <Node id="1020" />Above all else, <Node id="1036" />the <Node id="1040" />skill of performers<Node id="1059" /> is evaluated according to the beauty of their movements.<Node id="1116" /> <Node id="1117" />Performers<Node id="1127" /> also adhere to a variety of stylistic conventions that help audiences navigate the plot of the production.<Node id="1234" />[5] <Node id="1238" />The layers of meaning within each movement must be expressed in time with music.<Node id="1318" /> <Node id="1319" />The music of <Node id="1332" />Beijing<Node id="1339" /> opera can be divided into the Xipi and Erhuang styles.<Node id="1394" /> <Node id="1395" />Melodies include arias, fixed-tune melodies, and percussion patterns.<Node id="1464" />[6]<Node id="1467" /> The repertoire of <Node id="1486" />Beijing<Node id="1493" /> opera includes over 1,400 works, which are based on Chinese history, folklore, and, increasingly, contemporary life.<Node id="1610" />[7]
+
+<Node id="1615" />In recent years, <Node id="1632" />Beijing<Node id="1639" /> opera<Node id="1645" /> has attempted numerous reforms in response to sagging audience numbers.<Node id="1717" /> <Node id="1718" />These reforms, which include improving performance quality, adapting new performance elements, and performing new and original plays, have met with mixed success.<Node id="1880" /> <Node id="1881" />Some Western works have been adopted as new plays,<Node id="1931" /> <Node id="1932" />but a lack of funding and an adverse political climate have left <Node id="1997" />Beijing<Node id="2004" /> opera<Node id="2010" />'s <Node id="2013" />fate<Node id="2017" /> uncertain as the form enters the 21st century.<Node id="2064" />[8]
+<Node id="2068" /></TextWithNodes>
+<!-- The default annotation set -->
+
+<AnnotationSet>
+</AnnotationSet>
+<!-- Named annotation set -->
+
+<AnnotationSet Name="Original markups">
+<Annotation Id="1" Type="TEXT" StartNode="0" EndNode="2068">
+</Annotation>
+<Annotation Id="0" Type="DOC" StartNode="0" EndNode="2068">
+</Annotation>
+</AnnotationSet>
+<!-- Named annotation set -->
+
+<AnnotationSet Name="ann2">
+<Annotation Id="62" Type="sent" StartNode="1932" EndNode="2064">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">true</Value>
+</Feature>
+</Annotation>
+<Annotation Id="47" Type="sent" StartNode="479" EndNode="589">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">false</Value>
+</Feature>
+</Annotation>
+<Annotation Id="51" Type="sent" StartNode="891" EndNode="1019">
+</Annotation>
+<Annotation Id="58" Type="sent" StartNode="1467" EndNode="1610">
+</Annotation>
+<Annotation Id="55" Type="sent" StartNode="1238" EndNode="1318">
+</Annotation>
+<Annotation Id="43" Type="sent" StartNode="141" EndNode="241">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">false</Value>
+</Feature>
+</Annotation>
+<Annotation Id="50" Type="sent" StartNode="758" EndNode="890">
+</Annotation>
+<Annotation Id="48" Type="sent" StartNode="594" EndNode="647">
+</Annotation>
+<Annotation Id="86" Type="Os" StartNode="1997" EndNode="2010">
+</Annotation>
+<Annotation Id="49" Type="sent" StartNode="648" EndNode="757">
+</Annotation>
+<Annotation Id="54" Type="Os" StartNode="1117" EndNode="1127">
+</Annotation>
+<Annotation Id="59" Type="sent" StartNode="1615" EndNode="1717">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">true</Value>
+</Feature>
+</Annotation>
+<Annotation Id="44" Type="sent" StartNode="245" EndNode="372">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">true</Value>
+</Feature>
+</Annotation>
+<Annotation Id="45" Type="Os" StartNode="245" EndNode="253">
+</Annotation>
+<Annotation Id="53" Type="sent" StartNode="1117" EndNode="1234">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">false</Value>
+</Feature>
+</Annotation>
+<Annotation Id="60" Type="sent" StartNode="1718" EndNode="1880">
+</Annotation>
+<Annotation Id="61" Type="sent" StartNode="1881" EndNode="1931">
+</Annotation>
+<Annotation Id="46" Type="sent" StartNode="376" EndNode="475">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">false</Value>
+</Feature>
+</Annotation>
+<Annotation Id="57" Type="sent" StartNode="1395" EndNode="1464">
+</Annotation>
+<Annotation Id="52" Type="sent" StartNode="1020" EndNode="1116">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">true</Value>
+</Feature>
+</Annotation>
+<Annotation Id="42" Type="sent" StartNode="1" EndNode="140">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">false</Value>
+</Feature>
+</Annotation>
+<Annotation Id="56" Type="sent" StartNode="1319" EndNode="1394">
+</Annotation>
+</AnnotationSet>
+<!-- Named annotation set -->
+
+<AnnotationSet Name="ann3">
+<Annotation Id="83" Type="sent" StartNode="1932" EndNode="2064">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">true</Value>
+</Feature>
+</Annotation>
+<Annotation Id="68" Type="sent" StartNode="479" EndNode="589">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">true</Value>
+</Feature>
+</Annotation>
+<Annotation Id="79" Type="sent" StartNode="1467" EndNode="1610">
+</Annotation>
+<Annotation Id="82" Type="sent" StartNode="1881" EndNode="1931">
+</Annotation>
+<Annotation Id="75" Type="Os" StartNode="1117" EndNode="1127">
+</Annotation>
+<Annotation Id="87" Type="Os" StartNode="1040" EndNode="1059">
+</Annotation>
+<Annotation Id="72" Type="sent" StartNode="891" EndNode="1019">
+</Annotation>
+<Annotation Id="67" Type="sent" StartNode="376" EndNode="475">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">false</Value>
+</Feature>
+</Annotation>
+<Annotation Id="63" Type="sent" StartNode="1" EndNode="140">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">false</Value>
+</Feature>
+</Annotation>
+<Annotation Id="80" Type="sent" StartNode="1615" EndNode="1717">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">true</Value>
+</Feature>
+</Annotation>
+<Annotation Id="66" Type="Os" StartNode="245" EndNode="253">
+</Annotation>
+<Annotation Id="81" Type="sent" StartNode="1718" EndNode="1880">
+</Annotation>
+<Annotation Id="76" Type="sent" StartNode="1238" EndNode="1318">
+</Annotation>
+<Annotation Id="71" Type="sent" StartNode="758" EndNode="890">
+</Annotation>
+<Annotation Id="64" Type="sent" StartNode="141" EndNode="241">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">false</Value>
+</Feature>
+</Annotation>
+<Annotation Id="73" Type="sent" StartNode="1020" EndNode="1116">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">true</Value>
+</Feature>
+</Annotation>
+<Annotation Id="77" Type="sent" StartNode="1319" EndNode="1394">
+</Annotation>
+<Annotation Id="65" Type="sent" StartNode="245" EndNode="372">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">true</Value>
+</Feature>
+</Annotation>
+<Annotation Id="70" Type="sent" StartNode="648" EndNode="757">
+</Annotation>
+<Annotation Id="74" Type="sent" StartNode="1117" EndNode="1234">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">true</Value>
+</Feature>
+</Annotation>
+<Annotation Id="89" Type="Os" StartNode="2013" EndNode="2017">
+</Annotation>
+<Annotation Id="78" Type="sent" StartNode="1395" EndNode="1464">
+</Annotation>
+<Annotation Id="69" Type="sent" StartNode="594" EndNode="647">
+</Annotation>
+</AnnotationSet>
+<!-- Named annotation set -->
+
+<AnnotationSet Name="ann1">
+<Annotation Id="15" Type="Location" StartNode="1632" EndNode="1639">
+</Annotation>
+<Annotation Id="30" Type="sent" StartNode="1319" EndNode="1394">
+</Annotation>
+<Annotation Id="8" Type="Location" StartNode="453" EndNode="461">
+</Annotation>
+<Annotation Id="23" Type="sent" StartNode="594" EndNode="647">
+</Annotation>
+<Annotation Id="40" Type="Os" StartNode="1632" EndNode="1645">
+</Annotation>
+<Annotation Id="16" Type="Location" StartNode="1997" EndNode="2004">
+</Annotation>
+<Annotation Id="31" Type="sent" StartNode="1395" EndNode="1464">
+</Annotation>
+<Annotation Id="35" Type="sent" StartNode="1881" EndNode="1931">
+</Annotation>
+<Annotation Id="7" Type="Location" StartNode="427" EndNode="434">
+</Annotation>
+<Annotation Id="22" Type="sent" StartNode="479" EndNode="589">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">false</Value>
+</Feature>
+</Annotation>
+<Annotation Id="32" Type="sent" StartNode="1467" EndNode="1610">
+</Annotation>
+<Annotation Id="34" Type="sent" StartNode="1718" EndNode="1880">
+</Annotation>
+<Annotation Id="41" Type="Os" StartNode="1997" EndNode="2017">
+</Annotation>
+<Annotation Id="9" Type="Location" StartNode="511" EndNode="517">
+</Annotation>
+<Annotation Id="33" Type="sent" StartNode="1615" EndNode="1717">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">true</Value>
+</Feature>
+</Annotation>
+<Annotation Id="21" Type="sent" StartNode="376" EndNode="475">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">false</Value>
+</Feature>
+</Annotation>
+<Annotation Id="6" Type="Location" StartNode="415" EndNode="422">
+</Annotation>
+<Annotation Id="29" Type="sent" StartNode="1238" EndNode="1318">
+</Annotation>
+<Annotation Id="14" Type="Location" StartNode="1486" EndNode="1493">
+</Annotation>
+<Annotation Id="24" Type="sent" StartNode="648" EndNode="757">
+</Annotation>
+<Annotation Id="4" Type="Location" StartNode="18" EndNode="24">
+</Annotation>
+<Annotation Id="36" Type="sent" StartNode="1932" EndNode="2064">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">true</Value>
+</Feature>
+</Annotation>
+<Annotation Id="19" Type="sent" StartNode="141" EndNode="241">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String"></Value>
+</Feature>
+</Annotation>
+<Annotation Id="26" Type="sent" StartNode="891" EndNode="1019">
+</Annotation>
+<Annotation Id="11" Type="Location" StartNode="583" EndNode="588">
+</Annotation>
+<Annotation Id="18" Type="sent" StartNode="1" EndNode="140">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">false</Value>
+</Feature>
+</Annotation>
+<Annotation Id="39" Type="Os" StartNode="1117" EndNode="1127">
+</Annotation>
+<Annotation Id="12" Type="Location" StartNode="594" EndNode="601">
+</Annotation>
+<Annotation Id="27" Type="sent" StartNode="1020" EndNode="1116">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">true</Value>
+</Feature>
+</Annotation>
+<Annotation Id="2" Type="Location" StartNode="1" EndNode="8">
+</Annotation>
+<Annotation Id="13" Type="Location" StartNode="1332" EndNode="1339">
+</Annotation>
+<Annotation Id="28" Type="sent" StartNode="1117" EndNode="1234">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">true</Value>
+</Feature>
+</Annotation>
+<Annotation Id="38" Type="Os" StartNode="1036" EndNode="1059">
+</Annotation>
+<Annotation Id="20" Type="sent" StartNode="245" EndNode="372">
+<Feature>
+  <Name className="java.lang.String">Op</Name>
+  <Value className="java.lang.String">true</Value>
+</Feature>
+</Annotation>
+<Annotation Id="25" Type="sent" StartNode="758" EndNode="890">
+</Annotation>
+<Annotation Id="37" Type="Os" StartNode="245" EndNode="253">
+</Annotation>
+<Annotation Id="10" Type="Location" StartNode="565" EndNode="578">
+</Annotation>
+<Annotation Id="5" Type="Location" StartNode="366" EndNode="371">
+</Annotation>
+</AnnotationSet>
+</GateDocument>

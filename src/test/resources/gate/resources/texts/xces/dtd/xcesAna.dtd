@@ -1,0 +1,87 @@
+<!--                                                          -->
+<!--                                                          -->
+<!--                Corpus Encoding Standard                  -->
+<!--                                                          -->
+<!--                          CES                             -->
+<!--                                                          -->
+<!--         Encoding conventions for annnotated data         -->
+<!--                                                          -->
+<!--                                                          -->
+<!--                                                          -->
+<!--
+     $Date: 2000-06-13 16:33:08 +0100 (Tue, 13 Jun 2000) $
+     $Revision: 345 $ 
+                                                              -->
+<!--                                                          -->
+                                                          
+<!--                  Global attributes                       -->
+
+
+<!ENTITY % a.global '
+	id		ID                  #IMPLIED
+	n		CDATA               #IMPLIED
+	xml:lang	CDATA               #IMPLIED
+	lang		IDREF               #IMPLIED'		>
+
+<!ENTITY % a.ana '%a.global;
+	type		CDATA               #IMPLIED
+	wsd		CDATA               #IMPLIED'		>
+ 
+
+<!ELEMENT cesAna	(cesHeader?, chunkList)			>
+<!ATTLIST cesAna	%a.ana;                         
+	doc		CDATA		#IMPLIED
+	version		CDATA		#REQUIRED		>
+
+<!ENTITY % xces.header SYSTEM 'xheader.elt'                       >
+%xces.header;
+
+<!ELEMENT chunkList     (chunk)+                           >
+<!ATTLIST chunkList          %a.ana;                            >
+
+<!ELEMENT chunk         (tok+ | s+ | par+)                 >
+<!ATTLIST chunk              %a.ana;                            
+          doc                CDATA               #IMPLIED
+          from               CDATA               #IMPLIED
+          to                 CDATA               #IMPLIED       >
+
+<!ELEMENT par           (tok | s)+                         >
+<!ATTLIST par                  %a.ana;                            
+          from               CDATA               #IMPLIED
+          to                 CDATA               #IMPLIED       >
+
+<!ELEMENT s		(#PCDATA | tok | s )*			>
+<!ATTLIST s                  %a.ana;                            
+          from               CDATA               #IMPLIED
+          to                 CDATA               #IMPLIED      
+          next               IDREF               #IMPLIED
+          prev               IDREF               #IMPLIED
+          broken             (yes | no)          "no"             >
+
+
+<!ELEMENT tok           (orth, ((disamb*, lex*)              
+                             | (base?, ctag?, msd?)))           >
+<!ATTLIST tok                %a.ana;
+          class              CDATA               #IMPLIED
+          from               CDATA               #IMPLIED
+          to                 CDATA               #IMPLIED       >
+
+<!ELEMENT orth          (#PCDATA)                          >
+<!ATTLIST orth               %a.ana;                            >
+
+<!ELEMENT disamb        (ctag, msd?)+                      >
+<!ATTLIST disamb             %a.ana;                            >
+
+<!ELEMENT lex           (base, msd?, ctag)                 >
+<!ATTLIST lex                %a.ana;                            >
+
+<!ELEMENT base          (#PCDATA)                          >
+<!ATTLIST base               %a.ana;                            >
+
+<!ELEMENT msd           (#PCDATA)                          >
+<!ATTLIST msd                %a.ana;                            >
+
+<!ELEMENT ctag          (#PCDATA)                          >
+<!ATTLIST ctag               %a.ana;                            
+          certainty          CDATA               #IMPLIED       >
+

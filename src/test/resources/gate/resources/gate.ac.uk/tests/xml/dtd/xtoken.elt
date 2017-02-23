@@ -1,0 +1,51 @@
+<!--                                                          -->
+<!--                                                          -->
+<!--          THE CES MORPHOSYNTACTIC DESCRIPTION             -->
+<!--                                                          -->
+<!--        This is the entity token.elt used in the          -->
+<!--            Corpus Encoding Standard DTDs.                -->
+<!--                                                          -->
+<!--      It is referred to in Part 4.5 as token.elt.         -->
+<!--                                                          -->
+<!--                                                          -->
+<!--  
+      $Date: 2000-10-16 12:51:53 +0100 (Mon, 16 Oct 2000) $
+      $Revision: 598 $
+                                                              -->
+<!--                                                          -->
+
+<!ENTITY % m.token  'tok |'                                     >
+
+<!--                  Global attributes                       -->
+
+
+<!ENTITY % a.ana  '
+          id                 ID                  #IMPLIED
+          n                  CDATA               #IMPLIED
+          lang               IDREF               #IMPLIED
+          type               CDATA               #IMPLIED       
+          wsd                CDATA               #IMPLIED' >
+ 
+<!ELEMENT tok           (orth, disamb*, lex*)              >
+<!ATTLIST tok                %a.ana;
+          class              CDATA               #IMPLIED  >
+
+<!ELEMENT orth          (#PCDATA)                          >
+<!ATTLIST orth               %a.ana;                       >
+
+<!ELEMENT disamb        (ctag)+                            >
+<!ATTLIST disamb             %a.ana;                       >
+
+<!ELEMENT lex           (base, msd?, ctag)                 >
+<!ATTLIST lex                %a.ana;                       >
+
+<!ELEMENT base          (#PCDATA)                          >
+<!ATTLIST base               %a.ana;                       >
+
+<!ELEMENT msd           (#PCDATA)                          >
+<!ATTLIST msd                %a.ana;                       >
+
+<!ELEMENT ctag          (#PCDATA)                          >
+<!ATTLIST ctag          %a.ana;                            
+          certainty     CDATA               #IMPLIED       >
+

@@ -1,0 +1,10 @@
+[PropertyInfo]
+autoSaving,boolean,false,false, , ,true,<default>
+lrTypes,List,false,false, , ,true,<default>
+storageDir,File,false,false, , ,true,<default>
+storageUrl,URL,false,false, , ,true,<default>
+[IconNames]
+
+
+
+

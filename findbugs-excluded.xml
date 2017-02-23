@@ -1,0 +1,29 @@
+<FindBugsFilter>
+   <Match>
+      <Or>
+         <!--
+         It isn't always clear what encoding should be used so for now we're going to
+         ignore these. We'll revist this issue at some future point.
+         -->
+         <Bug pattern="DM_DEFAULT_ENCODING" />
+         <Bug pattern="DM_CONVERT_CASE" />
+
+         <!--
+         Whilst unused private methods are indicative of bad code, at the moment we don't
+         really care about them too much, so just for now we'll ignore them
+         -->
+         <Bug pattern="UPM_UNCALLED_PRIVATE_METHOD" />
+      </Or>
+   </Match>
+
+   <!--
+   Don't bother checking packages where the code is auto-generated or included via jar-jar
+   as there is nothing we can do to fix any errors that are found anyway.
+   -->
+   <Match>
+      <Or>
+         <Package name="~gate\.creole\.annic\.apache\.lucene.*" />
+         <Package name="~gate\.resources\.img\.svg.*" />
+      </Or>
+   </Match>
+</FindBugsFilter>

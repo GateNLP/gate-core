@@ -1,0 +1,5 @@
+gate-developer: shlib-without-PT_GNU_STACK-section
+gate-developer: unstripped-binary-or-object
+gate-developer: menu-icon-missing /usr/share/icons/sun-java6.xpm
+gate-developer: menu-icon-missing /usr/share/pixmaps/sun-java6.xpm
+gate-developer: package-contains-empty-directory
