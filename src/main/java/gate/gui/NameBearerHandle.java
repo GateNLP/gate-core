@@ -1459,7 +1459,7 @@ public class NameBearerHandle implements Handle, StatusListener,
       if(largeView instanceof VisualResource) {
         // we only had a view so no tabbed pane was used
         if(largeView instanceof ActionsPublisher)
-          actionPublishers.remove(largeView);
+          actionPublishers.remove((ActionsPublisher)largeView);
         Factory.deleteResource((VisualResource)largeView);
       }
       else {
@@ -1479,7 +1479,7 @@ public class NameBearerHandle implements Handle, StatusListener,
       if(smallView instanceof VisualResource) {
         // we only had a view so no tabbed pane was used
         if(smallView instanceof ActionsPublisher)
-          actionPublishers.remove(smallView);
+          actionPublishers.remove((ActionsPublisher)smallView);
         Factory.deleteResource((VisualResource)smallView);
       }
       else {
