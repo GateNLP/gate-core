@@ -14,30 +14,6 @@
 
 package gate.gui.creole.manager;
 
-import gate.Gate;
-import gate.creole.Plugin;
-import gate.gui.MainFrame;
-import gate.resources.img.svg.AddIcon;
-import gate.resources.img.svg.AdvancedIcon;
-import gate.resources.img.svg.AvailableIcon;
-import gate.resources.img.svg.DownloadIcon;
-import gate.resources.img.svg.EditIcon;
-import gate.resources.img.svg.GATEUpdateSiteIcon;
-import gate.resources.img.svg.InvalidIcon;
-import gate.resources.img.svg.OpenFileIcon;
-import gate.resources.img.svg.RefreshIcon;
-import gate.resources.img.svg.RemoveIcon;
-import gate.resources.img.svg.UpdateSiteIcon;
-import gate.resources.img.svg.UpdatesIcon;
-import gate.swing.CheckBoxTableCellRenderer;
-import gate.swing.IconTableCellRenderer;
-import gate.swing.SpringUtilities;
-import gate.swing.XJFileChooser;
-import gate.swing.XJTable;
-import gate.util.Files;
-import gate.util.OptionsMap;
-import gate.util.VersionComparator;
-
 import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -101,6 +77,31 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.taskdefs.Expand;
 
+import gate.Gate;
+import gate.creole.Plugin;
+import gate.gui.MainFrame;
+import gate.resources.img.svg.AddIcon;
+import gate.resources.img.svg.AdvancedIcon;
+import gate.resources.img.svg.AvailableIcon;
+import gate.resources.img.svg.DownloadIcon;
+import gate.resources.img.svg.EditIcon;
+import gate.resources.img.svg.GATEUpdateSiteIcon;
+import gate.resources.img.svg.InvalidIcon;
+import gate.resources.img.svg.OpenFileIcon;
+import gate.resources.img.svg.RefreshIcon;
+import gate.resources.img.svg.RemoveIcon;
+import gate.resources.img.svg.UpdateSiteIcon;
+import gate.resources.img.svg.UpdatesIcon;
+import gate.swing.CheckBoxTableCellRenderer;
+import gate.swing.IconTableCellRenderer;
+import gate.swing.SpringUtilities;
+import gate.swing.XJFileChooser;
+import gate.swing.XJTable;
+import gate.util.Files;
+import gate.util.OptionsMap;
+import gate.util.Strings;
+import gate.util.VersionComparator;
+
 /**
  * The CREOLE plugin manager which includes the ability to download and
  * install/update plugins from remote update sites.
@@ -154,7 +155,7 @@ public class PluginUpdateManager extends JDialog {
       "BGLangTools",
       "http://www.grigoriliev.com/bglangtools/plugins/gate/gate-update-site.xml"};
 
-  public static File getUserPluginsHome() {
+public static File getUserPluginsHome() {
     
     if(userPluginDir == null) {
       String upd = System.getProperty(GATE_USER_PLUGINS, Gate.getUserConfig().getString(GATE_USER_PLUGINS));
@@ -167,6 +168,19 @@ public class PluginUpdateManager extends JDialog {
         }
       }
     }
+    
+    if (userPluginDir == null) {
+      String filePrefix = "";
+      if(Gate.runningOnUnix()) filePrefix = ".";
+
+      String userPluginName =
+        System.getProperty("user.home") + Strings.getFileSep() + filePrefix
+          + "gate-plugins";
+      
+      userPluginDir = new File(userPluginName);
+      userPluginDir.mkdirs();
+    }
+    
     return userPluginDir;
   }
 
