@@ -369,13 +369,15 @@ public abstract class Factory {
         }
         if(sourceUrl != null) {
           URI sourceURI = sourceUrl.toURI();
-          resourceName = sourceURI.getPath().trim();
-          if(resourceName.length() == 0
-                  || resourceName.equals("/")) {
+          resourceName = sourceURI.getPath();
+          if(resourceName == null ||
+             resourceName.length() == 0 ||
+             resourceName.equals("/")) {
             // this URI has no path -> use the whole string
             resourceName = sourceURI.toString();
           } else {
             // there is a significant path value -> get the last element
+            resourceName = resourceName.trim();
             int lastSlash = resourceName.lastIndexOf('/');
             if(lastSlash >= 0) {
               String subStr = resourceName.substring(lastSlash + 1);
