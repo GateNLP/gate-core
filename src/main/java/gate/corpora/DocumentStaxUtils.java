@@ -485,6 +485,7 @@ public class DocumentStaxUtils {
     while((eventType = xsr.next()) != XMLStreamConstants.END_ELEMENT) {
       switch(eventType) {
         case XMLStreamConstants.CHARACTERS:
+        case XMLStreamConstants.CDATA:
           textBuf.append(xsr.getTextCharacters(), xsr.getTextStart(), xsr
                   .getTextLength());
           break;
