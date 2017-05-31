@@ -733,11 +733,7 @@ public class SerialCorpusImpl extends AbstractLanguageResource
     Iterator<DocumentData> iter = docDataList.iterator();
     for(index = 0; iter.hasNext(); index++) {
       docData = iter.next();
-      // TODO: temporary NPE guard, see issue #
-      // Sometimes the result of docData.getPersistentID() can be null here
-      // but it probably should not.
-      if(docData.getDocumentName().equals(doc.getName())
-              && docData.getPersistentID() != null 
+      if(docData.getDocumentName().equals(doc.getName()) 
 	      && docData.getPersistentID().equals(doc.getLRPersistenceId())
               && docData.getClassType().equals(doc.getClass().getName())) {
         found = true;

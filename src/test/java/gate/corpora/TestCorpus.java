@@ -37,10 +37,10 @@ public class TestCorpus extends TestCase
 
   /** Corpus creation */
   public void testCreation() throws Exception {
-    Corpus c = Factory.newCorpus("test corpus");
+    Corpus c = Factory.newCorpus("test corpus1");
 
     assertTrue(c.isEmpty());
-    assertTrue(c.getName().equals("test corpus"));
+    assertTrue(c.getName().equals("test corpus1"));
 
     c.setFeatures(new SimpleFeatureMapImpl());
     c.getFeatures().put("author", "hamish");
@@ -60,7 +60,7 @@ public class TestCorpus extends TestCase
 
   /** Add some documents */
   public void testDocumentAddition() throws Exception {
-    Corpus c = Factory.newCorpus("test corpus");
+    Corpus c = Factory.newCorpus("test corpus3");
     Document d1 = Factory.newDocument("a document");
     Document d2 = Factory.newDocument("another document");
     d2.setSourceUrl(new URL("http://localhost/1"));
