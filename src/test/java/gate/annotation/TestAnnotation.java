@@ -23,6 +23,7 @@ import junit.framework.*;
 
 import gate.*;
 import gate.corpora.TestDocument;
+import gate.event.AnnotationListener;
 import gate.util.*;
 
 /** Tests for the Annotation classes
@@ -1190,7 +1191,22 @@ public class TestAnnotation extends TestCase
     }
   } // testDocumentOrder()
   
-  
+  public void testAddDuplicateID() throws Exception {
+	  	  
+	  Document doc = Factory.newDocument("This is a simple test document");
+	  
+	  AnnotationSet annots = doc.getAnnotations();
+	  
+	  Integer id = annots.add(0L, 4L, "A", Factory.newFeatureMap());
+	  
+	  //this is needed to ensure the by type index is created
+	  assertEquals("Original annotation not created",1,annots.get("A").size());	  
+	  
+	  annots.add(id,0L,4L,"B", Factory.newFeatureMap());
+	  
+	  assertEquals("New annotation not created",1, annots.get("B").size());
+	  assertEquals("Original annotation not removed",0, annots.get("A").size());
+  }  
   
   public static void main(String[] args){
 

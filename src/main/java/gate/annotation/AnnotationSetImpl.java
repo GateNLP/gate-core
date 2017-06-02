@@ -797,7 +797,13 @@ public class AnnotationSetImpl extends AbstractSet<Annotation> implements
   /** Add an existing annotation. Returns true when the set is modified. */
   @Override
   public boolean add(Annotation a) throws ClassCastException {
-    Object oldValue = annotsById.put(a.getId(), a);
+    Annotation oldValue = annotsById.put(a.getId(), a);
+    
+    if (oldValue != null) {
+    	if (annotsByType != null) removeFromTypeIndex(oldValue);
+    	if (annotsByStartNode != null) removeFromOffsetIndex(oldValue);
+    }
+    
     if(annotsByType != null) addToTypeIndex(a);
     if(annotsByStartNode != null) addToStartOffsetIndex(a);
     AnnotationSetEvent evt = new AnnotationSetEvent(this,
