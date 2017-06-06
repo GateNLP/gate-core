@@ -84,7 +84,7 @@ public class Utils {
     // Without this we wouldn't be able to find SNAPSHOT builds of plugins we
     // haven't built and installed locally ourselves
     RemoteRepository gateRepo = new RemoteRepository.Builder("gate", "default",
-        "http://repo.gate.ac.uk").build();
+        "http://repo.gate.ac.uk/content/groups/public/").build();
 
     repos.add(central);
     repos.add(gateRepo);
