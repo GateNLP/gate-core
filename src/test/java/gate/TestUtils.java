@@ -35,7 +35,6 @@ public class TestUtils extends TestCase
   @Override
   public void setUp() throws Exception
   {
-    Gate.setNetConnected(false);
     if (Gate.getGateHome() == null) Gate.init();
   } // setUp
 

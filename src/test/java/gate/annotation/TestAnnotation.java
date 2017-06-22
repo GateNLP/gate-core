@@ -49,7 +49,6 @@ public class TestAnnotation extends TestCase
   @Override
   public void setUp() throws Exception
   {
-	Gate.setNetConnected(false);
 	  if (Gate.getGateHome() == null)
 	    Gate.init();
     FeatureMap params = Factory.newFeatureMap();

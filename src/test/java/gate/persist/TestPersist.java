@@ -394,9 +394,6 @@ public class TestPersist extends TestCase {
 
   public static void main(String[] args) {
     try {
-
-      Gate.setLocalWebServer(false);
-      Gate.setNetConnected(false);
       Gate.init();
 
       TestPersist test = new TestPersist("");

@@ -114,13 +114,7 @@ public class Main {
 
     // process command-line options
     processArgs(args);
-
-    // GATE builtins should be loaded from the jar (or classes dir), not
-    // from a web server (we load them over the web during testing to
-    // make sure that users can load their own that way)
-    Gate.setNetConnected(false);
-    Gate.setLocalWebServer(false);
-
+    
     runGui();
   } // main
 

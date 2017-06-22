@@ -574,19 +574,6 @@ public class Gate implements GateConstants {
     return gateHome;
   }
 
-  /** Should we assume we're connected to the net? */
-  public static boolean isNetConnected() {
-    return netConnected;
-  }
-
-  /**
-   * Tell GATE whether to assume we're connected to the net. Has to be called
-   * <B>before</B> {@link #init()}.
-   */
-  public static void setNetConnected(boolean b) {
-    netConnected = b;
-  }
-
   /**
    * Checks whether a particular class is a Gate defined type
    */
