@@ -16,6 +16,26 @@
 
 package gate;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.StringTokenizer;
+
+import org.apache.log4j.Logger;
+
 import gate.config.ConfigDataProcessor;
 import gate.creole.CreoleRegisterImpl;
 import gate.creole.Plugin;
@@ -29,31 +49,6 @@ import gate.util.GateException;
 import gate.util.GateRuntimeException;
 import gate.util.OptionsMap;
 import gate.util.Strings;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EventListener;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
-
-import org.apache.log4j.Logger;
 
 /**
  * The class is responsible for initialising the GATE libraries, and providing
@@ -511,97 +506,6 @@ public class Gate implements GateConstants {
   } // initConfigData()
 
   /**
-   * Get a URL that points to either an HTTP server or a file system that
-   * contains GATE files (such as test cases). The following locations are tried
-   * in sequence:
-   * <UL>
-   * <LI> <TT>http://derwent.dcs.shef.ac.uk/gate.ac.uk/</TT>, a
-   * Sheffield-internal development server (the gate.ac.uk affix is a copy of
-   * the file system present on GATE's main public server - see next item);
-   * <LI> <TT>http://gate.ac.uk/</TT>, GATE's main public server;
-   * <LI> <TT>http://localhost/gate.ac.uk/</TT>, a Web server running on the
-   * local machine;
-   * <LI> the local file system where the binaries for the current invocation of
-   * GATE are stored.
-   * </UL>
-   * In each case we assume that a Web server will be running on port 80, and
-   * that if we can open a socket to that port then the server is running. (This
-   * is a bit of a strong assumption, but this URL is used largely by the test
-   * suite, so we're not betting anything too critical on it.)
-   * <P>
-   * Note that the value returned will only be calculated when the existing
-   * value recorded by this class is null (which will be the case when neither
-   * setUrlBase nor getUrlBase have been called, or if setUrlBase(null) has been
-   * called).
-   */
-  public static URL getUrl() throws GateException {
-    if(urlBase != null) return urlBase;
-
-    try {
-
-      // if we're assuming a net connection, try network servers
-      if(isNetConnected()) {
-        if(
-        // tryNetServer("gate-internal.dcs.shef.ac.uk", 80, "/") ||
-        // tryNetServer("derwent.dcs.shef.ac.uk", 80, "/gate.ac.uk/") ||
-        tryNetServer("gate.ac.uk", 80, "/")) {
-          log.debug("getUrl() returned " + urlBase);
-          return urlBase;
-        }
-      } // if isNetConnected() ...
-
-      // no network servers; try for a local host web server.
-      // we use InetAddress to get host name instead of using "localhost" coz
-      // badly configured Windoze IP sometimes doesn't resolve the latter
-      if(isLocalWebServer()
-        && tryNetServer(InetAddress.getLocalHost().getHostName(), 80,
-          "/gate.ac.uk/")) {
-        log.debug("getUrlBase() returned " + urlBase);
-        return urlBase;
-      }
-
-      // try the local file system
-      tryFileSystem();
-
-    }
-    catch(MalformedURLException e) {
-      throw new GateException("Bad URL, getUrlBase(): " + urlBase + ": " + e);
-    }
-    catch(UnknownHostException e) {
-      throw new GateException("No host, getUrlBase(): " + urlBase + ": " + e);
-    }
-
-    // return value will be based on the file system, or null
-    log.debug("getUrlBase() returned " + urlBase);
-    return urlBase;
-  } // getUrl()
-
-  /**
-   * Get a URL that points to either an HTTP server or a file system that
-   * contains GATE files (such as test cases). Calls <TT>getUrl()</TT> then
-   * adds the <TT>path</TT> parameter to the result.
-   *
-   * @param path
-   *          a path to add to the base URL.
-   * @see #getUrl()
-   */
-  public static URL getUrl(String path) throws GateException {
-    getUrl();
-    if(urlBase == null) return null;
-
-    URL newUrl = null;
-    try {
-      newUrl = new URL(urlBase, path);
-    }
-    catch(MalformedURLException e) {
-      throw new GateException("Bad URL, getUrl( " + path + "): " + e);
-    }
-
-    log.debug("getUrl(" + path + ") returned " + newUrl);
-    return newUrl;
-  } // getUrl(path)
-
-  /**
    * Flag controlling whether we should try to access the net, e.g. when setting
    * up a base URL.
    */
@@ -684,86 +588,6 @@ public class Gate implements GateConstants {
   }
 
   /**
-   * Flag controlling whether we should try to access a web server on localhost,
-   * e.g. when setting up a base URL. Has to be called <B>before</B>
-   * {@link #init()}.
-   */
-  private static boolean localWebServer = false;
-
-  /** Should we assume there's a local web server? */
-  public static boolean isLocalWebServer() {
-    return localWebServer;
-  }
-
-  /** Tell GATE whether to assume there's a local web server. */
-  public static void setLocalWebServer(boolean b) {
-    localWebServer = b;
-  }
-
-  /**
-   * Try to contact a network server. When sucessfull sets urlBase to an HTTP
-   * URL for the server.
-   *
-   * @param hostName
-   *          the name of the host to try and connect to
-   * @param serverPort
-   *          the port to try and connect to
-   * @param path
-   *          a path to append to the URL when we make a successfull connection.
-   *          E.g. for host xyz, port 80, path /thing, the resultant URL would
-   *          be <TT>http://xyz:80/thing</TT>.
-   */
-  public static boolean tryNetServer(String hostName, int serverPort,
-    String path) throws MalformedURLException {
-
-    log.debug("tryNetServer(hostName=" + hostName + ", serverPort="
-        + serverPort + ", path=" + path + ")");
-
-    // is the host listening at the port?
-    try {
-      URL url = new URL("http://" + hostName + ":" + serverPort + "/");
-      URLConnection uConn = url.openConnection();
-      HttpURLConnection huConn = null;
-      if(uConn instanceof HttpURLConnection) huConn = (HttpURLConnection)uConn;
-      if(huConn.getResponseCode() == -1) return false;
-    }
-    catch(IOException e) {
-      return false;
-    }
-
-    // if(socket != null) {
-    urlBase = new URL("http", hostName, serverPort, path);
-    return true;
-    // }
-
-    // return false;
-  } // tryNetServer()
-
-  /** Try to find GATE files in the local file system */
-  protected static boolean tryFileSystem() throws MalformedURLException {
-    String urlBaseName = locateGateFiles();
-    log.debug("tryFileSystem: " + urlBaseName);
-
-    urlBase = new URL(urlBaseName + "gate/resources/gate.ac.uk/");
-    return urlBase == null;
-  } // tryFileSystem()
-
-  /**
-   * Find the location of the GATE binaries (and resources) in the local file
-   * system.
-   */
-  public static String locateGateFiles() {
-    String aGateResourceName = "gate/resources/creole/creole.xml";
-    URL resourcesUrl = Gate.getClassLoader().getResource(aGateResourceName);
-
-    StringBuffer basePath = new StringBuffer(resourcesUrl.toExternalForm());
-    String urlBaseName =
-      basePath.substring(0, basePath.length() - aGateResourceName.length());
-
-    return urlBaseName;
-  } // locateGateFiles
-
-  /**
    * Checks whether a particular class is a Gate defined type
    */
   public static boolean isGateType(String classname) {
@@ -805,14 +629,6 @@ public class Gate implements GateConstants {
   public static synchronized void addCreoleListener(CreoleListener l) {
     creoleRegister.addCreoleListener(l);
   } // addCreoleListener
-
-  /** Set the URL base for GATE files, e.g. <TT>http://gate.ac.uk/</TT>. */
-  public static void setUrlBase(URL urlBase) {
-    Gate.urlBase = urlBase;
-  }
-
-  /** The URL base for GATE files, e.g. <TT>http://gate.ac.uk/</TT>. */
-  private static URL urlBase = null;
 
   /**
    * Class loader used e.g. for loading CREOLE modules, of compiling JAPE rule
