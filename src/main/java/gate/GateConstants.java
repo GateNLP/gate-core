@@ -64,6 +64,7 @@ public interface GateConstants {
   public static final String SAVE_SESSION_ON_EXIT = "Save_session_on_exit";
 
   /** The key for saving the features when preserving format */
+  @Deprecated
   public static final String SAVE_FEATURES_WHEN_PRESERVING_FORMAT =
       "Save_features_when_preserving_format";
 

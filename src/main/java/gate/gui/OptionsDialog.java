@@ -176,11 +176,6 @@ public class OptionsDialog extends JDialog {
     saveSessionChk.setToolTipText(
       "Reloads the same resources in the tree on next start.");
 
-    includeFeaturesOnPreserveFormatChk = new JCheckBox(
-      "Include annotation features for \"Save preserving format\"",
-      userConfig.getBoolean(
-        GateConstants.SAVE_FEATURES_WHEN_PRESERVING_FORMAT));
-
     addSpaceOnMarkupUnpackChk = new JCheckBox(
       "Add space on markup unpack if needed", true);
     addSpaceOnMarkupUnpackChk.setToolTipText(
@@ -230,8 +225,6 @@ public class OptionsDialog extends JDialog {
     hBox.setBorder(BorderFactory.createTitledBorder(" Advanced features "));
     hBox.add(Box.createHorizontalStrut(5));
       vBox = Box.createVerticalBox();
-      vBox.add(includeFeaturesOnPreserveFormatChk);
-      vBox.add(Box.createVerticalStrut(5));
       vBox.add(addSpaceOnMarkupUnpackChk);
       vBox.add(Box.createVerticalStrut(5));
     hBox.add(vBox);
@@ -505,8 +498,6 @@ public class OptionsDialog extends JDialog {
         saveOptionsChk.isSelected());
       userConfig.put(GateConstants.SAVE_SESSION_ON_EXIT,
         saveSessionChk.isSelected());
-      userConfig.put(GateConstants.SAVE_FEATURES_WHEN_PRESERVING_FORMAT,
-        includeFeaturesOnPreserveFormatChk.isSelected());
       userConfig.put(GateConstants.DOCUMENT_ADD_SPACE_ON_UNPACK_FEATURE_NAME,
         addSpaceOnMarkupUnpackChk.isSelected());
       userConfig.put(MainFrame.class.getName()+".browsercommandline",
@@ -642,11 +633,6 @@ public class OptionsDialog extends JDialog {
    * The "Save Session on close" checkbox
    */
   protected JCheckBox saveSessionChk;
-
-  /**
-   * The "Include Annotation Features in Save Preserving Format" checkbox
-   */
-  protected JCheckBox includeFeaturesOnPreserveFormatChk;
 
   /**
    * The "Add extra space markup unpack if needed" checkbox
