@@ -311,6 +311,38 @@ public class MainFrame extends JFrame implements ProgressListener,
     Icon result = iconByName.get(baseName);
     if (result != null) return result;
     
+    // let's see if this is a new SVG based Icon which is actually a class and
+    // not an image, so we just try and load it via reflection
+    try {
+      @SuppressWarnings("unchecked")
+      Class<Icon> clazz =
+          (Class<Icon>)Class.forName("gate.resources.img.svg." + baseName + "Icon",true,classloader);
+      Constructor<Icon> con = clazz.getConstructor(int.class,int.class);
+      result = con.newInstance(24,24);
+      iconByName.put(baseName, result);
+      return result;
+    } catch(Exception e) {
+      //do nothing
+    }
+    
+    // let's see if this is an old name but for which an SVG has been recently added
+    // that we can then load by reflection
+    try {
+      String newName = String.format(
+          baseName.replaceAll("^(.)", "%S").replaceAll("\\-(.)", "%S"),
+          (Object[])(baseName.charAt(0) + "-" + baseName)
+              .replaceAll("[^-]*-(.)[^-]*", "$1-").split("-"));
+      @SuppressWarnings("unchecked")
+      Class<Icon> clazz =
+          (Class<Icon>)Class.forName("gate.resources.img.svg." + newName + "Icon",true,classloader);
+      Constructor<Icon> con = clazz.getConstructor(int.class,int.class);
+      result = con.newInstance(24,24);
+      iconByName.put(newName, result);
+      return result;
+    } catch(Exception e) {
+      //do nothing
+    }
+    
     for(int i = 0; i < ICON_EXTENSIONS.length ; i++) {
       String extension = ICON_EXTENSIONS[i];
       String fileName = baseName + extension;
@@ -335,19 +367,7 @@ public class MainFrame extends JFrame implements ProgressListener,
       }
     }
     
-    // let's see if this is a new SVG based Icon which is actually a class and
-    // not an image, so we just try and load it via reflection
-    try {
-      @SuppressWarnings("unchecked")
-      Class<Icon> clazz =
-          (Class<Icon>)Class.forName("gate.resources.img.svg." + baseName + "Icon",true,classloader);
-      Constructor<Icon> con = clazz.getConstructor(int.class,int.class);
-      result = con.newInstance(24,24);
-      iconByName.put(baseName, result);
-      return result;
-    } catch(Exception e) {
-      //do nothing
-    }   
+       
     
     //if we got to here then we haven't found anything
     return null;
@@ -4751,7 +4771,7 @@ public class MainFrame extends JFrame implements ProgressListener,
           String text = (String) value;
           if (text.equals("GATE")) {
             textLabel.setText("Resources tree root ");
-            iconLabel.setIcon(getIcon("root"));
+            iconLabel.setIcon(getIcon("GATE"));
           } else if (text.equals("Applications")) {
             textLabel.setText("Applications: run processes on data ");
             iconLabel.setIcon(getIcon("applications"));
@@ -5081,7 +5101,7 @@ public class MainFrame extends JFrame implements ProgressListener,
       super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row,
         hasFocus);
       if(value == resourcesTreeRoot) {
-        setIcon(MainFrame.getIcon("root"));
+        setIcon(MainFrame.getIcon("GATE"));
         setToolTipText("Resources tree root ");
       }
       else if(value == applicationsRoot) {
