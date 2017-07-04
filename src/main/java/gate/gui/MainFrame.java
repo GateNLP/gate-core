@@ -164,6 +164,7 @@ import gate.creole.PackagedController;
 import gate.creole.Plugin;
 import gate.creole.ResourceData;
 import gate.creole.ResourceInstantiationException;
+import gate.creole.ResourceReference;
 import gate.creole.annic.Constants;
 import gate.event.CreoleEvent;
 import gate.event.CreoleListener;
@@ -2906,6 +2907,21 @@ public class MainFrame extends JFrame implements ProgressListener,
       this.pipelineURL = pipelineURL;
       this.icon = icon;
     }
+    
+    public LoadApplicationAction(String name, String icon, ResourceReference pipelineURL) {
+      super(name,MainFrame.getIcon(icon));
+      if (getValue(Action.SMALL_ICON) == null) putValue(Action.SMALL_ICON, MainFrame.getIcon("application"));
+      this.name = name;
+      try {
+        this.pipelineURL = pipelineURL.toURL();
+      }
+      catch (IOException e) {
+        throw new RuntimeException("ResourceReference cannot be converted to a URL which is odd",e);
+      }
+      this.icon = icon;
+    }
+    
+    
 
     @Override
     public void actionPerformed(ActionEvent e) {

@@ -1,23 +1,22 @@
 package gate.creole;
 
+import java.util.List;
+
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.Optional;
-
-import java.net.URL;
-import java.util.List;
 
 public abstract class PackagedController extends AbstractResource {
   
   private static final long serialVersionUID = -7281132236231594274L;
   
-  protected URL url;
+  protected ResourceReference url;
 
   @CreoleParameter
-  public void setPipelineURL(URL url) {
+  public void setPipelineURL(ResourceReference url) {
     this.url = url;
   }
 
-  public URL getPipelineURL() {
+  public ResourceReference getPipelineURL() {
     return url;
   }
   
