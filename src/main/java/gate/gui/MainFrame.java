@@ -320,11 +320,14 @@ public class MainFrame extends JFrame implements ProgressListener,
       // it from that path. If it does not start with '/', treat it as
       // relative to gate/resources/img for backwards compatibility
       if(fileName.charAt(0) == '/') {
-        iconURL = Files.getResource(fileName);
+        //iconURL = Files.getResource(fileName);
+        iconURL = classloader.getResource(fileName.substring(1));
       }
       else {
-        iconURL = Files.getGateResource("/img/" + fileName);
+        //iconURL = Files.getGateResource("/img/" + fileName);
+        iconURL = classloader.getResource("gate/resources/img/"+fileName);
       }
+
       if(iconURL != null) {
         result = new ImageIcon(iconURL);
         iconByName.put(baseName, result);

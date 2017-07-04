@@ -123,6 +123,9 @@ public class GateClassLoader extends URLClassLoader {
     if(getParent() == null) {
       result = Gate.getClassLoader().findResource(name);
       if(result != null) return result;
+      
+      result = Gate.getClassLoader().getParent().getResource(name);
+      if (result != null) return result;      
     }
 
     Set<GateClassLoader> children;
