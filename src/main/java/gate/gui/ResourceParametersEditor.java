@@ -15,25 +15,6 @@
 
 package gate.gui;
 
-import gate.DocumentFormat;
-import gate.Factory;
-import gate.FeatureMap;
-import gate.Gate;
-import gate.Resource;
-import gate.corpora.DocumentImpl;
-import gate.creole.Parameter;
-import gate.creole.ResourceData;
-import gate.creole.ResourceInstantiationException;
-import gate.event.CreoleEvent;
-import gate.event.CreoleListener;
-import gate.swing.XJFileChooser;
-import gate.swing.XJTable;
-import gate.util.Err;
-import gate.util.ExtensionFileFilter;
-import gate.util.GateException;
-import gate.util.GateRuntimeException;
-import gate.util.NameBearer;
-
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -61,6 +42,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -75,6 +57,25 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
+
+import gate.DocumentFormat;
+import gate.Factory;
+import gate.FeatureMap;
+import gate.Gate;
+import gate.Resource;
+import gate.corpora.DocumentImpl;
+import gate.creole.Parameter;
+import gate.creole.ResourceData;
+import gate.creole.ResourceInstantiationException;
+import gate.event.CreoleEvent;
+import gate.event.CreoleListener;
+import gate.swing.XJFileChooser;
+import gate.swing.XJTable;
+import gate.util.Err;
+import gate.util.ExtensionFileFilter;
+import gate.util.GateException;
+import gate.util.GateRuntimeException;
+import gate.util.NameBearer;
 
 /**
  * Allows the editing of a set of parameters for a resource. It needs a
@@ -417,7 +418,7 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
                 int index, boolean isSelected, boolean cellHasFocus) {
 
           setText(text);
-          setIcon(MainFrame.getIcon(iconName));
+          setIcon(icon);
           return this;
         }
       }
@@ -430,10 +431,11 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
       ParameterDisjunction pDisj = (ParameterDisjunction)value;
       text = pDisj.getName();
       String type = pDisj.getType();
-      iconName = "param";
+      //iconName = "param";
+      
       if(Gate.isGateType(type)) {
         ResourceData rData = Gate.getCreoleRegister().get(type);
-        if(rData != null) iconName = rData.getIcon();
+        if(rData != null) icon = MainFrame.getIcon(rData.getIcon(),rData.getResourceClassLoader());
       }
       if(pDisj.size() > 1) {
         combo.setModel(new DefaultComboBoxModel(new Object[] {text}));
@@ -442,14 +444,21 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
       // prepare the renderer
       super.getTableCellRendererComponent(table, text, isSelected,
         hasFocus, row, column);
-      setIcon(MainFrame.getIcon(iconName));
+      
+      if (icon == null) {
+        icon = MainFrame.getIcon("param");
+      }
+      
+      setIcon(icon);
+      
       return this;
     }// public Component getTableCellRendererComponent
 
     // combobox used for OR parameters
     JComboBox combo;
 
-    String iconName;
+    //String iconName;
+    Icon icon = null;
 
     String text;
   }// class ParameterDisjunctionRenderer
@@ -649,7 +658,7 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
 
           setText((String)value);
 
-          String iconName = "param";
+          setIcon(MainFrame.getIcon("param"));
           Parameter[] params = pDisj.getParameters();
           for(int i = 0; i < params.length; i++) {
             Parameter param = params[i];
@@ -658,13 +667,15 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
               if(Gate.getCreoleRegister().containsKey(type)) {
                 ResourceData rData = Gate.getCreoleRegister()
                         .get(type);
-                if(rData != null) iconName = rData.getIcon();
+                if(rData != null)
+                  setIcon(MainFrame.getIcon(rData.getIcon(),
+                      rData.getResourceClassLoader()));
               }
               break;
             }// if(params[i].getName().equals(value))
           }// for(int i = 0; params.length; i++)
 
-          setIcon(MainFrame.getIcon(iconName));
+          
           return this;
         }
       } // class CustomRenderer extends JLabel implements

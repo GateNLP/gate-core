@@ -235,12 +235,15 @@ public class ResourceData extends AbstractFeatureBearer
     */
   public Class<? extends Resource> getResourceClass() throws ClassNotFoundException {
     if(resourceClass == null) {
-      GateClassLoader classLoader = Gate.getClassLoader().getDisposableClassLoader(xmlFileUrl.toExternalForm());
-      resourceClass = classLoader.loadClass(className).asSubclass(Resource.class);
+      resourceClass = getResourceClassLoader().loadClass(className).asSubclass(Resource.class);
     }
 
     return resourceClass;
   } // getResourceClass
+  
+  public ClassLoader getResourceClassLoader() {
+    return Gate.getClassLoader().getDisposableClassLoader(xmlFileUrl.toExternalForm());
+  }
 
   /** The jar file name of the resource */
   protected String jarFileName;

@@ -156,7 +156,7 @@ public class ResourceRenderer extends JLabel implements ListCellRenderer,
         else if(value instanceof Controller) iconName = "application";
       }
       icon = (iconName == null) ? null : MainFrame.getIcon(iconName);*/
-      icon = MainFrame.getIcon(rData.getIcon());
+      icon = MainFrame.getIcon(rData.getIcon(),rData.getResourceClassLoader());
     }
     else {
       icon = null;

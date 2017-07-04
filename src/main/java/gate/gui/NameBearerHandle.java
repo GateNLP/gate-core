@@ -104,25 +104,22 @@ public class NameBearerHandle implements Handle, StatusListener,
     actionPublishers = new ArrayList<ActionsPublisher>();
 
     sListenerProxy = new ProxyStatusListener();
-    String iconName = null;
+    
     if(target instanceof Resource) {
       rData = Gate.getCreoleRegister().get(target.getClass().getName());
       
-      iconName = (String)((Resource)target).getFeatures().get("gate.gui.icon");
+      String iconName = (String)((Resource)target).getFeatures().get("gate.gui.icon");
+     
+      if (iconName != null) {
+        icon = MainFrame.getIcon(iconName);
+      }
 
-      if(iconName == null || MainFrame.getIcon(iconName) == null) {
+      if(icon == null) {
         
         if(rData != null) {
-          iconName = rData.getIcon();
-          if(iconName == null) {
-            if(target instanceof Controller)
-              iconName = "application";
-            else if(target instanceof LanguageResource)
-              iconName = "lr";
-            else if(target instanceof ProcessingResource) iconName = "pr";
-          }          
+          icon = MainFrame.getIcon(rData.getIcon(),rData.getResourceClassLoader());
         } else {
-          iconName = "lr";
+          icon = MainFrame.getIcon("lr");
         }
       }
       
@@ -133,12 +130,10 @@ public class NameBearerHandle implements Handle, StatusListener,
       }      
     }
     else if(target instanceof DataStore) {
-      iconName = ((DataStore)target).getIconName();
+      this.icon = MainFrame.getIcon(((DataStore)target).getIconName());
       tooltipText = ((DataStore)target).getComment();
     }    
     
-    this.icon = MainFrame.getIcon(iconName);
-
     if(target instanceof ActionsPublisher)
       actionPublishers.add((ActionsPublisher)target);
 

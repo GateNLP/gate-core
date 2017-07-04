@@ -302,7 +302,11 @@ public class MainFrame extends JFrame implements ProgressListener,
 
   private static JDialog guiLock = null;
 
-  static public Icon getIcon(String baseName) {
+  public static Icon getIcon(String baseName) {
+    return getIcon(baseName, Gate.getClassLoader());
+  }
+  
+  public static Icon getIcon(String baseName, ClassLoader classloader) {
     //is the icon in the cache?
     Icon result = iconByName.get(baseName);
     if (result != null) return result;
@@ -333,7 +337,7 @@ public class MainFrame extends JFrame implements ProgressListener,
     try {
       @SuppressWarnings("unchecked")
       Class<Icon> clazz =
-          (Class<Icon>)Class.forName("gate.resources.img.svg." + baseName + "Icon",true,Gate.getClassLoader());
+          (Class<Icon>)Class.forName("gate.resources.img.svg." + baseName + "Icon",true,classloader);
       Constructor<Icon> con = clazz.getConstructor(int.class,int.class);
       result = con.newInstance(24,24);
       iconByName.put(baseName, result);
@@ -2879,14 +2883,20 @@ public class MainFrame extends JFrame implements ProgressListener,
     
     private URL pipelineURL;
 
-    public LoadApplicationAction(String name, URL pipelineURL) {
-      this(name,"application",pipelineURL);
+    public LoadApplicationAction(ResourceData rData, ResourceReference pipelineURL) {
+      super(rData.getName(),MainFrame.getIcon(rData.getIcon(),rData.getResourceClassLoader()));
+      if (getValue(Action.SMALL_ICON) == null) putValue(Action.SMALL_ICON, MainFrame.getIcon("application"));
+      this.name = rData.getName();
+      try {
+        this.pipelineURL = pipelineURL.toURL();
+      }
+      catch (IOException e) {
+        throw new RuntimeException("ResourceReference cannot be converted to a URL which is odd",e);
+      }
+      this.icon = rData.getIcon();
     }
     
-    public LoadApplicationAction(String name, File pipelineFile) {
-      this(name,"application",pipelineFile);
-    }
-    
+    @Deprecated
     public LoadApplicationAction(String name, String icon, File pipelineFile) {
       super(name,MainFrame.getIcon(icon));
       if (getValue(Action.SMALL_ICON) == null) putValue(Action.SMALL_ICON, MainFrame.getIcon("application"));
@@ -2900,29 +2910,6 @@ public class MainFrame extends JFrame implements ProgressListener,
       }
     }
     
-    public LoadApplicationAction(String name, String icon, URL pipelineURL) {
-      super(name,MainFrame.getIcon(icon));
-      if (getValue(Action.SMALL_ICON) == null) putValue(Action.SMALL_ICON, MainFrame.getIcon("application"));
-      this.name = name;
-      this.pipelineURL = pipelineURL;
-      this.icon = icon;
-    }
-    
-    public LoadApplicationAction(String name, String icon, ResourceReference pipelineURL) {
-      super(name,MainFrame.getIcon(icon));
-      if (getValue(Action.SMALL_ICON) == null) putValue(Action.SMALL_ICON, MainFrame.getIcon("application"));
-      this.name = name;
-      try {
-        this.pipelineURL = pipelineURL.toURL();
-      }
-      catch (IOException e) {
-        throw new RuntimeException("ResourceReference cannot be converted to a URL which is odd",e);
-      }
-      this.icon = icon;
-    }
-    
-    
-
     @Override
     public void actionPerformed(ActionEvent e) {
       if (pipelineURL == null) {
@@ -3031,7 +3018,7 @@ public class MainFrame extends JFrame implements ProgressListener,
       super(rData.getName());
       putValue(SHORT_DESCRIPTION, rData.getComment());
       this.rData = rData;
-      putValue(SMALL_ICON, getIcon(rData.getIcon()));
+      putValue(SMALL_ICON, getIcon(rData.getIcon(), rData.getResourceClassLoader()));
     } // NewResourceAction(ResourceData rData)
 
     @Override
@@ -5346,20 +5333,17 @@ public class MainFrame extends JFrame implements ProgressListener,
       super("Ready Made Applications");
       setIcon(new ReadyMadeIcon(24, 24));
       
-      
       final XJMenuItem annie = new XJMenuItem(new LoadApplicationAction("ANNIE",
           "annie-application", new File(new File(Gate.getPluginsHome(),
               ANNIEConstants.PLUGIN_DIR), ANNIEConstants.DEFAULT_FILE)),
           MainFrame.this);
       
-      final XJMenuItem lingPipe = new XJMenuItem(new LoadApplicationAction("LingPipe IE System",
+      final XJMenuItem lingPipe = new XJMenuItem(new LoadApplicationAction("LingPipe IE System", "application",
           new File(new File(Gate.getPluginsHome(), "LingPipe"),
               "resources/lingpipe.gapp")), MainFrame.this);
 
-      
-
       final XJMenuItem openNLP = new XJMenuItem(
-          new LoadApplicationAction("OpenNLP IE System", new File(new File(Gate
+          new LoadApplicationAction("OpenNLP IE System", "application", new File(new File(Gate
               .getPluginsHome(), "OpenNLP"), "resources/opennlp.gapp")),
           MainFrame.this);
 
@@ -5442,7 +5426,7 @@ public class MainFrame extends JFrame implements ProgressListener,
 
       final String[] menus = (res.getMenu() != null ? res.getMenu().toArray(new String[res.getMenu().size()]) : new String[]{getPluginName(rd.getXmlFileUrl())});
       
-      Action a = new LoadApplicationAction(rd.getName(), rd.getIcon() != null ? rd.getIcon() : "application", res.getPipelineURL());
+      Action a = new LoadApplicationAction(rd, res.getPipelineURL());
             
       // start by searching this menu
       XJMenu menuToUse = this;

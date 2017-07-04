@@ -217,7 +217,7 @@ public class DocumentExportMenu extends XJMenu implements CreoleListener {
     JMenuItem item =
             DocumentExportMenu.this.add(new AbstractAction(de.getFileType()
                     + " (." + de.getDefaultExtension() + ")", MainFrame
-                    .getIcon(rd.getIcon())) {
+                    .getIcon(rd.getIcon(),rd.getResourceClassLoader())) {
 
               @Override
               public void actionPerformed(ActionEvent ae) {
