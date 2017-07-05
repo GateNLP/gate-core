@@ -313,34 +313,23 @@ public class MainFrame extends JFrame implements ProgressListener,
     
     // let's see if this is a new SVG based Icon which is actually a class and
     // not an image, so we just try and load it via reflection
-    try {
-      @SuppressWarnings("unchecked")
-      Class<Icon> clazz =
-          (Class<Icon>)Class.forName("gate.resources.img.svg." + baseName + "Icon",true,classloader);
-      Constructor<Icon> con = clazz.getConstructor(int.class,int.class);
-      result = con.newInstance(24,24);
-      iconByName.put(baseName, result);
-      return result;
-    } catch(Exception e) {
-      //do nothing
-    }
+    String[] svgNames = new String[]{baseName, String.format(
+        baseName.replaceAll("^(.)", "%S").replaceAll("\\-(.)", "%S"),
+        (Object[])(baseName.charAt(0) + "-" + baseName)
+            .replaceAll("[^-]*-(.)[^-]*", "$1-").split("-")), baseName.toUpperCase()};
     
-    // let's see if this is an old name but for which an SVG has been recently added
-    // that we can then load by reflection
-    try {
-      String newName = String.format(
-          baseName.replaceAll("^(.)", "%S").replaceAll("\\-(.)", "%S"),
-          (Object[])(baseName.charAt(0) + "-" + baseName)
-              .replaceAll("[^-]*-(.)[^-]*", "$1-").split("-"));
-      @SuppressWarnings("unchecked")
-      Class<Icon> clazz =
-          (Class<Icon>)Class.forName("gate.resources.img.svg." + newName + "Icon",true,classloader);
-      Constructor<Icon> con = clazz.getConstructor(int.class,int.class);
-      result = con.newInstance(24,24);
-      iconByName.put(newName, result);
-      return result;
-    } catch(Exception e) {
-      //do nothing
+    for(String svgName : svgNames) {
+      try {
+        @SuppressWarnings("unchecked")
+        Class<Icon> clazz = (Class<Icon>)Class.forName(
+            "gate.resources.img.svg." + svgName + "Icon", true, classloader);
+        Constructor<Icon> con = clazz.getConstructor(int.class, int.class);
+        result = con.newInstance(24, 24);
+        iconByName.put(baseName, result);
+        return result;
+      } catch(Exception e) {
+        // do nothing
+      }
     }
     
     for(int i = 0; i < ICON_EXTENSIONS.length ; i++) {
@@ -361,6 +350,7 @@ public class MainFrame extends JFrame implements ProgressListener,
       }
 
       if(iconURL != null) {
+        log.info("Using a raster image " + baseName);
         result = new ImageIcon(iconURL);
         iconByName.put(baseName, result);
         return result;
@@ -574,7 +564,7 @@ public class MainFrame extends JFrame implements ProgressListener,
     if (Gate.getUserConfig().getBoolean(GateConstants.MAIN_FRAME_MAXIMIZED))
       setExtendedState(JFrame.MAXIMIZED_BOTH);
     
-    setIconImages(Arrays.asList(new Image[]{new GATEVersionIcon(64, 64).getImage(),
+    setIconImages(Arrays.asList(new Image[]{new GATEVersionIcon(256, 256).getImage(),new GATEVersionIcon(128, 128).getImage(),new GATEVersionIcon(64, 64).getImage(),
         new GATEVersionIcon(48, 48).getImage(), new GATEVersionIcon(32, 32).getImage(),
         new GATEIcon(22, 22).getImage(), new GATEIcon(16, 16).getImage()}));
     
@@ -4016,7 +4006,7 @@ public class MainFrame extends JFrame implements ProgressListener,
     public ExitGateAction() {
       super("Exit GATE");
       putValue(SHORT_DESCRIPTION, "Closes the application");
-      putValue(SMALL_ICON, getIcon("crystal-clear-action-exit"));
+      putValue(SMALL_ICON, getIcon("Exit"));
       putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt F4"));
     }
 

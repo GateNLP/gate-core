@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64px"
+   height="64px"
+   id="svg1314"
+   sodipodi:version="0.32"
+   inkscape:version="0.42"
+   sodipodi:docbase="/home/tamara/art/gate/icons"
+   sodipodi:docname="gate-remove-annotation.svg"
+   inkscape:export-filename="/home/tamara/art/gate/icons/gate-remove-annotation.png"
+   inkscape:export-xdpi="90.000000"
+   inkscape:export-ydpi="90.000000">
+  <defs
+     id="defs1316" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.5000000"
+     inkscape:cx="32.000000"
+     inkscape:cy="31.326939"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="753"
+     inkscape:window-height="521"
+     inkscape:window-x="196"
+     inkscape:window-y="319" />
+  <metadata
+     id="metadata1319">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <text
+       xml:space="preserve"
+       style="font-size:7.1688452px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Bitstream Vera Sans"
+       x="20.725035"
+       y="72.457397"
+       id="text1344"
+       transform="matrix(1.405307,0.217927,-0.391899,0.650815,0.000000,0.000000)"><tspan
+         sodipodi:role="line"
+         id="tspan1346"
+         x="20.725035"
+         y="72.457397">annotation</tspan></text>
+    <rect
+       style="opacity:1.0000000;fill:#009b00;fill-opacity:0.62222224;fill-rule:evenodd;stroke:none;stroke-width:1.0000000;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000"
+       id="rect1348"
+       width="33.699230"
+       height="5.5564480"
+       x="40.023968"
+       y="45.376354"
+       transform="matrix(0.984023,0.178043,-0.341322,0.939946,0.000000,0.000000)" />
+    <g
+       id="g1340"
+       transform="matrix(0.721375,0.563833,-0.556518,0.730858,26.15295,-22.86851)">
+      <path
+         id="rect1326"
+         d="M 34.506211,6.5062114 L 34.506211,57.506212 L 34.599961,57.506212 C 34.590521,57.581317 34.506211,57.648860 34.506211,57.724962 C 34.506211,59.678456 37.722982,61.233766 41.974961,61.693712 L 41.974961,71.818712 L 47.599961,67.818712 L 47.349961,61.631212 C 51.258372,61.078479 54.131211,59.574383 54.131211,57.724962 C 54.131211,57.625731 54.022199,57.541222 54.006211,57.443712 L 54.006211,6.5062114 L 34.506211,6.5062114 z "
+         style="opacity:1.0000000;fill:#009b00;fill-opacity:1.0000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.0124228;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000" />
+      <path
+         transform="translate(-2.318181,-7.681818)"
+         d="M 56.545454 14.000000 A 9.8181820 4.1818180 0 1 1  36.909090,14.000000 A 9.8181820 4.1818180 0 1 1  56.545454 14.000000 z"
+         sodipodi:ry="4.1818180"
+         sodipodi:rx="9.8181820"
+         sodipodi:cy="14.000000"
+         sodipodi:cx="46.727272"
+         id="path1324"
+         style="opacity:1.0000000;fill:#009b00;fill-opacity:1.0000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.0000000;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000"
+         sodipodi:type="arc" />
+    </g>
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 33.454545,46.000000 L 33.454545,46.000000 z "
+       id="path2102" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.80058205px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 21.322015,45.390589 C 26.132530,49.354622 26.132530,48.482535 26.132530,48.482535"
+       id="path2104" />
+    <text
+       xml:space="preserve"
+       style="font-size:32.000000px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Good Times"
+       x="5.3280001"
+       y="30.968"
+       id="text1312"
+       sodipodi:linespacing="125.00000%"><tspan
+         sodipodi:role="line"
+         id="tspan1314"
+         x="5.3280001"
+         y="30.968000">X</tspan></text>
+  </g>
+</svg>

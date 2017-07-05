@@ -16,24 +16,106 @@
 
 package gate.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
-import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.event.*;
+import java.util.TimerTask;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JProgressBar;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
-import gate.*;
-import gate.gui.docview.TextualDocumentView;
+import javax.swing.text.BadLocationException;
+
+import gate.Annotation;
+import gate.AnnotationSet;
+import gate.Document;
+import gate.Factory;
+import gate.FeatureMap;
+import gate.Gate;
+import gate.Resource;
 import gate.gui.docview.AnnotationSetsView;
-import gate.swing.XJTable;
+import gate.gui.docview.TextualDocumentView;
+import gate.resources.img.svg.AnnotationDiffIcon;
 import gate.swing.XJFileChooser;
-import gate.util.*;
+import gate.swing.XJTable;
+import gate.util.AnnotationDiffer;
+import gate.util.ExtensionFileFilter;
+import gate.util.GateException;
+import gate.util.GateRuntimeException;
+import gate.util.InvalidOffsetException;
+import gate.util.SimpleFeatureMapImpl;
+import gate.util.Strings;
 
 /**
  * Compare annotations in two annotation sets in one or two documents.
@@ -47,7 +129,8 @@ public class AnnotationDiffGUI extends JFrame{
 
   public AnnotationDiffGUI(String title){
     super(title);
-    setIconImage(((ImageIcon)MainFrame.getIcon("annotation-diff")).getImage());
+   
+    setIconImage((new AnnotationDiffIcon(64,64)).getImage());
     MainFrame.getGuiRoots().add(this);
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     initLocalData();
@@ -1297,7 +1380,7 @@ public class AnnotationDiffGUI extends JFrame{
     public HTMLExportAction(){
       putValue(SHORT_DESCRIPTION, "Export the results to HTML");
       putValue(SMALL_ICON,
-        MainFrame.getIcon("crystal-clear-app-download-manager"));
+        MainFrame.getIcon("Download"));
     }
     @Override
     public void actionPerformed(ActionEvent evt){
@@ -1496,7 +1579,7 @@ public class AnnotationDiffGUI extends JFrame{
     public HelpAction() {
       super();
       putValue(SHORT_DESCRIPTION, "User guide for this tool");
-      putValue(SMALL_ICON, MainFrame.getIcon("crystal-clear-action-info"));
+      putValue(SMALL_ICON, MainFrame.getIcon("Help"));
       putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("F1"));
     }
     @Override

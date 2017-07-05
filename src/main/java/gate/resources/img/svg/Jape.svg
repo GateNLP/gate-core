@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64px"
+   height="64px"
+   id="svg3749"
+   sodipodi:version="0.32"
+   inkscape:version="0.42"
+   sodipodi:docbase="/home/tamara/art/gate/icons"
+   sodipodi:docname="jape.svg"
+   inkscape:export-filename="/home/tamara/art/gate/icons/jape-grammar.png"
+   inkscape:export-xdpi="90.000000"
+   inkscape:export-ydpi="90.000000">
+  <defs
+     id="defs3751">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4493">
+      <stop
+         style="stop-color:#ff0000;stop-opacity:1;"
+         offset="0"
+         id="stop4495" />
+      <stop
+         style="stop-color:#ff0000;stop-opacity:0;"
+         offset="1"
+         id="stop4497" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4493"
+       id="linearGradient4499"
+       x1="75.635666"
+       y1="27.636364"
+       x2="36.353512"
+       y2="27.636364"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.5000000"
+     inkscape:cx="32.000000"
+     inkscape:cy="33.346122"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="753"
+     inkscape:window-height="521"
+     inkscape:window-x="169"
+     inkscape:window-y="456" />
+  <metadata
+     id="metadata3754">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+        <text
+       xml:space="preserve"
+       style="font-size:16.000000px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Good Times"
+       x="4.4120002"
+       y="28.959999"
+       id="text2064"
+       sodipodi:linespacing="125.00000%"><tspan
+         sodipodi:role="line"
+         id="tspan2066"
+         x="4.4120002"
+         y="28.959999"
+         style="font-size:16.000000px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;font-family:Good Times">Jape</tspan></text>
+    <g
+       id="g2119">
+      <path
+         d="M 31.614833,30.370503 C 32.388324,31.440419 33.434836,32.330324 34.438048,33.193864 C 35.113529,33.567135 35.846581,33.783886 36.525768,34.145956 C 36.819709,34.286759 37.116328,34.418515 37.407722,34.563211 L 35.848032,35.582603 C 35.558688,35.450231 35.272295,35.311905 34.981277,35.182997 C 34.294556,34.805342 33.535211,34.611038 32.882484,34.169605 C 31.860277,33.237679 30.807731,32.291520 29.930621,31.228652 L 31.614833,30.370503 z "
+         id="path2074"
+         style="fill:#ff6900;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000" />
+      <path
+         id="path2072"
+         d="M 12.500000,34.787900 C 36.500000,34.333355 36.500000,34.787900 36.500000,34.787900"
+         style="fill:#ff6900;fill-opacity:1.0000000;fill-rule:evenodd;stroke:#ff6100;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000" />
+      <path
+         d="M 31.707111,39.000000 C 32.480602,37.930084 33.527114,37.040179 34.530326,36.176639 C 35.205807,35.803368 35.938859,35.586617 36.618046,35.224547 C 36.911987,35.083744 37.208606,34.951988 37.500000,34.807292 L 35.940310,33.787900 C 35.650966,33.920272 35.364573,34.058598 35.073555,34.187506 C 34.386834,34.565161 33.627489,34.759465 32.974762,35.200898 C 31.952555,36.132824 30.900009,37.078983 30.022899,38.141851 L 31.707111,39.000000 z "
+         id="path2084"
+         style="fill:#ff6900;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000" />
+    </g>
+    <g
+       id="g2124">
+      <path
+         d="M 49.114833,38.000000 C 49.888324,39.069916 50.934836,39.959821 51.938048,40.823361 C 52.613529,41.196632 53.346581,41.413383 54.025768,41.775453 C 54.319709,41.916256 54.616328,42.048012 54.907722,42.192708 L 53.348032,43.212100 C 53.058688,43.079728 52.772295,42.941402 52.481277,42.812494 C 51.794556,42.434839 51.035211,42.240535 50.382484,41.799102 C 49.360277,40.867176 48.307731,39.921017 47.430621,38.858149 L 49.114833,38.000000 z "
+         id="path2099"
+         style="fill:#ff6900;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000" />
+      <path
+         id="path2103"
+         d="M 30.000000,42.417397 C 54.000000,41.962852 54.000000,42.417397 54.000000,42.417397"
+         style="fill:#ff6900;fill-opacity:1.0000000;fill-rule:evenodd;stroke:#ff6100;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000" />
+      <path
+         d="M 49.207111,46.629497 C 49.980602,45.559581 51.027114,44.669676 52.030326,43.806136 C 52.705807,43.432865 53.438859,43.216114 54.118046,42.854044 C 54.411987,42.713241 54.708606,42.581485 55.000000,42.436789 L 53.440310,41.417397 C 53.150966,41.549769 52.864573,41.688095 52.573555,41.817003 C 51.886834,42.194658 51.127489,42.388962 50.474762,42.830395 C 49.452555,43.762321 48.400009,44.708480 47.522899,45.771348 L 49.207111,46.629497 z "
+         id="path2105"
+         style="fill:#ff6900;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000" />
+    </g>
+  </g>
+</svg>

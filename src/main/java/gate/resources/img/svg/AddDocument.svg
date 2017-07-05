@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64px"
+   height="64px"
+   id="svg8248"
+   sodipodi:version="0.32"
+   inkscape:version="0.42"
+   sodipodi:docbase="/home/tamara/art/gate/icons"
+   sodipodi:docname="gate-add-document.svg"
+   inkscape:export-filename="/home/tamara/art/gate/icons/gate-add-document.png"
+   inkscape:export-xdpi="90.000000"
+   inkscape:export-ydpi="90.000000">
+  <defs
+     id="defs8250">
+    <linearGradient
+       id="linearGradient8279">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop8281" />
+      <stop
+         style="stop-color:#060101;stop-opacity:0.0000000;"
+         offset="1.0000000"
+         id="stop8283" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient8279"
+       id="linearGradient8287"
+       x1="42.181816"
+       y1="29.272726"
+       x2="10.363636"
+       y2="60.545452"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.977912,-2.323584e-7,-3.207452e-7,1.084488,15.32089,-20.44940)" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.5781250"
+     inkscape:cx="32.000000"
+     inkscape:cy="33.442931"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="753"
+     inkscape:window-height="521"
+     inkscape:window-x="0"
+     inkscape:window-y="27" />
+  <metadata
+     id="metadata8253">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <rect
+       style="opacity:1.0000000;fill:url(#linearGradient8287);fill-opacity:1.0000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.4769979;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000"
+       id="rect8256"
+       width="33.215229"
+       height="47.521305"
+       x="30.289078"
+       y="-8.3726339"
+       transform="matrix(0.910545,0.413410,-0.645587,0.763687,0.000000,0.000000)" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.0014782px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Bitstream Vera Sans"
+       x="36.805641"
+       y="-1.0250746"
+       id="text8265"
+       sodipodi:linespacing="125.00000%"
+       transform="matrix(0.872724,0.404192,-0.686205,0.828030,0.000000,0.000000)"><tspan
+         sodipodi:role="line"
+         x="36.805641"
+         y="-1.0250746"
+         id="tspan8269">GATE DOC</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:32.011826px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Good Times"
+       x="34.493401"
+       y="27.016533"
+       id="text8271"
+       sodipodi:linespacing="125.00000%"
+       transform="matrix(0.872724,0.404192,-0.686205,0.828030,0.000000,0.000000)"><tspan
+         sodipodi:role="line"
+         id="tspan8273"
+         x="34.493401"
+         y="27.016533">g</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:64.000000px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#009b00;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Good Times"
+       x="39.360001"
+       y="68.407997"
+       id="text1312"
+       sodipodi:linespacing="125.00000%"><tspan
+         sodipodi:role="line"
+         id="tspan1314"
+         x="39.360001"
+         y="68.407997">+</tspan></text>
+  </g>
+</svg>
