@@ -1152,7 +1152,7 @@ public class AnnotationDiffGUI extends JFrame{
       putValue(SHORT_DESCRIPTION,
         "Compare annotations between key and response sets");
       putValue(MNEMONIC_KEY, KeyEvent.VK_ENTER);
-      putValue(SMALL_ICON, MainFrame.getIcon("crystal-clear-action-run"));
+      putValue(SMALL_ICON, MainFrame.getIcon("Run"));
     }
 
     @Override
@@ -1304,7 +1304,7 @@ public class AnnotationDiffGUI extends JFrame{
           "&nbsp;&nbsp;<font color=\"#667799\"><small>Alt-Right" +
           "</small></font></html>");
       putValue(MNEMONIC_KEY, KeyEvent.VK_RIGHT);
-      putValue(SMALL_ICON, MainFrame.getIcon("crystal-clear-action-loopnone"));
+      putValue(SMALL_ICON, MainFrame.getIcon("RightArrow"));
     }
     @Override
     public void actionPerformed(ActionEvent evt){
