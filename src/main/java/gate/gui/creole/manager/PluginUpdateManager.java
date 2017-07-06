@@ -49,9 +49,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.GrayFilter;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -548,19 +546,17 @@ public static File getUserPluginsHome() {
     panel.add(tabs, BorderLayout.CENTER);
 
     // initialize all the different tabs
-    tabs.addTab("Installed Plugins", new AvailableIcon(20, 20), installed);
-    tabs.addTab("Available Updates", new UpdatesIcon(20, 20), buildUpdates());
-    tabs.addTab("Available to Install", new DownloadIcon(20, 20),
+    tabs.addTab("Installed Plugins", new AvailableIcon(MainFrame.ICON_DIMENSION), installed);
+    tabs.addTab("Available Updates", new UpdatesIcon(MainFrame.ICON_DIMENSION), buildUpdates());
+    tabs.addTab("Available to Install", new DownloadIcon(MainFrame.ICON_DIMENSION),
         buildAvailable());
-    tabs.addTab("Configuration", new AdvancedIcon(20, 20), buildConfig());
+    tabs.addTab("Configuration", new AdvancedIcon(MainFrame.ICON_DIMENSION), buildConfig());
     tabs.setDisabledIconAt(
         1,
-        new ImageIcon(GrayFilter.createDisabledImage((new UpdatesIcon(20, 20))
-            .getImage())));
+        new UpdatesIcon(MainFrame.ICON_DIMENSION,true));
     tabs.setDisabledIconAt(
         2,
-        new ImageIcon(GrayFilter.createDisabledImage((new DownloadIcon(20, 20))
-            .getImage())));
+        new DownloadIcon(MainFrame.ICON_DIMENSION,true));
     tabs.setEnabledAt(1, false);
     tabs.setEnabledAt(2, false);
 
