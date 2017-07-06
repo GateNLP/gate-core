@@ -143,6 +143,7 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.apache.tools.ant.taskdefs.optional.vss.MSVSSCHECKIN;
 
 import gate.Controller;
 import gate.CreoleRegister;
@@ -325,8 +326,8 @@ public class MainFrame extends JFrame implements ProgressListener,
         @SuppressWarnings("unchecked")
         Class<Icon> clazz = (Class<Icon>)Class.forName(
             "gate.resources.img.svg." + svgName + "Icon", true, classloader);
-        Constructor<Icon> con = clazz.getConstructor(int.class, int.class);
-        result = con.newInstance(24, 24);
+        Constructor<Icon> con = clazz.getConstructor(Dimension.class);
+        result = con.newInstance(ICON_DIMENSION);
         iconByName.put(baseName, result);
         return result;
       } catch(Exception e) {

@@ -107,6 +107,10 @@ import gate.Resource;
 import gate.gui.docview.AnnotationSetsView;
 import gate.gui.docview.TextualDocumentView;
 import gate.resources.img.svg.AnnotationDiffIcon;
+import gate.resources.img.svg.DocumentIcon;
+import gate.resources.img.svg.DownIcon;
+import gate.resources.img.svg.RightArrowIcon;
+import gate.resources.img.svg.RunIcon;
 import gate.swing.XJFileChooser;
 import gate.swing.XJTable;
 import gate.util.AnnotationDiffer;
@@ -292,6 +296,7 @@ public class AnnotationDiffGUI extends JFrame{
     diffAction = new DiffAction();
     diffAction.setEnabled(false);
     doDiffBtn = new JButton(diffAction);
+    doDiffBtn.setDisabledIcon(new RunIcon(MainFrame.ICON_DIMENSION,true));
     doDiffBtn.setForeground((Color)
       UIManager.getDefaults().get("Button.disabledText"));
     doDiffBtn.setToolTipText("Choose two annotation sets "
@@ -571,6 +576,7 @@ public class AnnotationDiffGUI extends JFrame{
     copyToTargetSetAction = new CopyToTargetSetAction();
     copyToTargetSetAction.setEnabled(false);
     copyToConsensusBtn = new JButton(copyToTargetSetAction);
+    copyToConsensusBtn.setDisabledIcon(new RightArrowIcon(MainFrame.ICON_DIMENSION,true));
     constraints2.gridwidth = 2;
     adjudicationPane.add(copyToConsensusBtn, constraints2);
 
@@ -602,6 +608,7 @@ public class AnnotationDiffGUI extends JFrame{
       showDocumentAction = new ShowDocumentAction();
       showDocumentAction.setEnabled(false);
       showDocumentBtn = new JButton(showDocumentAction);
+      showDocumentBtn.setDisabledIcon(new DocumentIcon(MainFrame.ICON_DIMENSION,true));
       showDocumentBtn.setToolTipText("Use first the \"Compare\"" +
         " button then select an annotation in the table.");
       toolbar.add(showDocumentBtn);
@@ -609,6 +616,7 @@ public class AnnotationDiffGUI extends JFrame{
     htmlExportAction = new HTMLExportAction();
     htmlExportAction.setEnabled(false);
     htmlExportBtn = new JButton(htmlExportAction);
+    htmlExportBtn.setDisabledIcon(new DownIcon(MainFrame.ICON_DIMENSION,true));
     htmlExportBtn.setToolTipText("Use first the \"Compare\" button.");
     toolbar.add(htmlExportBtn);
     if (!isStandalone) {
