@@ -353,7 +353,10 @@ public class MainFrame extends JFrame implements ProgressListener,
       }
 
       if(iconURL != null) {
-        log.info("Using a raster image " + baseName);
+        RuntimeException exception = new RuntimeException("using a raster image: " + baseName);
+        exception.fillInStackTrace();
+        exception.printStackTrace(System.out);
+        
         result = new ImageIcon(iconURL);
         iconByName.put(baseName, result);
         return result;

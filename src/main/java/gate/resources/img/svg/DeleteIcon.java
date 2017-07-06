@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
  * href="http://englishjavadrinker.blogspot.com/search/label/SVGRoundTrip">SVGRoundTrip</a>.
  */
 @SuppressWarnings("unused")
-public class ResetIcon implements
+public class DeleteIcon implements
 		javax.swing.Icon {
 		
 	private static Color getColor(int red, int green, int blue, int alpha, boolean disabled) {
@@ -224,11 +224,11 @@ g.setClip(clip_);
 	/**
 	 * Creates a new transcoded SVG image.
 	 */
-	public ResetIcon() {
+	public DeleteIcon() {
         this(getOrigWidth(),getOrigHeight(),false);
 	}
 	
-	public ResetIcon(boolean disabled) {
+	public DeleteIcon(boolean disabled) {
         this(getOrigWidth(),getOrigHeight(),disabled);
 	}
 	
@@ -237,19 +237,19 @@ g.setClip(clip_);
 	 *
 	 * @param size the dimensions of the icon
 	 */
-	public ResetIcon(Dimension size) {
+	public DeleteIcon(Dimension size) {
 		this(size.width, size.height, false);
 	}
 	
-	public ResetIcon(Dimension size, boolean disabled) {
+	public DeleteIcon(Dimension size, boolean disabled) {
 		this(size.width, size.height, disabled);
 	}
 
-	public ResetIcon(int width, int height) {
+	public DeleteIcon(int width, int height) {
 		this(width, height, false);
 	}
 	
-	public ResetIcon(int width, int height, boolean disabled) {
+	public DeleteIcon(int width, int height, boolean disabled) {
 		this.width = width;
 		this.height = height;
 		this.disabled = disabled;

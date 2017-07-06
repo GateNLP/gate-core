@@ -17,27 +17,6 @@
 
 package gate.gui.creole.manager;
 
-import gate.Gate;
-import gate.Gate.ResourceInfo;
-import gate.creole.CreoleRegisterImpl;
-import gate.creole.Plugin;
-import gate.gui.MainFrame;
-import gate.resources.img.svg.AddIcon;
-import gate.resources.img.svg.AvailableIcon;
-import gate.resources.img.svg.GATEIcon;
-import gate.resources.img.svg.InvalidIcon;
-import gate.resources.img.svg.MavenIcon;
-import gate.resources.img.svg.OpenFileIcon;
-import gate.resources.img.svg.RemotePluginIcon;
-import gate.resources.img.svg.RemoveIcon;
-import gate.resources.img.svg.ResetIcon;
-import gate.resources.img.svg.UserPluginIcon;
-import gate.swing.CheckBoxTableCellRenderer;
-import gate.swing.IconTableCellRenderer;
-import gate.swing.XJFileChooser;
-import gate.swing.XJTable;
-import gate.util.GateRuntimeException;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -89,6 +68,27 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+
+import gate.Gate;
+import gate.Gate.ResourceInfo;
+import gate.creole.CreoleRegisterImpl;
+import gate.creole.Plugin;
+import gate.gui.MainFrame;
+import gate.resources.img.svg.AddIcon;
+import gate.resources.img.svg.AvailableIcon;
+import gate.resources.img.svg.DeleteIcon;
+import gate.resources.img.svg.GATEIcon;
+import gate.resources.img.svg.InvalidIcon;
+import gate.resources.img.svg.MavenIcon;
+import gate.resources.img.svg.OpenFileIcon;
+import gate.resources.img.svg.RemotePluginIcon;
+import gate.resources.img.svg.RemoveIcon;
+import gate.resources.img.svg.UserPluginIcon;
+import gate.swing.CheckBoxTableCellRenderer;
+import gate.swing.IconTableCellRenderer;
+import gate.swing.XJFileChooser;
+import gate.swing.XJTable;
+import gate.util.GateRuntimeException;
 
 @SuppressWarnings("serial")
 public class AvailablePlugins extends JPanel {
@@ -146,7 +146,7 @@ public class AvailablePlugins extends JPanel {
     filterTextField.setToolTipText("Type some text to filter the table rows.");
     tbPluginDirs.add(filterTextField);
     JButton clearFilterButton =
-            new JButton(new AbstractAction(null, new ResetIcon(24, 24)) {
+            new JButton(new AbstractAction(null, new DeleteIcon(MainFrame.ICON_DIMENSION)) {
               {
                 this.putValue(MNEMONIC_KEY, KeyEvent.VK_BACK_SPACE);
                 this.putValue(SHORT_DESCRIPTION, "Clear text field");
