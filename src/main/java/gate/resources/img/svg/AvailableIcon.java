@@ -15,6 +15,22 @@ import javax.imageio.ImageIO;
 @SuppressWarnings("unused")
 public class AvailableIcon implements
 		javax.swing.Icon {
+		
+	private static Color getColor(int red, int green, int blue, int alpha, boolean disabled) {
+		
+		if (!disabled) return new Color(red, green, blue, alpha);
+		
+		int gray = (int)(((0.30f * red) + (0.59f * green) + (0.11f * blue))/3f);
+		
+		gray = Math.min(255, Math.max(0, gray));
+		
+		//This brightens the image the same as GrayFilter
+		int percent = 50;		
+		gray = (255 - ((255 - gray) * (100 - percent) / 100));
+
+		return new Color(gray, gray, gray, alpha);
+	}
+	
 	/**
 	 * Paints the transcoded SVG image on the specified graphics context. You
 	 * can install a custom transformation on the graphics context to scale the
@@ -23,7 +39,7 @@ public class AvailableIcon implements
 	 * @param g
 	 *            Graphics context.
 	 */
-	public static void paint(Graphics2D g) {
+	public static void paint(Graphics2D g, boolean disabled) {
         Shape shape = null;
         Paint paint = null;
         Stroke stroke = null;
@@ -66,7 +82,7 @@ Shape clip__0_0_0 = g.getClip();
 AffineTransform defaultTransform__0_0_0 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0_0 is ShapeNode
-paint = new LinearGradientPaint(new Point2D.Double(35.39246368408203, 39.27751541137695), new Point2D.Double(14.344165802001953, 16.685270309448242), new float[] {0.0f,1.0f}, new Color[] {new Color(84, 154, 16, 255),new Color(138, 226, 52, 255)}, MultipleGradientPaint.CycleMethod.NO_CYCLE, MultipleGradientPaint.ColorSpaceType.SRGB, new AffineTransform(-0.8936172127723694f, 0.0f, 0.0f, 0.8936172127723694f, 46.13726806640625f, 2.1063826084136963f));
+paint = new LinearGradientPaint(new Point2D.Double(35.39246368408203, 39.27751541137695), new Point2D.Double(14.344165802001953, 16.685270309448242), new float[] {0.0f,1.0f}, new Color[] {getColor(84, 154, 16, 255, disabled),getColor(138, 226, 52, 255, disabled)}, MultipleGradientPaint.CycleMethod.NO_CYCLE, MultipleGradientPaint.ColorSpaceType.SRGB, new AffineTransform(-0.8936172127723694f, 0.0f, 0.0f, 0.8936172127723694f, 46.13726806640625f, 2.1063826084136963f));
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(31.40295, 6.1635723);
 ((GeneralPath)shape).curveTo(31.46335, 7.3352723, 29.531975, 9.249755, 29.52396, 10.328466);
@@ -94,7 +110,7 @@ shape = new GeneralPath();
 ((GeneralPath)shape).closePath();
 g.setPaint(paint);
 g.fill(shape);
-paint = new Color(66, 132, 4, 255);
+paint = getColor(66, 132, 4, 255, disabled);
 stroke = new BasicStroke(0.8936167f,1,1,4.0f,null,0.0f);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(31.40295, 6.1635723);
@@ -134,7 +150,7 @@ Shape clip__0_0_1 = g.getClip();
 AffineTransform defaultTransform__0_0_1 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0_1 is ShapeNode
-paint = new LinearGradientPaint(new Point2D.Double(16.46140480041504, 15.329671859741211), new Point2D.Double(35.40412902832031, 43.02977752685547), new float[] {0.0f,1.0f}, new Color[] {new Color(255, 255, 255, 255),new Color(255, 255, 255, 0)}, MultipleGradientPaint.CycleMethod.NO_CYCLE, MultipleGradientPaint.ColorSpaceType.SRGB, new AffineTransform(-0.8936172127723694f, 0.0f, 0.0f, 0.8936172127723694f, 46.13726806640625f, 2.1063826084136963f));
+paint = new LinearGradientPaint(new Point2D.Double(16.46140480041504, 15.329671859741211), new Point2D.Double(35.40412902832031, 43.02977752685547), new float[] {0.0f,1.0f}, new Color[] {getColor(255, 255, 255, 255, disabled),getColor(255, 255, 255, 0, disabled)}, MultipleGradientPaint.CycleMethod.NO_CYCLE, MultipleGradientPaint.ColorSpaceType.SRGB, new AffineTransform(-0.8936172127723694f, 0.0f, 0.0f, 0.8936172127723694f, 46.13726806640625f, 2.1063826084136963f));
 stroke = new BasicStroke(0.8936171f,1,1,4.0f,null,0.0f);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(30.502682, 6.15792);
@@ -233,13 +249,21 @@ g.setClip(clip_);
 	 * The current height of this resizable icon.
 	 */
 	int height;
+	
+	/**
+	 * Should this icon be drawn in a disabled state
+	 */
+	boolean disabled = false;
 
 	/**
 	 * Creates a new transcoded SVG image.
 	 */
 	public AvailableIcon() {
-        this.width = getOrigWidth();
-        this.height = getOrigHeight();
+        this(getOrigWidth(),getOrigHeight(),false);
+	}
+	
+	public AvailableIcon(boolean disabled) {
+        this(getOrigWidth(),getOrigHeight(),disabled);
 	}
 	
 	/**
@@ -248,13 +272,21 @@ g.setClip(clip_);
 	 * @param size the dimensions of the icon
 	 */
 	public AvailableIcon(Dimension size) {
-	this.width = size.width;
-	this.height = size.width;
+		this(size.width, size.height, false);
+	}
+	
+	public AvailableIcon(Dimension size, boolean disabled) {
+		this(size.width, size.height, disabled);
 	}
 
 	public AvailableIcon(int width, int height) {
-	this.width = width;
-	this.height = height;
+		this(width, height, false);
+	}
+	
+	public AvailableIcon(int width, int height, boolean disabled) {
+		this.width = width;
+		this.height = height;
+		this.disabled = disabled;
 	}
 
 	/*
@@ -303,7 +335,7 @@ g.setClip(clip_);
 		double coef2 = (double) this.height / (double) getOrigHeight();
 		double coef = Math.min(coef1, coef2);
 		g2d.scale(coef, coef);
-		paint(g2d);
+		paint(g2d, disabled);
 		g2d.dispose();
 	}
 }

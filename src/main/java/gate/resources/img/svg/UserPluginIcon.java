@@ -15,6 +15,22 @@ import javax.imageio.ImageIO;
 @SuppressWarnings("unused")
 public class UserPluginIcon implements
 		javax.swing.Icon {
+		
+	private static Color getColor(int red, int green, int blue, int alpha, boolean disabled) {
+		
+		if (!disabled) return new Color(red, green, blue, alpha);
+		
+		int gray = (int)(((0.30f * red) + (0.59f * green) + (0.11f * blue))/3f);
+		
+		gray = Math.min(255, Math.max(0, gray));
+		
+		//This brightens the image the same as GrayFilter
+		int percent = 50;		
+		gray = (255 - ((255 - gray) * (100 - percent) / 100));
+
+		return new Color(gray, gray, gray, alpha);
+	}
+	
 	/**
 	 * Paints the transcoded SVG image on the specified graphics context. You
 	 * can install a custom transformation on the graphics context to scale the
@@ -23,7 +39,7 @@ public class UserPluginIcon implements
 	 * @param g
 	 *            Graphics context.
 	 */
-	public static void paint(Graphics2D g) {
+	public static void paint(Graphics2D g, boolean disabled) {
         Shape shape = null;
         Paint paint = null;
         Stroke stroke = null;
@@ -113,7 +129,7 @@ Shape clip__0_4_0_0 = g.getClip();
 AffineTransform defaultTransform__0_4_0_0 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_4_0_0 is ShapeNode
-paint = new Color(136, 138, 133, 255);
+paint = getColor(136, 138, 133, 255, disabled);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(35.94331, 41.63604);
 ((GeneralPath)shape).lineTo(25.336708, 41.63604);
@@ -125,7 +141,7 @@ shape = new GeneralPath();
 ((GeneralPath)shape).closePath();
 g.setPaint(paint);
 g.fill(shape);
-paint = new Color(85, 87, 83, 255);
+paint = getColor(85, 87, 83, 255, disabled);
 stroke = new BasicStroke(1.0f,1,1,4.0f,null,0.0f);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(35.94331, 41.63604);
@@ -149,7 +165,7 @@ Shape clip__0_4_0_1 = g.getClip();
 AffineTransform defaultTransform__0_4_0_1 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_4_0_1 is ShapeNode
-paint = new LinearGradientPaint(new Point2D.Double(30.93592071533203, 29.553485870361328), new Point2D.Double(30.93592071533203, 35.80348587036133), new float[] {0.0f,1.0f}, new Color[] {new Color(255, 255, 255, 255),new Color(201, 201, 201, 255)}, MultipleGradientPaint.CycleMethod.NO_CYCLE, MultipleGradientPaint.ColorSpaceType.SRGB, new AffineTransform(-1.0f, 0.0f, 0.0f, 1.0f, 61.929481506347656f, 0.0f));
+paint = new LinearGradientPaint(new Point2D.Double(30.93592071533203, 29.553485870361328), new Point2D.Double(30.93592071533203, 35.80348587036133), new float[] {0.0f,1.0f}, new Color[] {getColor(255, 255, 255, 255, disabled),getColor(201, 201, 201, 255, disabled)}, MultipleGradientPaint.CycleMethod.NO_CYCLE, MultipleGradientPaint.ColorSpaceType.SRGB, new AffineTransform(-1.0f, 0.0f, 0.0f, 1.0f, 61.929481506347656f, 0.0f));
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(35.236202, 25.726135);
 ((GeneralPath)shape).curveTo(32.054222, 28.554562, 30.640009, 38.80761, 30.640009, 38.80761);
@@ -168,7 +184,7 @@ Shape clip__0_4_0_2 = g.getClip();
 AffineTransform defaultTransform__0_4_0_2 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_4_0_2 is ShapeNode
-paint = new Color(211, 215, 207, 255);
+paint = getColor(211, 215, 207, 255, disabled);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(32.95676, 26.786797);
 ((GeneralPath)shape).curveTo(32.95676, 26.786797, 35.10808, 28.447132, 34.922752, 30.44733);
@@ -187,7 +203,7 @@ Shape clip__0_4_0_3 = g.getClip();
 AffineTransform defaultTransform__0_4_0_3 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_4_0_3 is ShapeNode
-paint = new Color(255, 255, 255, 255);
+paint = getColor(255, 255, 255, 255, disabled);
 stroke = new BasicStroke(0.99999976f,1,1,4.0f,null,0.0f);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(36.01462, 40.593933);
@@ -211,7 +227,7 @@ Shape clip__0_4_0_4 = g.getClip();
 AffineTransform defaultTransform__0_4_0_4 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_4_0_4 is ShapeNode
-paint = new Color(211, 215, 207, 255);
+paint = getColor(211, 215, 207, 255, disabled);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(28.518686, 26.786797);
 ((GeneralPath)shape).curveTo(28.518686, 26.786797, 26.367363, 28.447132, 26.552696, 30.44733);
@@ -230,7 +246,7 @@ Shape clip__0_4_0_5 = g.getClip();
 AffineTransform defaultTransform__0_4_0_5 = g.getTransform();
 g.transform(new AffineTransform(-1.0f, 0.0f, 0.0f, 1.0f, 62.054481506347656f, 3.5f));
 // _0_4_0_5 is ShapeNode
-paint = new RadialGradientPaint(new Point2D.Double(31.11269760131836, 19.008621215820312), 8.662058f, new Point2D.Double(31.11269760131836, 19.008621215820312), new float[] {0.0f,1.0f}, new Color[] {new Color(0, 0, 0, 255),new Color(0, 0, 0, 0)}, MultipleGradientPaint.CycleMethod.NO_CYCLE, MultipleGradientPaint.ColorSpaceType.SRGB, new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
+paint = new RadialGradientPaint(new Point2D.Double(31.11269760131836, 19.008621215820312), 8.662058f, new Point2D.Double(31.11269760131836, 19.008621215820312), new float[] {0.0f,1.0f}, new Color[] {getColor(0, 0, 0, 255, disabled),getColor(0, 0, 0, 0, disabled)}, MultipleGradientPaint.CycleMethod.NO_CYCLE, MultipleGradientPaint.ColorSpaceType.SRGB, new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(39.774754, 19.008621);
 ((GeneralPath)shape).curveTo(39.774754, 23.792543, 35.896618, 27.67068, 31.112696, 27.67068);
@@ -250,7 +266,7 @@ Shape clip__0_4_0_6 = g.getClip();
 AffineTransform defaultTransform__0_4_0_6 = g.getTransform();
 g.transform(new AffineTransform(-1.0f, 0.0f, 0.0f, 1.0f, 61.929481506347656f, 0.0f));
 // _0_4_0_6 is ShapeNode
-paint = new RadialGradientPaint(new Point2D.Double(29.34493064880371, 17.064077377319336), 9.162058f, new Point2D.Double(29.34493064880371, 17.064077377319336), new float[] {0.0f,1.0f}, new Color[] {new Color(244, 217, 177, 255),new Color(223, 151, 37, 255)}, MultipleGradientPaint.CycleMethod.NO_CYCLE, MultipleGradientPaint.ColorSpaceType.SRGB, new AffineTransform(0.7879980206489563f, 0.0f, 0.0f, 0.7879980206489563f, 6.221198081970215f, 3.617626905441284f));
+paint = new RadialGradientPaint(new Point2D.Double(29.34493064880371, 17.064077377319336), 9.162058f, new Point2D.Double(29.34493064880371, 17.064077377319336), new float[] {0.0f,1.0f}, new Color[] {getColor(244, 217, 177, 255, disabled),getColor(223, 151, 37, 255, disabled)}, MultipleGradientPaint.CycleMethod.NO_CYCLE, MultipleGradientPaint.ColorSpaceType.SRGB, new AffineTransform(0.7879980206489563f, 0.0f, 0.0f, 0.7879980206489563f, 6.221198081970215f, 3.617626905441284f));
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(39.774754, 19.008621);
 ((GeneralPath)shape).curveTo(39.774754, 23.792543, 35.896618, 27.67068, 31.112696, 27.67068);
@@ -260,7 +276,7 @@ shape = new GeneralPath();
 ((GeneralPath)shape).closePath();
 g.setPaint(paint);
 g.fill(shape);
-paint = new Color(193, 125, 17, 255);
+paint = getColor(193, 125, 17, 255, disabled);
 stroke = new BasicStroke(1.0f,1,1,4.0f,null,0.0f);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(39.774754, 19.008621);
@@ -282,7 +298,7 @@ Shape clip__0_4_0_7 = g.getClip();
 AffineTransform defaultTransform__0_4_0_7 = g.getTransform();
 g.transform(new AffineTransform(-0.8770949840545654f, 0.0f, 0.0f, 0.8770949840545654f, 58.10555648803711f, 2.3362669944763184f));
 // _0_4_0_7 is ShapeNode
-paint = new Color(255, 255, 255, 255);
+paint = getColor(255, 255, 255, 255, disabled);
 stroke = new BasicStroke(1.1401283f,1,1,4.0f,null,0.0f);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(39.774754, 19.008621);
@@ -304,7 +320,7 @@ Shape clip__0_4_0_8 = g.getClip();
 AffineTransform defaultTransform__0_4_0_8 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_4_0_8 is ShapeNode
-paint = new LinearGradientPaint(new Point2D.Double(20.66169548034668, 35.81797409057617), new Point2D.Double(22.626924514770508, 36.21775817871094), new float[] {0.0f,1.0f}, new Color[] {new Color(0, 0, 0, 255),new Color(0, 0, 0, 0)}, MultipleGradientPaint.CycleMethod.NO_CYCLE, MultipleGradientPaint.ColorSpaceType.SRGB, new AffineTransform(-0.9833750128746033f, 0.18158799409866333f, 0.18158799409866333f, 0.9833750128746033f, 55.6977653503418f, -2.651465892791748f));
+paint = new LinearGradientPaint(new Point2D.Double(20.66169548034668, 35.81797409057617), new Point2D.Double(22.626924514770508, 36.21775817871094), new float[] {0.0f,1.0f}, new Color[] {getColor(0, 0, 0, 255, disabled),getColor(0, 0, 0, 0, disabled)}, MultipleGradientPaint.CycleMethod.NO_CYCLE, MultipleGradientPaint.ColorSpaceType.SRGB, new AffineTransform(-0.9833750128746033f, 0.18158799409866333f, 0.18158799409866333f, 0.9833750128746033f, 55.6977653503418f, -2.651465892791748f));
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(40.07769, 40.775196);
 ((GeneralPath)shape).curveTo(41.3253, 40.23023, 41.883682, 38.91692, 41.883682, 38.91692);
@@ -323,7 +339,7 @@ Shape clip__0_4_0_9 = g.getClip();
 AffineTransform defaultTransform__0_4_0_9 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_4_0_9 is ShapeNode
-paint = new LinearGradientPaint(new Point2D.Double(22.686765670776367, 36.39039993286133), new Point2D.Double(21.40845489501953, 35.73963165283203), new float[] {0.0f,1.0f}, new Color[] {new Color(0, 0, 0, 255),new Color(0, 0, 0, 0)}, MultipleGradientPaint.CycleMethod.NO_CYCLE, MultipleGradientPaint.ColorSpaceType.SRGB, new AffineTransform(0.9776849746704102f, 0.2100750058889389f, -0.2100750058889389f, 0.9776849746704102f, 6.382382392883301f, -4.00770902633667f));
+paint = new LinearGradientPaint(new Point2D.Double(22.686765670776367, 36.39039993286133), new Point2D.Double(21.40845489501953, 35.73963165283203), new float[] {0.0f,1.0f}, new Color[] {getColor(0, 0, 0, 255, disabled),getColor(0, 0, 0, 0, disabled)}, MultipleGradientPaint.CycleMethod.NO_CYCLE, MultipleGradientPaint.ColorSpaceType.SRGB, new AffineTransform(0.9776849746704102f, 0.2100750058889389f, -0.2100750058889389f, 0.9776849746704102f, 6.382382392883301f, -4.00770902633667f));
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(20.734486, 39.854347);
 ((GeneralPath)shape).curveTo(19.39386, 38.99212, 18.94573, 37.7114, 18.94573, 37.7114);
@@ -404,13 +420,21 @@ g.setClip(clip_);
 	 * The current height of this resizable icon.
 	 */
 	int height;
+	
+	/**
+	 * Should this icon be drawn in a disabled state
+	 */
+	boolean disabled = false;
 
 	/**
 	 * Creates a new transcoded SVG image.
 	 */
 	public UserPluginIcon() {
-        this.width = getOrigWidth();
-        this.height = getOrigHeight();
+        this(getOrigWidth(),getOrigHeight(),false);
+	}
+	
+	public UserPluginIcon(boolean disabled) {
+        this(getOrigWidth(),getOrigHeight(),disabled);
 	}
 	
 	/**
@@ -419,13 +443,21 @@ g.setClip(clip_);
 	 * @param size the dimensions of the icon
 	 */
 	public UserPluginIcon(Dimension size) {
-	this.width = size.width;
-	this.height = size.width;
+		this(size.width, size.height, false);
+	}
+	
+	public UserPluginIcon(Dimension size, boolean disabled) {
+		this(size.width, size.height, disabled);
 	}
 
 	public UserPluginIcon(int width, int height) {
-	this.width = width;
-	this.height = height;
+		this(width, height, false);
+	}
+	
+	public UserPluginIcon(int width, int height, boolean disabled) {
+		this.width = width;
+		this.height = height;
+		this.disabled = disabled;
 	}
 
 	/*
@@ -474,7 +506,7 @@ g.setClip(clip_);
 		double coef2 = (double) this.height / (double) getOrigHeight();
 		double coef = Math.min(coef1, coef2);
 		g2d.scale(coef, coef);
-		paint(g2d);
+		paint(g2d, disabled);
 		g2d.dispose();
 	}
 }

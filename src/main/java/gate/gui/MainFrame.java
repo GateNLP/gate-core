@@ -208,6 +208,8 @@ public class MainFrame extends JFrame implements ProgressListener,
                                      StatusListener, CreoleListener, PluginListener {
 
   protected static final Logger log = Logger.getLogger(MainFrame.class);
+  
+  public static final Dimension ICON_DIMENSION = new Dimension(24, 24);
 
   protected JMenuBar menuBar;
 

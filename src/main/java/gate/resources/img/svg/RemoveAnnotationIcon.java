@@ -15,6 +15,22 @@ import javax.imageio.ImageIO;
 @SuppressWarnings("unused")
 public class RemoveAnnotationIcon implements
 		javax.swing.Icon {
+		
+	private static Color getColor(int red, int green, int blue, int alpha, boolean disabled) {
+		
+		if (!disabled) return new Color(red, green, blue, alpha);
+		
+		int gray = (int)(((0.30f * red) + (0.59f * green) + (0.11f * blue))/3f);
+		
+		gray = Math.min(255, Math.max(0, gray));
+		
+		//This brightens the image the same as GrayFilter
+		int percent = 50;		
+		gray = (255 - ((255 - gray) * (100 - percent) / 100));
+
+		return new Color(gray, gray, gray, alpha);
+	}
+	
 	/**
 	 * Paints the transcoded SVG image on the specified graphics context. You
 	 * can install a custom transformation on the graphics context to scale the
@@ -23,7 +39,7 @@ public class RemoveAnnotationIcon implements
 	 * @param g
 	 *            Graphics context.
 	 */
-	public static void paint(Graphics2D g) {
+	public static void paint(Graphics2D g, boolean disabled) {
         Shape shape = null;
         Paint paint = null;
         Stroke stroke = null;
@@ -277,7 +293,7 @@ shape = new GeneralPath();
 ((GeneralPath)shape).quadTo(58.224957, 68.44125, 58.571495, 68.86014);
 ((GeneralPath)shape).quadTo(58.918037, 69.27902, 58.918037, 70.09112);
 ((GeneralPath)shape).closePath();
-paint = new Color(0, 0, 0, 255);
+paint = getColor(0, 0, 0, 255, disabled);
 g.setPaint(paint);
 g.fill(shape);
 origAlpha = alpha__0_0_0;
@@ -290,7 +306,7 @@ Shape clip__0_0_1 = g.getClip();
 AffineTransform defaultTransform__0_0_1 = g.getTransform();
 g.transform(new AffineTransform(0.9840229749679565f, 0.17804299294948578f, -0.34132200479507446f, 0.9399459958076477f, 0.0f, 0.0f));
 // _0_0_1 is ShapeNode
-paint = new Color(0, 155, 0, 159);
+paint = getColor(0, 155, 0, 159, disabled);
 shape = new Rectangle2D.Double(40.02396774291992, 45.3763542175293, 33.6992301940918, 5.556447982788086);
 g.setPaint(paint);
 g.fill(shape);
@@ -311,7 +327,7 @@ Shape clip__0_0_2_0 = g.getClip();
 AffineTransform defaultTransform__0_0_2_0 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0_2_0 is ShapeNode
-paint = new Color(0, 155, 0, 255);
+paint = getColor(0, 155, 0, 255, disabled);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(34.50621, 6.5062113);
 ((GeneralPath)shape).lineTo(34.50621, 57.50621);
@@ -328,7 +344,7 @@ shape = new GeneralPath();
 ((GeneralPath)shape).closePath();
 g.setPaint(paint);
 g.fill(shape);
-paint = new Color(0, 0, 0, 255);
+paint = getColor(0, 0, 0, 255, disabled);
 stroke = new BasicStroke(1.0124228f,0,0,4.0f,null,0.0f);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(34.50621, 6.5062113);
@@ -357,7 +373,7 @@ Shape clip__0_0_2_1 = g.getClip();
 AffineTransform defaultTransform__0_0_2_1 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, -2.318181037902832f, -7.681818008422852f));
 // _0_0_2_1 is ShapeNode
-paint = new Color(0, 155, 0, 255);
+paint = getColor(0, 155, 0, 255, disabled);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(56.545452, 14.0);
 ((GeneralPath)shape).curveTo(56.545452, 16.309555, 52.149704, 18.181818, 46.727272, 18.181818);
@@ -367,7 +383,7 @@ shape = new GeneralPath();
 ((GeneralPath)shape).closePath();
 g.setPaint(paint);
 g.fill(shape);
-paint = new Color(0, 0, 0, 255);
+paint = getColor(0, 0, 0, 255, disabled);
 stroke = new BasicStroke(1.0f,0,0,4.0f,null,0.0f);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(56.545452, 14.0);
@@ -392,7 +408,7 @@ Shape clip__0_0_3 = g.getClip();
 AffineTransform defaultTransform__0_0_3 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0_3 is ShapeNode
-paint = new Color(0, 0, 0, 255);
+paint = getColor(0, 0, 0, 255, disabled);
 stroke = new BasicStroke(1.0f,0,0,4.0f,null,0.0f);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(33.454544, 46.0);
@@ -411,7 +427,7 @@ Shape clip__0_0_4 = g.getClip();
 AffineTransform defaultTransform__0_0_4 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0_4 is ShapeNode
-paint = new Color(0, 0, 0, 255);
+paint = getColor(0, 0, 0, 255, disabled);
 stroke = new BasicStroke(0.80058205f,0,0,4.0f,null,0.0f);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(21.322016, 45.39059);
@@ -444,7 +460,7 @@ shape = new GeneralPath();
 ((GeneralPath)shape).lineTo(21.682167, 20.093);
 ((GeneralPath)shape).lineTo(32.338417, 30.99925);
 ((GeneralPath)shape).closePath();
-paint = new Color(255, 0, 0, 255);
+paint = getColor(255, 0, 0, 255, disabled);
 g.setPaint(paint);
 g.fill(shape);
 origAlpha = alpha__0_0_5;
@@ -516,13 +532,21 @@ g.setClip(clip_);
 	 * The current height of this resizable icon.
 	 */
 	int height;
+	
+	/**
+	 * Should this icon be drawn in a disabled state
+	 */
+	boolean disabled = false;
 
 	/**
 	 * Creates a new transcoded SVG image.
 	 */
 	public RemoveAnnotationIcon() {
-        this.width = getOrigWidth();
-        this.height = getOrigHeight();
+        this(getOrigWidth(),getOrigHeight(),false);
+	}
+	
+	public RemoveAnnotationIcon(boolean disabled) {
+        this(getOrigWidth(),getOrigHeight(),disabled);
 	}
 	
 	/**
@@ -531,13 +555,21 @@ g.setClip(clip_);
 	 * @param size the dimensions of the icon
 	 */
 	public RemoveAnnotationIcon(Dimension size) {
-	this.width = size.width;
-	this.height = size.width;
+		this(size.width, size.height, false);
+	}
+	
+	public RemoveAnnotationIcon(Dimension size, boolean disabled) {
+		this(size.width, size.height, disabled);
 	}
 
 	public RemoveAnnotationIcon(int width, int height) {
-	this.width = width;
-	this.height = height;
+		this(width, height, false);
+	}
+	
+	public RemoveAnnotationIcon(int width, int height, boolean disabled) {
+		this.width = width;
+		this.height = height;
+		this.disabled = disabled;
 	}
 
 	/*
@@ -586,7 +618,7 @@ g.setClip(clip_);
 		double coef2 = (double) this.height / (double) getOrigHeight();
 		double coef = Math.min(coef1, coef2);
 		g2d.scale(coef, coef);
-		paint(g2d);
+		paint(g2d, disabled);
 		g2d.dispose();
 	}
 }

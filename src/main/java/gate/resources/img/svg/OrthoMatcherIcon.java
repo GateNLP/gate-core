@@ -15,6 +15,22 @@ import javax.imageio.ImageIO;
 @SuppressWarnings("unused")
 public class OrthoMatcherIcon implements
 		javax.swing.Icon {
+		
+	private static Color getColor(int red, int green, int blue, int alpha, boolean disabled) {
+		
+		if (!disabled) return new Color(red, green, blue, alpha);
+		
+		int gray = (int)(((0.30f * red) + (0.59f * green) + (0.11f * blue))/3f);
+		
+		gray = Math.min(255, Math.max(0, gray));
+		
+		//This brightens the image the same as GrayFilter
+		int percent = 50;		
+		gray = (255 - ((255 - gray) * (100 - percent) / 100));
+
+		return new Color(gray, gray, gray, alpha);
+	}
+	
 	/**
 	 * Paints the transcoded SVG image on the specified graphics context. You
 	 * can install a custom transformation on the graphics context to scale the
@@ -23,7 +39,7 @@ public class OrthoMatcherIcon implements
 	 * @param g
 	 *            Graphics context.
 	 */
-	public static void paint(Graphics2D g) {
+	public static void paint(Graphics2D g, boolean disabled) {
         Shape shape = null;
         Paint paint = null;
         Stroke stroke = null;
@@ -82,7 +98,7 @@ shape = new GeneralPath();
 ((GeneralPath)shape).lineTo(7.0, 23.41211);
 ((GeneralPath)shape).lineTo(14.792969, 2.9954433);
 ((GeneralPath)shape).closePath();
-paint = new Color(0, 0, 0, 255);
+paint = getColor(0, 0, 0, 255, disabled);
 g.setPaint(paint);
 g.fill(shape);
 origAlpha = alpha__0_0_0;
@@ -128,7 +144,7 @@ shape = new GeneralPath();
 ((GeneralPath)shape).quadTo(51.72331, 5.404711, 53.363934, 7.127367);
 ((GeneralPath)shape).quadTo(55.00456, 8.850023, 55.00456, 12.350023);
 ((GeneralPath)shape).closePath();
-paint = new Color(0, 0, 0, 255);
+paint = getColor(0, 0, 0, 255, disabled);
 g.setPaint(paint);
 g.fill(shape);
 origAlpha = alpha__0_0_1;
@@ -157,7 +173,7 @@ shape = new GeneralPath();
 ((GeneralPath)shape).lineTo(39.296875, 57.41211);
 ((GeneralPath)shape).lineTo(47.089844, 36.995445);
 ((GeneralPath)shape).closePath();
-paint = new Color(0, 0, 0, 255);
+paint = getColor(0, 0, 0, 255, disabled);
 g.setPaint(paint);
 g.fill(shape);
 origAlpha = alpha__0_0_2;
@@ -203,7 +219,7 @@ shape = new GeneralPath();
 ((GeneralPath)shape).quadTo(18.723307, 40.917316, 20.363932, 42.639973);
 ((GeneralPath)shape).quadTo(22.004557, 44.36263, 22.004557, 47.86263);
 ((GeneralPath)shape).closePath();
-paint = new Color(0, 0, 0, 255);
+paint = getColor(0, 0, 0, 255, disabled);
 g.setPaint(paint);
 g.fill(shape);
 origAlpha = alpha__0_0_3;
@@ -216,7 +232,7 @@ Shape clip__0_0_4 = g.getClip();
 AffineTransform defaultTransform__0_0_4 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, -1.045454978942871f, -1.0909090042114258f));
 // _0_0_4 is ShapeNode
-paint = new Color(255, 96, 0, 255);
+paint = getColor(255, 96, 0, 255, disabled);
 stroke = new BasicStroke(1.0f,0,2,4.0f,null,0.0f);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(31.636366, 16.09091);
@@ -240,7 +256,7 @@ Shape clip__0_0_5 = g.getClip();
 AffineTransform defaultTransform__0_0_5 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 31.25143051147461f, 32.730289459228516f));
 // _0_0_5 is ShapeNode
-paint = new Color(255, 96, 0, 255);
+paint = getColor(255, 96, 0, 255, disabled);
 stroke = new BasicStroke(1.0f,0,2,4.0f,null,0.0f);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(31.636366, 16.09091);
@@ -264,7 +280,7 @@ Shape clip__0_0_6 = g.getClip();
 AffineTransform defaultTransform__0_0_6 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 31.454540252685547f, -1.5000009536743164f));
 // _0_0_6 is ShapeNode
-paint = new Color(10, 180, 19, 255);
+paint = getColor(10, 180, 19, 255, disabled);
 stroke = new BasicStroke(1.0f,0,2,4.0f,null,0.0f);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(31.636366, 16.09091);
@@ -288,7 +304,7 @@ Shape clip__0_0_7 = g.getClip();
 AffineTransform defaultTransform__0_0_7 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, -2.045454978942871f, 32.5f));
 // _0_0_7 is ShapeNode
-paint = new Color(10, 180, 19, 255);
+paint = getColor(10, 180, 19, 255, disabled);
 stroke = new BasicStroke(1.0f,0,2,4.0f,null,0.0f);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(31.636366, 16.09091);
@@ -312,7 +328,7 @@ Shape clip__0_0_8 = g.getClip();
 AffineTransform defaultTransform__0_0_8 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0_8 is ShapeNode
-paint = new Color(10, 180, 19, 255);
+paint = getColor(10, 180, 19, 255, disabled);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(25.170774, 36.674606);
 ((GeneralPath)shape).curveTo(25.725416, 36.65529, 29.330496, 33.89018, 31.808575, 31.039085);
@@ -336,7 +352,7 @@ Shape clip__0_0_9 = g.getClip();
 AffineTransform defaultTransform__0_0_9 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0_9 is ShapeNode
-paint = new Color(255, 96, 0, 255);
+paint = getColor(255, 96, 0, 255, disabled);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(38.476273, 36.976036);
 ((GeneralPath)shape).curveTo(37.9067, 36.958878, 34.20458, 34.50268, 31.659794, 31.970106);
@@ -419,13 +435,21 @@ g.setClip(clip_);
 	 * The current height of this resizable icon.
 	 */
 	int height;
+	
+	/**
+	 * Should this icon be drawn in a disabled state
+	 */
+	boolean disabled = false;
 
 	/**
 	 * Creates a new transcoded SVG image.
 	 */
 	public OrthoMatcherIcon() {
-        this.width = getOrigWidth();
-        this.height = getOrigHeight();
+        this(getOrigWidth(),getOrigHeight(),false);
+	}
+	
+	public OrthoMatcherIcon(boolean disabled) {
+        this(getOrigWidth(),getOrigHeight(),disabled);
 	}
 	
 	/**
@@ -434,13 +458,21 @@ g.setClip(clip_);
 	 * @param size the dimensions of the icon
 	 */
 	public OrthoMatcherIcon(Dimension size) {
-	this.width = size.width;
-	this.height = size.width;
+		this(size.width, size.height, false);
+	}
+	
+	public OrthoMatcherIcon(Dimension size, boolean disabled) {
+		this(size.width, size.height, disabled);
 	}
 
 	public OrthoMatcherIcon(int width, int height) {
-	this.width = width;
-	this.height = height;
+		this(width, height, false);
+	}
+	
+	public OrthoMatcherIcon(int width, int height, boolean disabled) {
+		this.width = width;
+		this.height = height;
+		this.disabled = disabled;
 	}
 
 	/*
@@ -489,7 +521,7 @@ g.setClip(clip_);
 		double coef2 = (double) this.height / (double) getOrigHeight();
 		double coef = Math.min(coef1, coef2);
 		g2d.scale(coef, coef);
-		paint(g2d);
+		paint(g2d, disabled);
 		g2d.dispose();
 	}
 }

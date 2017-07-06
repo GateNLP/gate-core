@@ -15,6 +15,22 @@ import javax.imageio.ImageIO;
 @SuppressWarnings("unused")
 public class RightArrowIcon implements
 		javax.swing.Icon {
+		
+	private static Color getColor(int red, int green, int blue, int alpha, boolean disabled) {
+		
+		if (!disabled) return new Color(red, green, blue, alpha);
+		
+		int gray = (int)(((0.30f * red) + (0.59f * green) + (0.11f * blue))/3f);
+		
+		gray = Math.min(255, Math.max(0, gray));
+		
+		//This brightens the image the same as GrayFilter
+		int percent = 50;		
+		gray = (255 - ((255 - gray) * (100 - percent) / 100));
+
+		return new Color(gray, gray, gray, alpha);
+	}
+	
 	/**
 	 * Paints the transcoded SVG image on the specified graphics context. You
 	 * can install a custom transformation on the graphics context to scale the
@@ -23,7 +39,7 @@ public class RightArrowIcon implements
 	 * @param g
 	 *            Graphics context.
 	 */
-	public static void paint(Graphics2D g) {
+	public static void paint(Graphics2D g, boolean disabled) {
         Shape shape = null;
         Paint paint = null;
         Stroke stroke = null;
@@ -73,7 +89,7 @@ Shape clip__0_0_0_0 = g.getClip();
 AffineTransform defaultTransform__0_0_0_0 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0_0_0 is ShapeNode
-paint = new Color(255, 105, 0, 255);
+paint = getColor(255, 105, 0, 255, disabled);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(9.980795, 5.6512823);
 ((GeneralPath)shape).curveTo(13.588514, 12.335122, 18.469658, 17.89442, 23.148842, 23.289017);
@@ -97,7 +113,7 @@ Shape clip__0_0_0_1 = g.getClip();
 AffineTransform defaultTransform__0_0_0_1 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0_0_1 is ShapeNode
-paint = new Color(255, 105, 0, 255);
+paint = getColor(255, 105, 0, 255, disabled);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(9.855503, 58.560352);
 ((GeneralPath)shape).curveTo(13.463222, 51.876514, 18.344366, 46.317215, 23.02355, 40.92262);
@@ -121,7 +137,7 @@ Shape clip__0_0_0_2 = g.getClip();
 AffineTransform defaultTransform__0_0_0_2 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0_0_2 is ShapeNode
-paint = new Color(255, 105, 0, 255);
+paint = getColor(255, 105, 0, 255, disabled);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(33.705154, 5.6512823);
 ((GeneralPath)shape).curveTo(37.237316, 12.335122, 42.01624, 17.89442, 46.59743, 23.289017);
@@ -145,7 +161,7 @@ Shape clip__0_0_0_3 = g.getClip();
 AffineTransform defaultTransform__0_0_0_3 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0_0_3 is ShapeNode
-paint = new Color(255, 105, 0, 255);
+paint = getColor(255, 105, 0, 255, disabled);
 shape = new GeneralPath();
 ((GeneralPath)shape).moveTo(33.546635, 58.560352);
 ((GeneralPath)shape).curveTo(37.078796, 51.876514, 41.85772, 46.317215, 46.43891, 40.92262);
@@ -231,13 +247,21 @@ g.setClip(clip_);
 	 * The current height of this resizable icon.
 	 */
 	int height;
+	
+	/**
+	 * Should this icon be drawn in a disabled state
+	 */
+	boolean disabled = false;
 
 	/**
 	 * Creates a new transcoded SVG image.
 	 */
 	public RightArrowIcon() {
-        this.width = getOrigWidth();
-        this.height = getOrigHeight();
+        this(getOrigWidth(),getOrigHeight(),false);
+	}
+	
+	public RightArrowIcon(boolean disabled) {
+        this(getOrigWidth(),getOrigHeight(),disabled);
 	}
 	
 	/**
@@ -246,13 +270,21 @@ g.setClip(clip_);
 	 * @param size the dimensions of the icon
 	 */
 	public RightArrowIcon(Dimension size) {
-	this.width = size.width;
-	this.height = size.width;
+		this(size.width, size.height, false);
+	}
+	
+	public RightArrowIcon(Dimension size, boolean disabled) {
+		this(size.width, size.height, disabled);
 	}
 
 	public RightArrowIcon(int width, int height) {
-	this.width = width;
-	this.height = height;
+		this(width, height, false);
+	}
+	
+	public RightArrowIcon(int width, int height, boolean disabled) {
+		this.width = width;
+		this.height = height;
+		this.disabled = disabled;
 	}
 
 	/*
@@ -301,7 +333,7 @@ g.setClip(clip_);
 		double coef2 = (double) this.height / (double) getOrigHeight();
 		double coef = Math.min(coef1, coef2);
 		g2d.scale(coef, coef);
-		paint(g2d);
+		paint(g2d, disabled);
 		g2d.dispose();
 	}
 }

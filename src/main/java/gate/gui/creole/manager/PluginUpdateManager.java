@@ -776,7 +776,7 @@ public static File getUserPluginsHome() {
     pnlEdit.add(new JLabel("URL: "));
     pnlEdit.add(txtURL);
     SpringUtilities.makeCompactGrid(pnlEdit, 2, 2, 6, 6, 6, 6);
-    JButton btnAdd = new JButton(new AddIcon(24, 24));
+    JButton btnAdd = new JButton(new AddIcon(MainFrame.ICON_DIMENSION));
     btnAdd.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -838,10 +838,9 @@ public static File getUserPluginsHome() {
       }
     });
 
-    final JButton btnRemove = new JButton(new RemoveIcon(24, 24));
+    final JButton btnRemove = new JButton(new RemoveIcon(MainFrame.ICON_DIMENSION));
     btnRemove.setEnabled(false);
-    btnRemove.setDisabledIcon(new ImageIcon(GrayFilter
-        .createDisabledImage((new RemoveIcon(24, 24)).getImage())));
+    btnRemove.setDisabledIcon(new RemoveIcon(MainFrame.ICON_DIMENSION, true));
     btnRemove.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -855,9 +854,8 @@ public static File getUserPluginsHome() {
       }
     });
 
-    final JButton btnEdit = new JButton(new EditIcon(24, 24));
-    btnEdit.setDisabledIcon(new ImageIcon(GrayFilter
-        .createDisabledImage((new EditIcon(24, 24)).getImage())));
+    final JButton btnEdit = new JButton(new EditIcon(MainFrame.ICON_DIMENSION));
+    btnEdit.setDisabledIcon(new EditIcon(MainFrame.ICON_DIMENSION,true));
     btnEdit.setEnabled(false);
     btnEdit.addActionListener(new ActionListener() {
       @Override
@@ -892,9 +890,8 @@ public static File getUserPluginsHome() {
       }
     });
 
-    final JButton btnRefresh = new JButton(new RefreshIcon(24, 24));
-    btnRefresh.setDisabledIcon(new ImageIcon(GrayFilter
-        .createDisabledImage((new RefreshIcon(24, 24)).getImage())));
+    final JButton btnRefresh = new JButton(new RefreshIcon(MainFrame.ICON_DIMENSION));
+    btnRefresh.setDisabledIcon(new RefreshIcon(MainFrame.ICON_DIMENSION,true));
     btnRefresh.setEnabled(false);
     btnRefresh.addActionListener(new ActionListener() {
       @Override
@@ -944,7 +941,7 @@ public static File getUserPluginsHome() {
         new JTextField(userPluginDir == null ? "" : userPluginDir.getAbsolutePath());
     txtUserPlugins.setEditable(false);
 
-    JButton btnUserPlugins = new JButton(new OpenFileIcon(24, 24));
+    JButton btnUserPlugins = new JButton(new OpenFileIcon(MainFrame.ICON_DIMENSION));
     btnUserPlugins.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
