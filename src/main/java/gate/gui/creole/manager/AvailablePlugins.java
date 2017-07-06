@@ -647,7 +647,7 @@ public class AvailablePlugins extends JPanel {
 
   private class DeleteCreoleRepositoryAction extends AbstractAction {
     public DeleteCreoleRepositoryAction() {
-      super(null, new RemoveIcon(24, 24));
+      super(null, new RemoveIcon(MainFrame.ICON_DIMENSION));
       putValue(SHORT_DESCRIPTION, "Unregister selected CREOLE directory");
     }
 
@@ -680,7 +680,7 @@ public class AvailablePlugins extends JPanel {
 
   private class AddCreoleRepositoryAction extends AbstractAction {
     public AddCreoleRepositoryAction() {
-      super(null, new AddIcon(24, 24));
+      super(null, new AddIcon(MainFrame.ICON_DIMENSION));
       putValue(SHORT_DESCRIPTION, "Register a new CREOLE directory");
     }
 
@@ -690,7 +690,7 @@ public class AvailablePlugins extends JPanel {
 
       class URLfromFileAction extends AbstractAction {
         URLfromFileAction(JTextField textField) {
-          super(null, new OpenFileIcon(24, 24));
+          super(null, new OpenFileIcon(MainFrame.ICON_DIMENSION));
           putValue(SHORT_DESCRIPTION, "Click to select a directory");
           this.textField = textField;
         }
