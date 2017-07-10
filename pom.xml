@@ -580,8 +580,9 @@
 					<excludes>
 						<!-- this excludes known GUI code from the code coverage results as 
 							we know we aren't testing them so will likely have a 0% coverage -->
-						<exclude>**/gui/**/*</exclude>
-						<exclude>**/swing/**/*</exclude>
+						<exclude>**/gui/**</exclude>
+						<exclude>**/swing/**</exclude>
+						<exclude>**/gate/resources/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
