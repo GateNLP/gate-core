@@ -797,9 +797,9 @@ extends AbstractFeatureBearer implements DataStore {
       return fileNames;
     }
     Vector<String> filteredNames = new Vector<String>(fileNames.length);
-    for(String filname : fileNames) {
-      if(!filname.startsWith(".")) {
-        filteredNames.add(filname);
+    for(String filename : fileNames) {
+      if(!filename.startsWith(".") && !filename.equals("Icon\r")) {
+        filteredNames.add(filename);
       }
     }
     return filteredNames.toArray(new String[0]);
