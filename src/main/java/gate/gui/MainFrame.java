@@ -1221,20 +1221,16 @@ public class MainFrame extends JFrame implements ProgressListener,
     toolbar.add(button);
     toolbar.addSeparator();
 
-    JPopupMenu annieMenu = new JPopupMenu();
-    annieMenu.add(new XJMenuItem(new LoadApplicationAction("with defaults",
+    JButton annieMenu = new JButton(new LoadApplicationAction("with defaults",
         "annie-application", new File(new File(Gate.getPluginsHome(),
-            ANNIEConstants.PLUGIN_DIR), ANNIEConstants.DEFAULT_FILE)),
-        MainFrame.this));
-    annieMenu.add(new LoadANNIEWithoutDefaultsAction());
-    JMenuButton menuButton = new JMenuButton(annieMenu);
-    menuButton.setIcon(getIcon("annie-application"));
-    menuButton.setToolTipText("Load ANNIE System");
-    toolbar.add(menuButton);
+            ANNIEConstants.PLUGIN_DIR), ANNIEConstants.DEFAULT_FILE)));
+    annieMenu.setText("");
+    annieMenu.setToolTipText("Load ANNIE");
+    toolbar.add(annieMenu);
     toolbar.addSeparator();
 
     LiveMenu tbNewLRMenu = new LiveMenu(LiveMenu.LR);
-    menuButton = new JMenuButton(tbNewLRMenu);
+    JMenuButton menuButton = new JMenuButton(tbNewLRMenu);
     menuButton.setToolTipText("New Language Resource");
     menuButton.setIcon(getIcon("lrs"));
     toolbar.add(menuButton);
