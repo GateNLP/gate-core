@@ -547,7 +547,7 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
         // super.getTableCellRendererComponent(table, text, isSelected,
         // hasFocus, row, column);
 
-        if(type.equals("java.net.URL")) {
+        if(type.equals("java.net.URL") || type.equals("gate.creole.ResourceReference")) {
           if(ResourceParametersEditor.this.isEditable()) {
             textButtonBox.removeAll();
             textField.setText(text);
@@ -872,7 +872,7 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
         }
 
         textField.setText((value == null) ? "" : value.toString());
-        if(type.equals("java.net.URL")) {
+        if(type.equals("java.net.URL") || type.equals("gate.creole.ResourceReference")) {
           // clean up all filters
           fileChooser.resetChoosableFileFilters();
           fileChooser.setAcceptAllFileFilterUsed(true);
