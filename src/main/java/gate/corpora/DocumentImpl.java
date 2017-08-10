@@ -685,9 +685,9 @@ public class DocumentImpl extends AbstractLanguageResource implements
   @Override
   public AnnotationSet getAnnotations() {
     if(defaultAnnots == null) {
-      defaultAnnots = new AnnotationSetImpl(this);
+      defaultAnnots = new AnnotationSetImpl(this,"");
       fireAnnotationSetAdded(new DocumentEvent(this,
-              DocumentEvent.ANNOTATION_SET_ADDED, null));
+              DocumentEvent.ANNOTATION_SET_ADDED, ""));
     }// if
     return defaultAnnots;
   } // getAnnotations()

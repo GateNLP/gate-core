@@ -143,7 +143,6 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.apache.tools.ant.taskdefs.optional.vss.MSVSSCHECKIN;
 
 import gate.Controller;
 import gate.CreoleRegister;
@@ -843,6 +842,8 @@ public class MainFrame extends JFrame implements ProgressListener,
     RecentAppsMenu recentAppsMenu = new RecentAppsMenu();
     fileMenu.add(recentAppsMenu);
 
+    
+    
     /*final JMenu loadANNIEMenu = new XJMenu("Load ANNIE System",
       "Application that adds morphosyntaxic and semantic annotations", this);
     loadANNIEMenu.setIcon(getIcon("annie-application"));
@@ -1221,20 +1222,22 @@ public class MainFrame extends JFrame implements ProgressListener,
     toolbar.add(button);
     toolbar.addSeparator();
 
-    JPopupMenu annieMenu = new JPopupMenu();
-    annieMenu.add(new XJMenuItem(new LoadApplicationAction("with defaults",
-        "annie-application", new File(new File(Gate.getPluginsHome(),
-            ANNIEConstants.PLUGIN_DIR), ANNIEConstants.DEFAULT_FILE)),
-        MainFrame.this));
-    annieMenu.add(new LoadANNIEWithoutDefaultsAction());
-    JMenuButton menuButton = new JMenuButton(annieMenu);
-    menuButton.setIcon(getIcon("annie-application"));
-    menuButton.setToolTipText("Load ANNIE System");
-    toolbar.add(menuButton);
-    toolbar.addSeparator();
+    try {
+      JButton annieMenu =
+          new JButton(new LoadApplicationAction("ANNIE", "annie-application",
+              new ResourceReference(new URI(
+                  "creole://uk.ac.gate.plugins;annie;8.5-SNAPSHOT/resources/"
+                      + ANNIEConstants.DEFAULT_FILE))));
+      annieMenu.setText("");
+      annieMenu.setToolTipText("Load ANNIE");
+      toolbar.add(annieMenu);
+      toolbar.addSeparator();
+    } catch(URISyntaxException e) {
+      // should be impossible
+    }
 
     LiveMenu tbNewLRMenu = new LiveMenu(LiveMenu.LR);
-    menuButton = new JMenuButton(tbNewLRMenu);
+    JMenuButton menuButton = new JMenuButton(tbNewLRMenu);
     menuButton.setToolTipText("New Language Resource");
     menuButton.setIcon(getIcon("lrs"));
     toolbar.add(menuButton);
@@ -2900,35 +2903,24 @@ public class MainFrame extends JFrame implements ProgressListener,
 
     private String name, icon;
     
-    private URL pipelineURL;
+    private ResourceReference pipelineURL = null;
 
     public LoadApplicationAction(ResourceData rData, ResourceReference pipelineURL) {
       super(rData.getName(),MainFrame.getIcon(rData.getIcon(),rData.getResourceClassLoader()));
       if (getValue(Action.SMALL_ICON) == null) putValue(Action.SMALL_ICON, MainFrame.getIcon("application"));
       this.name = rData.getName();
-      try {
-        this.pipelineURL = pipelineURL.toURL();
-      }
-      catch (IOException e) {
-        throw new RuntimeException("ResourceReference cannot be converted to a URL which is odd",e);
-      }
+      this.pipelineURL = pipelineURL;
       this.icon = rData.getIcon();
     }
     
-    @Deprecated
-    public LoadApplicationAction(String name, String icon, File pipelineFile) {
+    public LoadApplicationAction(String name, String icon, ResourceReference pipelineURL) {
       super(name,MainFrame.getIcon(icon));
       if (getValue(Action.SMALL_ICON) == null) putValue(Action.SMALL_ICON, MainFrame.getIcon("application"));
       this.name = name;
+      this.pipelineURL = pipelineURL;
       this.icon = icon;
-      try {
-        this.pipelineURL = pipelineFile.toURI().toURL();
-      }
-      catch (MalformedURLException e) {
-        throw new RuntimeException("When is a file not a URL? I don't know but this stack trace might help!",e);
-      }
     }
-    
+        
     @Override
     public void actionPerformed(ActionEvent e) {
       if (pipelineURL == null) {
@@ -2942,10 +2934,17 @@ public class MainFrame extends JFrame implements ProgressListener,
           lockGUI(name + " is being loaded...");
           try {
             long startTime = System.currentTimeMillis();
+            
+            if (pipelineURL.toURI().getScheme().equals("creole")) {
+              String[] coordinates = pipelineURL.toURI().getAuthority().split(";");
+              Plugin plugin = new Plugin.Maven(coordinates[0],coordinates[1],coordinates[2]);
 
+              Gate.getCreoleRegister().registerPlugin(plugin);
+            }
+            
             // load LingPipe as an application from a gapp file
             Resource controller =
-                (Resource)PersistenceManager.loadObjectFromUrl(pipelineURL);
+                (Resource)PersistenceManager.loadObjectFromUrl(pipelineURL.toURL());
 
             if(!icon.equals(controller.getFeatures().get("gate.gui.icon"))) {
               
@@ -5345,72 +5344,76 @@ public class MainFrame extends JFrame implements ProgressListener,
    * @author Mark A. Greenwood
    */
   class ReadyMadeMenu extends XJMenu {
-  
+
     private static final long serialVersionUID = -4841440121026127302L;
 
     public ReadyMadeMenu() {
       super("Ready Made Applications");
       setIcon(new ReadyMadeIcon(24, 24));
-      
-      final XJMenuItem annie = new XJMenuItem(new LoadApplicationAction("ANNIE",
-          "annie-application", new File(new File(Gate.getPluginsHome(),
-              ANNIEConstants.PLUGIN_DIR), ANNIEConstants.DEFAULT_FILE)),
-          MainFrame.this);
-      
-      final XJMenuItem lingPipe = new XJMenuItem(new LoadApplicationAction("LingPipe IE System", "application",
-          new File(new File(Gate.getPluginsHome(), "LingPipe"),
-              "resources/lingpipe.gapp")), MainFrame.this);
 
-      final XJMenuItem openNLP = new XJMenuItem(
-          new LoadApplicationAction("OpenNLP IE System", "application", new File(new File(Gate
-              .getPluginsHome(), "OpenNLP"), "resources/opennlp.gapp")),
-          MainFrame.this);
-
-      addMenuListener(new MenuListener() {
+      try {
+        final XJMenuItem annie = new XJMenuItem(
+            new LoadApplicationAction("ANNIE", "annie-application",
+                new ResourceReference(
+                    new URI("creole://uk.ac.gate.plugins;annie;8.5-SNAPSHOT/resources/"
+                        + ANNIEConstants.DEFAULT_FILE))),
+            MainFrame.this);
         
-        @Override
-        public void menuSelected(MenuEvent arg0) {
-          statusChanged("");
-          
-          removeAll();
-          
-          XJMenu menu = new XJMenu("ANNIE");
-          menu.add(annie);
-          add(menu);
-          
-          menu = new XJMenu("LingPipe");
-          menu.add(lingPipe);
-          add(menu);
-                    
-          menu = new XJMenu("OpenNLP");
-          menu.add(openNLP);
-          add(menu);
-          
-          Set<String> toolTypes = Gate.getCreoleRegister().getApplicationTypes();
-          for(String type : toolTypes) {
-            List<Resource> instances = Gate.getCreoleRegister()
-                        .get(type).getInstantiations();
-            for(Resource res : instances) {
-              if(res instanceof PackagedController) {
-                addAppToMenu((PackagedController)res);
+        final XJMenuItem openNLP = new XJMenuItem(
+            new LoadApplicationAction("OpenNLP (English)", "application",
+                new ResourceReference(
+                    new URI("creole://uk.ac.gate.plugins;opennlp;8.5-SNAPSHOT/resources/opennlp.gapp"))),
+            MainFrame.this);
+
+        addMenuListener(new MenuListener() {
+
+          @Override
+          public void menuSelected(MenuEvent arg0) {
+            statusChanged("");
+
+            removeAll();
+
+            XJMenu menu = new XJMenu("ANNIE");
+            menu.add(annie);
+            add(menu);
+
+            /*
+             * menu = new XJMenu("LingPipe"); menu.add(lingPipe); add(menu);
+             **/ 
+            menu = new XJMenu("OpenNLP");
+            menu.add(openNLP);
+            add(menu);
+             
+
+            Set<String> toolTypes =
+                Gate.getCreoleRegister().getApplicationTypes();
+            for(String type : toolTypes) {
+              List<Resource> instances =
+                  Gate.getCreoleRegister().get(type).getInstantiations();
+              for(Resource res : instances) {
+                if(res instanceof PackagedController) {
+                  addAppToMenu((PackagedController)res);
+                }
               }
             }
+
+            ReadyMadeMenu.this.revalidate();
           }
-          
-          ReadyMadeMenu.this.revalidate();
-        }
-        
-        @Override
-        public void menuDeselected(MenuEvent e) {         
-          removeAll();
-          statusChanged("");
-        }
-        
-        @Override
-        public void menuCanceled(MenuEvent e) {
-          menuDeselected(e);
-        }
-      });
+
+          @Override
+          public void menuDeselected(MenuEvent e) {
+            removeAll();
+            statusChanged("");
+          }
+
+          @Override
+          public void menuCanceled(MenuEvent e) {
+            menuDeselected(e);
+          }
+        });
+      } catch(URISyntaxException e) {
+        throw new RuntimeException(e);
+      }
     }
     
     private String getPluginName(URL url) {

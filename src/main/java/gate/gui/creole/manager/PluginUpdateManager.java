@@ -304,8 +304,8 @@ public static File getUserPluginsHome() {
             sitesModel.dataChanged();
 
             // enable the update tab if there are any
-            tabs.setEnabledAt(1, updatesModel.data.size() > 0);
-            tabs.setEnabledAt(2, true);
+            //tabs.setEnabledAt(1, updatesModel.data.size() > 0);
+            //tabs.setEnabledAt(2, true);
 
             // remove the progress panel
             showProgressPanel(false);
@@ -547,7 +547,7 @@ public static File getUserPluginsHome() {
 
     // initialize all the different tabs
     tabs.addTab("Installed Plugins", new AvailableIcon(MainFrame.ICON_DIMENSION), installed);
-    tabs.addTab("Available Updates", new UpdatesIcon(MainFrame.ICON_DIMENSION), buildUpdates());
+    /*tabs.addTab("Available Updates", new UpdatesIcon(MainFrame.ICON_DIMENSION), buildUpdates());
     tabs.addTab("Available to Install", new DownloadIcon(MainFrame.ICON_DIMENSION),
         buildAvailable());
     tabs.addTab("Configuration", new AdvancedIcon(MainFrame.ICON_DIMENSION), buildConfig());
@@ -558,7 +558,7 @@ public static File getUserPluginsHome() {
         2,
         new DownloadIcon(MainFrame.ICON_DIMENSION,true));
     tabs.setEnabledAt(1, false);
-    tabs.setEnabledAt(2, false);
+    tabs.setEnabledAt(2, false);*/
 
     // setup the row of buttons at the bottom of the screen...
     JPanel pnlButtons = new JPanel();
