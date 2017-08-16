@@ -104,8 +104,10 @@ public class UpgradeXGAPP {
       for(UpgradePath upgrade : upgrades) {
         if(urlString.startsWith(upgrade.getOldPath())) {
 
+          String urlSuffix = urlString.substring(upgrade.getOldPath().length()); 
+          
           urlString = upgrade.getNewPath()
-              + urlString.substring(upgrade.getOldPath().length());
+              + (urlSuffix.startsWith("resources/") ? "" : "resources/") +urlSuffix;
 
           Element rr = new Element(
               "gate.util.persistence.PersistenceManager-RRPersistence");
@@ -267,7 +269,7 @@ public class UpgradeXGAPP {
   public static void main(String[] args) throws Exception {
 
     URL input = (new File(
-        "/home/mark/gate-top/externals/gate-svn/plugins/Tagger_GATE-Time/resources/applications/tml-events-ml-training.gapp"))
+        "/home/mark/gate-top/externals/gate-svn/plugins/Lang_French/french.gapp"))
             .toURI().toURL();
 
     SAXBuilder builder = new SAXBuilder(false);
