@@ -104,10 +104,11 @@ public class UpgradeXGAPP {
       for(UpgradePath upgrade : upgrades) {
         if(urlString.startsWith(upgrade.getOldPath())) {
 
-          String urlSuffix = urlString.substring(upgrade.getOldPath().length()); 
-          
+          String urlSuffix = urlString.substring(upgrade.getOldPath().length());
+
           urlString = upgrade.getNewPath()
-              + (urlSuffix.startsWith("resources/") ? "" : "resources/") +urlSuffix;
+              + (urlSuffix.startsWith("resources/") ? "" : "resources/")
+              + urlSuffix;
 
           Element rr = new Element(
               "gate.util.persistence.PersistenceManager-RRPersistence");
@@ -179,7 +180,6 @@ public class UpgradeXGAPP {
           try (InputStream creoleStream = directoryXmlFileUrl.openStream()) {
             // no op
           }
-
         } catch(ArtifactResolutionException | IOException e) {
           e.printStackTrace();
           it.remove();
