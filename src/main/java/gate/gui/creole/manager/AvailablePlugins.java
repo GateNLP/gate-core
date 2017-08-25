@@ -140,7 +140,7 @@ public class AvailablePlugins extends JPanel {
     tbPluginDirs.add(new JButton(new AddCreoleRepositoryAction()));
     tbPluginDirs.add(new JButton(new DeleteCreoleRepositoryAction()));
     tbPluginDirs.add(Box.createHorizontalStrut(5));
-    JLabel titleLabel = new JLabel("CREOLE Plugin Directories");
+    JLabel titleLabel = new JLabel("CREOLE Plugin");
     titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 40));
     tbPluginDirs.add(titleLabel);
     tbPluginDirs.add(Box.createHorizontalGlue());
@@ -651,7 +651,7 @@ public class AvailablePlugins extends JPanel {
   private class DeleteCreoleRepositoryAction extends AbstractAction {
     public DeleteCreoleRepositoryAction() {
       super(null, new RemoveIcon(MainFrame.ICON_DIMENSION));
-      putValue(SHORT_DESCRIPTION, "Unregister selected CREOLE directory");
+      putValue(SHORT_DESCRIPTION, "Unregister selected CREOLE plugin");
     }
 
     @Override
@@ -676,7 +676,7 @@ public class AvailablePlugins extends JPanel {
   private class AddCreoleRepositoryAction extends AbstractAction {
     public AddCreoleRepositoryAction() {
       super(null, new AddIcon(MainFrame.ICON_DIMENSION));
-      putValue(SHORT_DESCRIPTION, "Register a new CREOLE directory");
+      putValue(SHORT_DESCRIPTION, "Register a new CREOLE plugin");
     }
 
     @Override
@@ -823,8 +823,8 @@ public class AvailablePlugins extends JPanel {
         JOptionPane
                 .showMessageDialog(
                         AvailablePlugins.this,
-                        "<html><body style='width: 350px;'><b>Unable to register CREOLE directory!</b><br><br>"
-                                + "The URL you specified is not valid. Please check the URL and try again.</body></html>",
+                        "<html><body style='width: 350px;'><b>Unable to register CREOLE plugin!</b><br><br>"
+                                + "The details you specified are not valid. Please check the details and try again.</body></html>",
                         "CREOLE Plugin Manager", JOptionPane.ERROR_MESSAGE);
       }
     }
