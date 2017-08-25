@@ -55,11 +55,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.border.TitledBorder;
@@ -86,6 +88,7 @@ import gate.resources.img.svg.RemoveIcon;
 import gate.resources.img.svg.UserPluginIcon;
 import gate.swing.CheckBoxTableCellRenderer;
 import gate.swing.IconTableCellRenderer;
+import gate.swing.SpringUtilities;
 import gate.swing.XJFileChooser;
 import gate.swing.XJTable;
 import gate.util.GateRuntimeException;
@@ -659,18 +662,10 @@ public class AvailablePlugins extends JPanel {
         int rowModel = mainTable.rowViewToModel(row);
 
         Plugin toDelete = visibleRows.get(rowModel);
-
-        //Gate.DirectoryInfo dInfo = Gate.getDirectoryInfo(toDelete);
-
-        /*Gate.getCreoleRegister().removeDirectory(toDelete);
-
-        //TODO make this work again
-
-        if(!dInfo.isCorePlugin() && !dInfo.isUserPlugin()) {
-          Gate.removeKnownPlugin(toDelete);
-          loadAlwaysByURL.remove(toDelete);
-          loadNowByURL.remove(toDelete);
-        }*/
+        
+        Gate.removeKnownPlugin(toDelete);
+        loadAlwaysByURL.remove(toDelete);
+        loadNowByURL.remove(toDelete);
       }
 
       // redisplay the table with the current filter
@@ -718,56 +713,87 @@ public class AvailablePlugins extends JPanel {
 
       JButton fileBtn = new JButton(new URLfromFileAction(urlTextField));
 
-      JPanel message = new JPanel();
-      GroupLayout msgLayout = new GroupLayout(message);
-      message.setLayout(msgLayout);
+      JPanel urlPanel = new JPanel();
+      GroupLayout urlPanelLayout = new GroupLayout(urlPanel);
+      urlPanel.setLayout(urlPanelLayout);
 
-      msgLayout.setAutoCreateContainerGaps(true);
-      msgLayout.setAutoCreateGaps(true);
+      urlPanelLayout.setAutoCreateContainerGaps(true);
+      urlPanelLayout.setAutoCreateGaps(true);
 
       JLabel lblURL = new JLabel("Type a URL");
       JLabel lblDir = new JLabel("Select a Directory");
       JLabel lblOR = new JLabel("or");
 
-      msgLayout
-              .setHorizontalGroup(msgLayout
+      urlPanelLayout
+              .setHorizontalGroup(urlPanelLayout
                       .createSequentialGroup()
                       .addGroup(
-                              msgLayout.createParallelGroup()
+                              urlPanelLayout.createParallelGroup()
                                       .addComponent(lblURL)
                                       .addComponent(urlTextField))
                       .addComponent(lblOR)
                       .addGroup(
-                              msgLayout
+                              urlPanelLayout
                                       .createParallelGroup(
                                               GroupLayout.Alignment.CENTER)
                                       .addComponent(lblDir)
                                       .addComponent(fileBtn)));
 
-      msgLayout
-              .setVerticalGroup(msgLayout
+      urlPanelLayout
+              .setVerticalGroup(urlPanelLayout
                       .createSequentialGroup()
                       .addGroup(
-                              msgLayout.createParallelGroup()
+                              urlPanelLayout.createParallelGroup()
                                       .addComponent(lblURL)
                                       .addComponent(lblDir))
 
                       .addGroup(
-                              msgLayout
+                              urlPanelLayout
                                       .createParallelGroup(
                                               GroupLayout.Alignment.CENTER)
                                       .addComponent(urlTextField)
                                       .addComponent(lblOR)
                                       .addComponent(fileBtn)));
+      
+      JPanel mavenPanel = new JPanel(new SpringLayout());
+      JTextField txtGroup = new JTextField("uk.ac.gate.plugins",20);
+      JTextField txtArtifact = new JTextField(20);
+      JTextField txtVersion = new JTextField("8.5-SNAPSHOT",20);
+      
+      mavenPanel.add(new JLabel("Group:"));
+      mavenPanel.add(txtGroup);
+      mavenPanel.add(new JLabel("Artifact:"));
+      mavenPanel.add(txtArtifact);
+      mavenPanel.add(new JLabel("Version:"));
+      mavenPanel.add(txtVersion);
+      
+      SpringUtilities.makeCompactGrid(mavenPanel,
+                               3, 2, //rows, cols
+                               5, 5, //initialX, initialY
+                               5, 5);//xPad, yPad
+      
+      
+      JTabbedPane tabsPluginType = new JTabbedPane();
+      tabsPluginType.add("Maven", mavenPanel);
+      tabsPluginType.add("Directory URL", urlPanel);
 
-      if(JOptionPane.showConfirmDialog(AvailablePlugins.this, message,
-              "Register a new CREOLE directory", JOptionPane.OK_CANCEL_OPTION,
+      if(JOptionPane.showConfirmDialog(AvailablePlugins.this, tabsPluginType,
+              "Register a new CREOLE plugin", JOptionPane.OK_CANCEL_OPTION,
               JOptionPane.QUESTION_MESSAGE, new AvailableIcon(48, 48)) != JOptionPane.OK_OPTION)
         return;
 
       try {
-        final URL creoleURL = new URL(urlTextField.getText());
-        Gate.addKnownPlugin(new Plugin.Directory(creoleURL));
+        final Plugin plugin;
+        if (tabsPluginType.getSelectedIndex() == 0) {
+          plugin = new Plugin.Maven(txtGroup.getText().trim(), txtArtifact.getText().trim(), txtVersion.getText().trim());
+          //Gate.addKnownPlugin()(plugin);
+        }
+        else {
+          plugin = new Plugin.Directory(new URL(urlTextField.getText()));
+          //Gate.addKnownPlugin(new Plugin.Directory(creoleURL));
+        }
+        Gate.addKnownPlugin(plugin);
+        
         mainTable.clearSelection();
         // redisplay the table without filtering
         filterRows("");
@@ -782,7 +808,7 @@ public class AvailablePlugins extends JPanel {
               String url =
                       (String)mainTable.getValueAt(row,
                               mainTable.convertColumnIndexToView(NAME_COLUMN));
-              if(url.contains(creoleURL.toString())) {
+              if(url.equals(plugin.getName())) {
                 mainTable.setRowSelectionInterval(row, row);
                 mainTable.scrollRectToVisible(mainTable.getCellRect(row, 0,
                         true));

@@ -116,7 +116,6 @@ import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.OverlayLayout;
-import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
@@ -176,10 +175,8 @@ import gate.persist.PersistenceException;
 import gate.resources.img.svg.AvailableIcon;
 import gate.resources.img.svg.GATEIcon;
 import gate.resources.img.svg.GATEVersionIcon;
-import gate.resources.img.svg.MavenIcon;
 import gate.resources.img.svg.ReadyMadeIcon;
 import gate.swing.JMenuButton;
-import gate.swing.SpringUtilities;
 import gate.swing.XJFileChooser;
 import gate.swing.XJMenu;
 import gate.swing.XJMenuItem;
@@ -1270,46 +1267,6 @@ public class MainFrame extends JFrame implements ProgressListener,
     toolbar.add(button);
     toolbar.addSeparator();
     
-    button = new JButton(new AbstractAction(null,new MavenIcon(24,24)) {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        JPanel panel = new JPanel(new SpringLayout());
-        
-        JTextField txtGroup = new JTextField("uk.ac.gate.plugins",20);
-        JTextField txtArtifact = new JTextField(20);
-        JTextField txtVersion = new JTextField("8.5-SNAPSHOT",20);
-        
-        panel.add(new JLabel("Group:"));
-        panel.add(txtGroup);
-        panel.add(new JLabel("Artifact:"));
-        panel.add(txtArtifact);
-        panel.add(new JLabel("Version:"));
-        panel.add(txtVersion);
-        
-        SpringUtilities.makeCompactGrid(panel,
-                                 3, 2, //rows, cols
-                                 5, 5, //initialX, initialY
-                                 5, 5);//xPad, yPad
-        
-        if(JOptionPane.OK_OPTION != JOptionPane.showConfirmDialog(
-                MainFrame.this, panel, "Load Mavenized Plugin",
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
-                new MavenIcon(24, 24))) return;
-        
-        try {
-          Gate.getCreoleRegister().registerPlugin(new Plugin.Maven(txtGroup.getText().trim(), txtArtifact.getText().trim(), txtVersion.getText().trim()));
-        } catch(GateException e1) {
-          e1.printStackTrace();
-        }
-        
-      }
-      
-    });
-    toolbar.add(button);
-    
-    toolbar.addSeparator();
     button = new JButton(new NewAnnotDiffAction());
     button.setToolTipText(button.getText());
     button.setText("");
