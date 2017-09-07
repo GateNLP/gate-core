@@ -141,4 +141,8 @@ public class MimeType {
    * The parameters map.
    */
   protected Map<String,String> parameters;
+  
+  public String toString() {
+     return type+"/"+subtype;
+  }
 }

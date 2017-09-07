@@ -22,6 +22,7 @@ import gate.creole.AbstractLanguageResource;
 import gate.event.StatusListener;
 import gate.util.BomStrippingInputStreamReader;
 import gate.util.DocumentFormatException;
+import gate.util.GateException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +30,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -272,7 +274,7 @@ extends AbstractLanguageResource {
                                     MimeType aMimeTypeFromWebServer,
                                     MimeType aMimeTypeFromFileSuffix,
                                     MimeType aMimeTypeFromMagicNumbers){
-
+    
     // First a voting system
     if (areEqual(aMimeTypeFromWebServer,aMimeTypeFromFileSuffix))
       return aMimeTypeFromFileSuffix;
@@ -417,6 +419,8 @@ extends AbstractLanguageResource {
 
     // the offset of the first match now we use a "first wins" priority
     int firstOffset = Integer.MAX_VALUE;
+    
+    MimeType xmlMime = getMimeType("xml");    
 
     // Run the magic numbers test
     for(Map.Entry<String, MimeType> kv : magic2mimeTypeMap.entrySet()) {
@@ -425,7 +429,7 @@ extends AbstractLanguageResource {
 
       // the offset of this code in the content
       int offset = aContent.indexOf(magic.toLowerCase());
-      if(offset != -1 && offset < firstOffset) {
+      if(offset != -1 && (offset < firstOffset || (!kv.getValue().equals(xmlMime) && detectedMimeType.equals(xmlMime)))) {
         // if the magic code exists in the doc and appears before any others
         // than use that mime type
         detectedMimeType = kv.getValue();
