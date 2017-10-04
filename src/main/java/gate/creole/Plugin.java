@@ -602,10 +602,7 @@ public abstract class Plugin {
 
       for(ArtifactResult ar : result.getArtifactResults()) {        
         
-    	  log.info(ar.getArtifact().getFile().toURI().toURL()
-                .toExternalForm());
-    	  
-        Element jarElement = new Element("JAR");
+    	  Element jarElement = new Element("JAR");
         jarElement.setText(ar.getArtifact().getFile().toURI().toURL()
                 .toExternalForm());
 
