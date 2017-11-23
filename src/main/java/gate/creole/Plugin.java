@@ -64,6 +64,7 @@ import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.resolution.DependencyResult;
@@ -118,7 +119,26 @@ public abstract class Plugin {
    */
   protected transient Set<Plugin> requiredPlugins = null;
 
+  /**
+   * Returns a fully expanded creole.xml file that can be used for loading the
+   * plugin into GATE
+   * 
+   * @return a fully expanded creole.xml file that can be used for loading the
+   *         plugin into GATE
+   */
   public abstract org.jdom.Document getCreoleXML() throws Exception;
+
+  /**
+   * Returns a creole.xml file which is only guaranteed to contain information
+   * about the resources within the plugin and not dependency requirements.
+   * 
+   * @return a creole.xml file which is only guaranteed to contain information
+   *         about the resources within the plugin and not dependency
+   *         requirements.
+   */
+  public org.jdom.Document getMetadataXML() throws Exception {
+    return getCreoleXML();
+  }
   
   public abstract String getName();
   
@@ -191,7 +211,7 @@ public abstract class Plugin {
     String gatepluginsPathMarker = "$gateplugins$";
     
     try {
-      org.jdom.Document creoleDoc = getCreoleXML();
+      org.jdom.Document creoleDoc = getMetadataXML();
       
       final Map<String, ResourceInfo> resInfos = new LinkedHashMap<String, ResourceInfo>();
       List<Element> jobsList = new ArrayList<Element>();
@@ -512,6 +532,74 @@ public abstract class Plugin {
       }
       
       return artifactURL;
+    }
+    
+    @Override
+    public Document getMetadataXML() throws Exception {
+      Artifact artifactObj =
+          new DefaultArtifact(group, artifact, "creole", "jar", version);
+
+      Dependency dependency = new Dependency(artifactObj, "runtime");
+
+      List<RemoteRepository> repos = getRepositoryList();
+
+      ArtifactRequest artifactRequest =
+          new ArtifactRequest(artifactObj, repos, null);
+
+      RepositorySystem repoSystem = getRepositorySystem();
+
+      WorkspaceReader workspace = null;
+
+      List<URL> persistenceURLStack =
+          PersistenceManager.currentPersistenceURLStack();
+
+      if(persistenceURLStack != null && !persistenceURLStack.isEmpty()) {
+        List<File> workspaces = new ArrayList<File>();
+
+        for(URL url : persistenceURLStack) {
+          try {
+            File file = gate.util.Files.fileFromURL(url);
+            File cache = new File(file.getParentFile(), "maven-cache.gate");
+            System.out.println(cache.getAbsolutePath());
+            if(cache.exists() && cache.isDirectory()) {
+              workspaces.add(cache);
+            }
+          } catch(IllegalArgumentException e) {
+            // ignore this for now
+          }
+        }
+
+        if(!workspaces.isEmpty()) {
+          workspace = new SimpleMavenCache(
+              workspaces.toArray(new File[workspaces.size()]));
+        }
+      }
+
+      RepositorySystemSession repoSession =
+          getRepositorySession(repoSystem, workspace);
+
+      try {
+        ArtifactResult artifactResult =
+            repoSystem.resolveArtifact(repoSession, artifactRequest);
+
+        artifactURL = new URL("jar:"
+            + artifactResult.getArtifact().getFile().toURI().toURL() + "!/");
+
+        baseURL = artifactURL;
+
+        // check it has a creole.xml at the root
+        URL expandedCreoleUrl =
+            new URL(artifactURL, "META-INF/gate/creole.xml");
+
+        // get the creole.xml out of the jar and add jar elements for this
+        // jar (marked for scanning) and the dependencies
+        SAXBuilder builder = new SAXBuilder(false);
+        return builder.build(expandedCreoleUrl);
+
+      } catch(IOException | ArtifactResolutionException e) {
+        e.printStackTrace();
+        return getCreoleXML();
+      }
     }
 
     @Override
