@@ -582,14 +582,12 @@ public abstract class Plugin {
         ArtifactResult artifactResult =
             repoSystem.resolveArtifact(repoSession, artifactRequest);
 
-        artifactURL = new URL("jar:"
+        URL artifactJarURL = new URL("jar:"
             + artifactResult.getArtifact().getFile().toURI().toURL() + "!/");
-
-        baseURL = artifactURL;
 
         // check it has a creole.xml at the root
         URL expandedCreoleUrl =
-            new URL(artifactURL, "META-INF/gate/creole.xml");
+            new URL(artifactJarURL, "META-INF/gate/creole.xml");
 
         // get the creole.xml out of the jar and add jar elements for this
         // jar (marked for scanning) and the dependencies
