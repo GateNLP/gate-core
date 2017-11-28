@@ -199,6 +199,25 @@ public abstract class Plugin {
     return false;
   }
   
+  /**
+   * Given a class return the Plugin instance from which it was loaded.
+   * @return the Plugin instance from which the specified class was loaded
+   */
+  public static Plugin getPlugin(Class<?> clazz) throws IOException {
+    URL creoleURL = clazz.getResource("/creole.xml");
+    
+    if (creoleURL == null) return null;
+    
+    URL baseURL = new URL(creoleURL, ".");
+    
+    for (Plugin plugin : Gate.getCreoleRegister().getPlugins()) {
+      if (plugin.getBaseURL().equals(baseURL))
+        return plugin;
+    }
+    
+    return null;
+  }
+  
   protected void parseCreole() {
     
     valid = true;
