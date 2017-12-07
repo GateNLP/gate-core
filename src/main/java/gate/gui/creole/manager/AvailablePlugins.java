@@ -111,6 +111,8 @@ public class AvailablePlugins extends JPanel {
   private ResourcesListModel resourcesListModel;
 
   private JList<ResourceInfo> resourcesList;
+  
+  private JLabel lblPluginDetails;
 
   private JTextField filterTextField;
 
@@ -205,10 +207,17 @@ public class AvailablePlugins extends JPanel {
     mainSplit.setLeftComponent(scroller);
 
     scroller = new JScrollPane(resourcesList);
-    scroller.setBorder(BorderFactory.createTitledBorder(scroller.getBorder(),
-            "Resources in Plugin", TitledBorder.LEFT, TitledBorder.ABOVE_TOP));
-    mainSplit.setRightComponent(scroller);
+    //scroller.setBorder(BorderFactory.createTitledBorder(scroller.getBorder(),
+    //        "Resources in Plugin", TitledBorder.LEFT, TitledBorder.ABOVE_TOP));
+    
+    lblPluginDetails = new JLabel();
 
+    JPanel pluginDisplay = new JPanel(new BorderLayout());
+    pluginDisplay.add(lblPluginDetails, BorderLayout.NORTH);
+    pluginDisplay.add(scroller,BorderLayout.CENTER);
+    
+    mainSplit.setRightComponent(pluginDisplay);
+    
     setLayout(new BorderLayout());
 
     add(tbPluginDirs, BorderLayout.NORTH);
@@ -338,13 +347,13 @@ public class AvailablePlugins extends JPanel {
       for (Plugin plugin : Gate.getKnownPlugins()) {
         //Gate.DirectoryInfo dInfo =
          //       Gate.getDirectoryInfo(Gate.getKnownPlugins().get(i));
-        String url = plugin.getBaseURL().toString();//dInfo.getUrl().toString();
+        String name = plugin.getName();//dInfo.getUrl().toString();
         String resources = "";
         for(int j = 0; j < plugin.getResourceInfoList().size(); j++) {
           resources +=
                   plugin.getResourceInfoList().get(j).getResourceName() + " ";
         }
-        if(url.toLowerCase().contains(filter)
+        if((name != null && name.toLowerCase().contains(filter))
                 || resources.toLowerCase().contains(filter)) {
           visibleRows.add(plugin);
         }
@@ -526,6 +535,20 @@ public class AvailablePlugins extends JPanel {
 
     public void dataChanged() {
       fireContentsChanged(this, 0, getSize() - 1);
+      lblPluginDetails.setText("");
+      int row = mainTable.getSelectedRow();
+      if(row == -1) return;
+      row = mainTable.rowViewToModel(row);
+      Plugin plugin = visibleRows.get(row);
+      
+      StringBuffer details = new StringBuffer("<html><body><h1>").append(plugin.getName()).append("</h1>");
+      
+      if (plugin.getDescription() != null)
+        details.append("<p>").append(plugin.getDescription()).append("</p>");
+      
+      details.append("<p>This plugin contains the following CREOLE resources:</p></body></html>");
+      
+      lblPluginDetails.setText(details.toString());
     }
   }
 

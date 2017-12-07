@@ -54,6 +54,7 @@ import org.apache.maven.model.building.DefaultModelBuilderFactory;
 import org.apache.maven.model.building.DefaultModelBuildingRequest;
 import org.apache.maven.model.building.ModelBuilder;
 import org.apache.maven.model.building.ModelBuildingRequest;
+import org.apache.tools.ant.taskdefs.ManifestTask.Mode;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
@@ -107,6 +108,8 @@ public abstract class Plugin {
   protected transient URL baseURL;
   
   protected transient String name;
+  
+  protected transient String description;
 
   /**
    * The list of {@link gate.Gate.ResourceInfo} objects within this plugin
@@ -140,7 +143,13 @@ public abstract class Plugin {
     return getCreoleXML();
   }
   
-  public abstract String getName();
+  public String getName() {
+    return name;
+  }
+  
+  public String getDescription() {
+    return description;
+  }
   
   public Set<Plugin> getRequiredPlugins() {
     if (requiredPlugins == null) parseCreole();
@@ -607,6 +616,30 @@ public abstract class Plugin {
         // check it has a creole.xml at the root
         URL expandedCreoleUrl =
             new URL(artifactJarURL, "META-INF/gate/creole.xml");
+        
+
+        artifactObj =
+            new SubArtifact(artifactObj,"", "pom");
+        
+        artifactRequest.setArtifact(artifactObj);
+        artifactResult =
+            repoSystem.resolveArtifact(repoSession,
+                    artifactRequest);
+        
+        ModelBuildingRequest req = new DefaultModelBuildingRequest(); 
+        req.setProcessPlugins(false); 
+        req.setPomFile(artifactResult.getArtifact().getFile()); 
+        req.setModelResolver(new SimpleModelResolver(repoSystem,  
+                repoSession, new ArrayList<RemoteRepository>())); 
+        req.setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MINIMAL); 
+         
+        ModelBuilder modelBuilder = new DefaultModelBuilderFactory().newInstance(); 
+        Model model = modelBuilder.build(req).getEffectiveModel(); 
+        
+        name = group+":"+artifact+":"+version;
+        if (model.getName() != null && !model.getName().trim().equals("")) name = model.getName();
+        
+        if (model.getDescription() != null && !model.getDescription().trim().equals("")) description = model.getDescription();
 
         // get the creole.xml out of the jar and add jar elements for this
         // jar (marked for scanning) and the dependencies
@@ -739,6 +772,8 @@ public abstract class Plugin {
       name = group+":"+artifact+":"+version;
       if (model.getName() != null && !model.getName().trim().equals("")) name = model.getName();
       
+      if (model.getDescription() != null && model.getDescription().trim().equals("")) description = model.getDescription();
+      
       /*System.out.println(model.getOrganization().getName());
       for (org.apache.maven.model.Repository r : model.getRepositories()) {
         System.out.println(r.getName());
@@ -748,11 +783,6 @@ public abstract class Plugin {
       }*/
       
       return jdomDoc;
-    }
-
-    @Override
-    public String getName() {
-      return name;
     }
   }
   
@@ -832,7 +862,8 @@ public abstract class Plugin {
     
     public Component(Class<? extends Resource> resourceClass) throws MalformedURLException {
       this.resourceClass = resourceClass;
-      baseURL = (new URL(resourceClass.getResource("/gate/creole/CreoleRegisterImpl.class"), "."));      
+      baseURL = (new URL(resourceClass.getResource("/gate/creole/CreoleRegisterImpl.class"), "."));
+      name = resourceClass.getName();
     }
     
     @Override
@@ -847,12 +878,6 @@ public abstract class Plugin {
       element.addContent(classElement);
       
       return doc;
-    }
-
-    @Override
-    public String getName() {
-      return resourceClass.getName();
-    }
-    
+    }    
   }
 }
