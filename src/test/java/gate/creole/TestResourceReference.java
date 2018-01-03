@@ -55,6 +55,11 @@ public class TestResourceReference extends TestCase {
         throw new RuntimeException(e);
       }
     }
+    
+    @Override
+    public Document getMetadataXML() throws Exception {
+      return getCreoleXML();
+    }
 
     @Override
     public Document getCreoleXML() throws Exception, JDOMException {
