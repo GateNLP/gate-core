@@ -86,9 +86,6 @@ public class Utils {
     RemoteRepository gateRepo = new RemoteRepository.Builder("gate", "default",
         "http://repo.gate.ac.uk/content/groups/public/").build();
 
-    repos.add(central);
-    repos.add(gateRepo);
-    
     // Add all repos from settings.xml
     // http://stackoverflow.com/questions/27818659/loading-mavens-settings-xml-for-jcabi-aether-to-use
     Settings effectiveSettings = loadMavenSettings();
@@ -103,6 +100,9 @@ public class Utils {
       repos.add(remoteRepo);
       }
     }
+    
+    repos.add(central);    
+    repos.add(gateRepo);
     
     return repos;
   }
@@ -123,12 +123,10 @@ public class Utils {
     return locator.getService(RepositorySystem.class);
   }
 
-  public static RepositorySystemSession getRepositorySession(RepositorySystem repoSystem, WorkspaceReader workspace) {
+  public static DefaultRepositorySystemSession getRepositorySession(RepositorySystem repoSystem, WorkspaceReader workspace) {
     
     DefaultRepositorySystemSession repoSystemSession = MavenRepositorySystemUtils.newSession();
     
-    
-
     String repoLocation = System.getProperty("user.home") + File.separator
             + ".m2" + File.separator + "repository/";
     try {
