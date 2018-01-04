@@ -64,7 +64,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -545,7 +544,7 @@ public class AvailablePlugins extends JPanel {
       
       if (plugin.getDescription() != null)
         details.append("<p>").append(plugin.getDescription()).append("</p>");
-      
+      details.append("<p>Has Resources:" ).append(plugin.hasResources()).append("</p>");
       details.append("<p>This plugin contains the following CREOLE resources:</p></body></html>");
       
       lblPluginDetails.setText(details.toString());

@@ -54,7 +54,7 @@ import org.apache.maven.model.building.DefaultModelBuilderFactory;
 import org.apache.maven.model.building.DefaultModelBuildingRequest;
 import org.apache.maven.model.building.ModelBuilder;
 import org.apache.maven.model.building.ModelBuildingRequest;
-import org.apache.tools.ant.taskdefs.ManifestTask.Mode;
+import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
@@ -87,6 +87,7 @@ import gate.util.asm.ClassVisitor;
 import gate.util.asm.Opcodes;
 import gate.util.asm.Type;
 import gate.util.asm.commons.EmptyVisitor;
+//import gate.util.maven.LoggingTransferListener;
 import gate.util.maven.SimpleMavenCache;
 import gate.util.maven.SimpleModelResolver;
 import gate.util.persistence.PersistenceManager;
@@ -466,7 +467,7 @@ public abstract class Plugin {
     
     private String group, artifact, version;
     
-    private transient URL artifactURL;
+    private transient URL artifactURL, metadataArtifactURL;
 
     public Maven(String group, String artifact, String version) {
       this.group = group;
@@ -545,16 +546,27 @@ public abstract class Plugin {
     
     @Override
     public boolean hasResources() {   
-      try (FileSystem zipFs = FileSystems.newFileSystem(artifactURL.toURI(), new HashMap<>());) {        
+      try (FileSystem zipFs = FileSystems.newFileSystem(getArtifactURL().toURI(), new HashMap<>());) {        
         Path pathInZip = zipFs.getPath("/resources");
         return Files.isDirectory(pathInZip);
       }
-      catch (URISyntaxException | IOException e) {
+      catch (Exception e) {
         return false;
       }
-    }    
+    }
     
-    public URL getArtifactURL() throws Exception {
+    protected URL getMetadataArtifactURL() throws Exception {
+      if (metadataArtifactURL != null)
+        return metadataArtifactURL;
+      
+      if (artifactURL != null) return artifactURL;
+      
+      getMetadataArtifactURL();
+      
+      return metadataArtifactURL;
+    }
+    
+    protected URL getArtifactURL() throws Exception {
       if (artifactURL == null) {
         getCreoleXML();
       }
@@ -566,8 +578,6 @@ public abstract class Plugin {
     public Document getMetadataXML() throws Exception {
       Artifact artifactObj =
           new DefaultArtifact(group, artifact, "creole", "jar", version);
-
-      Dependency dependency = new Dependency(artifactObj, "runtime");
 
       List<RemoteRepository> repos = getRepositoryList();
 
@@ -610,14 +620,20 @@ public abstract class Plugin {
         ArtifactResult artifactResult =
             repoSystem.resolveArtifact(repoSession, artifactRequest);
 
-        URL artifactJarURL = new URL("jar:"
+        metadataArtifactURL = new URL("jar:"
             + artifactResult.getArtifact().getFile().toURI().toURL() + "!/");
 
         // check it has a creole.xml at the root
         URL expandedCreoleUrl =
-            new URL(artifactJarURL, "META-INF/gate/creole.xml");
+            new URL(metadataArtifactURL, "META-INF/gate/creole.xml");
         
-
+        try (InputStream creoleStream = expandedCreoleUrl.openStream()){
+          //no op just to check the file exists
+        } catch(IOException ioe) {
+          throw new IOException(getBaseURL().toExternalForm()
+                  + " does not exist so this artifact is not a GATE plugin");
+        }
+        
         artifactObj =
             new SubArtifact(artifactObj,"", "pom");
         
@@ -691,9 +707,9 @@ public abstract class Plugin {
     	  }
       }
       
-      RepositorySystemSession repoSession = getRepositorySession(repoSystem, workspace);     
-      
-
+      DefaultRepositorySystemSession repoSession = getRepositorySession(repoSystem, workspace);
+      //repoSession.setTransferListener(new LoggingTransferListener());
+     
       ArtifactResult artifactResult =
           repoSystem.resolveArtifact(repoSession,
                       artifactRequest);
@@ -702,6 +718,8 @@ public abstract class Plugin {
               new URL("jar:"
                       + artifactResult.getArtifact().getFile().toURI().toURL()
                       + "!/");
+      
+      metadataArtifactURL = artifactURL;
       
       baseURL = artifactURL;
 
@@ -719,6 +737,7 @@ public abstract class Plugin {
 
       CollectRequest collectRequest = new CollectRequest(dependency,repos);
       
+      
       DependencyNode node =
               repoSystem.collectDependencies(repoSession,
                       collectRequest).getRoot();
@@ -726,10 +745,15 @@ public abstract class Plugin {
       DependencyRequest dependencyRequest = new DependencyRequest();
       dependencyRequest.setRoot(node);
       
+      
+
+      
       DependencyResult result =
               repoSystem.resolveDependencies(repoSession,
                       dependencyRequest);
 
+     
+      
       // get the creole.xml out of the jar and add jar elements for this
       // jar (marked for scanning) and the dependencies
       SAXBuilder builder = new SAXBuilder(false);
