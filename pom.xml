@@ -607,7 +607,7 @@
 		<snapshotRepository>
 			<id>gate.snapshots</id>
 			<name>GATE Snapshots Repository</name>
-			<url>https://repo.gate.ac.uk/contents/repositories/snapshots</url>
+			<url>https://repo.gate.ac.uk/content/repositories/snapshots</url>
 			<layout>default</layout>
 		</snapshotRepository>
 	</distributionManagement>
