@@ -20,9 +20,12 @@ package gate.gui.creole.manager;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -84,6 +87,7 @@ import gate.resources.img.svg.MavenIcon;
 import gate.resources.img.svg.OpenFileIcon;
 import gate.resources.img.svg.RemotePluginIcon;
 import gate.resources.img.svg.RemoveIcon;
+import gate.resources.img.svg.SaveIcon;
 import gate.resources.img.svg.UserPluginIcon;
 import gate.swing.CheckBoxTableCellRenderer;
 import gate.swing.IconTableCellRenderer;
@@ -112,6 +116,10 @@ public class AvailablePlugins extends JPanel {
   private JList<ResourceInfo> resourcesList;
   
   private JLabel lblPluginDetails;
+  
+  //buttons on the plugin toolbar, should also be ones for homepage/help etc.
+  private JButton btnResources;
+  private ExtractResourcesActionListener extractResourcesListener = new ExtractResourcesActionListener();
 
   private JTextField filterTextField;
 
@@ -210,10 +218,22 @@ public class AvailablePlugins extends JPanel {
     //        "Resources in Plugin", TitledBorder.LEFT, TitledBorder.ABOVE_TOP));
     
     lblPluginDetails = new JLabel();
+    
+    JToolBar pluginToolbar = new JToolBar(JToolBar.HORIZONTAL);
+    pluginToolbar.setFloatable(false);
+    
+    btnResources = new JButton(new SaveIcon(16,16));
+    btnResources.setDisabledIcon(new SaveIcon(16,16,true));
+    btnResources.setToolTipText("Extract Plugin Resources");
+    btnResources.setEnabled(false);
+    btnResources.addActionListener(extractResourcesListener);
+    
+    pluginToolbar.add(btnResources);
 
     JPanel pluginDisplay = new JPanel(new BorderLayout());
     pluginDisplay.add(lblPluginDetails, BorderLayout.NORTH);
     pluginDisplay.add(scroller,BorderLayout.CENTER);
+    pluginDisplay.add(pluginToolbar,BorderLayout.SOUTH);
     
     mainSplit.setRightComponent(pluginDisplay);
     
@@ -535,6 +555,8 @@ public class AvailablePlugins extends JPanel {
     public void dataChanged() {
       fireContentsChanged(this, 0, getSize() - 1);
       lblPluginDetails.setText("");
+      btnResources.setEnabled(false);
+      
       int row = mainTable.getSelectedRow();
       if(row == -1) return;
       row = mainTable.rowViewToModel(row);
@@ -544,10 +566,43 @@ public class AvailablePlugins extends JPanel {
       
       if (plugin.getDescription() != null)
         details.append("<p>").append(plugin.getDescription()).append("</p>");
-      details.append("<p>Has Resources:" ).append(plugin.hasResources()).append("</p>");
+      //details.append("<p>Has Resources:" ).append(plugin.hasResources()).append("</p>");
+      btnResources.setEnabled(plugin.hasResources());
+      extractResourcesListener.setPlugin(plugin);
+      
       details.append("<p>This plugin contains the following CREOLE resources:</p></body></html>");
       
       lblPluginDetails.setText(details.toString());
+    }
+  }
+  
+  private class ExtractResourcesActionListener implements ActionListener {
+
+    Plugin plugin = null;
+    
+    public void setPlugin(Plugin plugin) {
+      this.plugin = plugin;
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (plugin == null) return;
+      if (!plugin.hasResources()) return;
+      
+      XJFileChooser fileChooser = MainFrame.getFileChooser();
+      fileChooser.setDialogTitle("Select Folder to Hold Resources");
+      fileChooser.setMultiSelectionEnabled(false);
+      fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
+      fileChooser.setResource("gate.creole.Plugin");
+      int result = fileChooser.showOpenDialog(AvailablePlugins.this);
+      if(result != JFileChooser.APPROVE_OPTION) return;
+      
+      try {
+        plugin.copyResources(fileChooser.getSelectedFile());
+      } catch(IOException | URISyntaxException ex) {
+        throw new GateRuntimeException("Unable to extract plugin resources to folder specified", ex);
+      }
     }
   }
 
