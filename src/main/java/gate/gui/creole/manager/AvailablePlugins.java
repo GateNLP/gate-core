@@ -222,8 +222,8 @@ public class AvailablePlugins extends JPanel {
     JToolBar pluginToolbar = new JToolBar(JToolBar.HORIZONTAL);
     pluginToolbar.setFloatable(false);
     
-    btnResources = new JButton(new SaveIcon(16,16));
-    btnResources.setDisabledIcon(new SaveIcon(16,16,true));
+    btnResources = new JButton(new SaveIcon(32,32));
+    btnResources.setDisabledIcon(new SaveIcon(32,32,true));
     btnResources.setToolTipText("Extract Plugin Resources");
     btnResources.setEnabled(false);
     btnResources.addActionListener(extractResourcesListener);
