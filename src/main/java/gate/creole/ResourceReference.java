@@ -17,6 +17,7 @@ package gate.creole;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -69,6 +70,28 @@ public class ResourceReference implements Serializable {
     if(!uri.isAbsolute())
       throw new URISyntaxException(uri.toString(),
           "We only support absolute URIs");
+    
+    if("jar".equals(uri.getScheme())) {
+      // if the uri points at a file within a jar then we check to see if it's a
+      // resource inside a plugin and convert the URL (which was probably a
+      // relpath in an xgapp into a creole:// URI
+
+      try {
+        String[] parts = url.toExternalForm().split("!");
+        URL base = new URL(parts[0] + "!/");
+
+        for(Plugin plugin : Gate.getCreoleRegister().getPlugins()) {
+          // go through each plugin we know about until....
+
+          if(plugin.getBaseURL().equals(base)) {
+            uri = plugin.getBaseURI().resolve(parts[1]);
+          }
+        }
+
+      } catch(MalformedURLException e) {
+        throw new URISyntaxException(uri.toString(),"Error normalizing plugin based URL");
+      }
+    }
   }
 
   /**

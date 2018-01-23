@@ -278,7 +278,7 @@ public class PluginUpdateManager extends JDialog {
       //TODO load the default set from somewhere more sensible
       try (BufferedReader in = new BufferedReader(new InputStreamReader(PluginUpdateManager.class.getClassLoader().getResource("gate/resources/creole/defaultPlugins.tsv").openStream()))){
         for (String line = in.readLine(); line != null; line = in.readLine()) {
-          System.out.println(line);
+          
           String[] parts = line.split("\t",3);
           
           //if we don't have three parts then skip this line
