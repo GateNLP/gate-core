@@ -270,9 +270,9 @@ public class PluginUpdateManager extends JDialog {
   /**
    * Returns the list of default plugins for this version of GATE.
    */
-  public static Set<Plugin> getDefaultPlugins() {
+  public synchronized static Set<Plugin> getDefaultPlugins() {
     if (defaultPlugins == null) {
-      
+
       defaultPlugins = new HashSet<Plugin>();
       
       //TODO load the default set from somewhere more sensible
