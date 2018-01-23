@@ -126,13 +126,17 @@ public class SimpleMavenCache implements WorkspaceReader, Serializable {
 		List<RemoteRepository> repos = getRepositoryList();
 
 		for (ArtifactResult ar : result.getArtifactResults()) {
-			File file = getArtifactFile(ar.getArtifact());
+			// generate output file name from the *requested* artifact rather
+			// than the resolved one (e.g. if we requested a -SNAPSHOT version
+			// but got a timestamped one)
+			File file = getArtifactFile(ar.getRequest().getArtifact());
 
 			// file.getParentFile().mkdirs();
 			//System.out.println(ar.getArtifact().getFile());
 
 			FileUtils.copyFile(ar.getArtifact().getFile(), file);
 			
+			// get the POM corresponding to the specific resolved JAR
 			Artifact pomArtifact = new SubArtifact(ar.getArtifact(),"", "pom");
 			
 			ArtifactRequest artifactRequest =
@@ -142,7 +146,8 @@ public class SimpleMavenCache implements WorkspaceReader, Serializable {
           repoSystem.resolveArtifact(repoSession,
                   artifactRequest);
       
-      file = getArtifactFile(artifactResult.getArtifact());
+      // but copy it to a file named for the original requested version number
+      file = getArtifactFile(new SubArtifact(ar.getRequest().getArtifact(), "", "pom"));
       FileUtils.copyFile(artifactResult.getArtifact().getFile(), file);
       
 		}
