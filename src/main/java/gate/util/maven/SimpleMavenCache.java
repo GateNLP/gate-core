@@ -24,10 +24,13 @@ import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.repository.WorkspaceRepository;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.resolution.DependencyResult;
+import org.eclipse.aether.util.artifact.SubArtifact;
 
 public class SimpleMavenCache implements WorkspaceReader, Serializable {
 
@@ -104,7 +107,7 @@ public class SimpleMavenCache implements WorkspaceReader, Serializable {
 	}
 
 	public void cacheArtifact(Artifact artifact) throws IOException, SettingsBuildingException,
-			DependencyCollectionException, DependencyResolutionException {
+			DependencyCollectionException, DependencyResolutionException, ArtifactResolutionException {
 
 		Dependency dependency = new Dependency(artifact, "runtime");
 
@@ -119,6 +122,8 @@ public class SimpleMavenCache implements WorkspaceReader, Serializable {
 		dependencyRequest.setRoot(node);
 
 		DependencyResult result = repoSystem.resolveDependencies(repoSession, dependencyRequest);
+		
+		List<RemoteRepository> repos = getRepositoryList();
 
 		for (ArtifactResult ar : result.getArtifactResults()) {
 			File file = getArtifactFile(ar.getArtifact());
@@ -127,6 +132,19 @@ public class SimpleMavenCache implements WorkspaceReader, Serializable {
 			//System.out.println(ar.getArtifact().getFile());
 
 			FileUtils.copyFile(ar.getArtifact().getFile(), file);
+			
+			Artifact pomArtifact = new SubArtifact(ar.getArtifact(),"", "pom");
+			
+			ArtifactRequest artifactRequest =
+          new ArtifactRequest(pomArtifact, repos, null);
+			
+      ArtifactResult artifactResult =
+          repoSystem.resolveArtifact(repoSession,
+                  artifactRequest);
+      
+      file = getArtifactFile(artifactResult.getArtifact());
+      FileUtils.copyFile(artifactResult.getArtifact().getFile(), file);
+      
 		}
 	}
 
