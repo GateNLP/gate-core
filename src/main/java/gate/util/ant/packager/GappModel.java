@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -57,6 +58,11 @@ public class GappModel {
    */
   private Map<URL, List<Element>> resourceRelpathsMap =
           new HashMap<URL, List<Element>>();
+  
+  /**
+   * List (possibly empty) of Maven plugins referenced by this GAPP.
+   */
+  private List<MavenPlugin> mavenPlugins;
 
   /**
    * XPath selecting all urlStrings that contain $relpath$ or $gatehome$ in the
@@ -69,6 +75,11 @@ public class GappModel {
    * &lt;urlList&gt; section of the file.
    */
   private static XPath relativePluginPathElementsXPath;
+  
+  /**
+   * XPath selecting all Maven plugins from the urlList.
+   */
+  private static XPath mavenPluginsXpath;
 
   /**
    * @see #GappModel(URL,URL, URL)
@@ -146,6 +157,10 @@ public class GappModel {
                                 + "/urlString[starts-with(., '$relpath$') "
                                 + "or starts-with(., '$resourceshome$') "
                                 + "or starts-with(., '$gatehome$')]");
+        mavenPluginsXpath =
+                XPath
+                        .newInstance("/gate.util.persistence.GateApplication/urlList"
+                                + "/localList/gate.creole.Plugin-Maven");
       }
       catch(JDOMException jdx) {
         throw new GateRuntimeException("Error creating XPath expression", jdx);
@@ -162,6 +177,10 @@ public class GappModel {
 
       pluginRelpaths =
               relativePluginPathElementsXPath.selectNodes(gappDocument);
+      
+      mavenPlugins =
+          (List<MavenPlugin>) mavenPluginsXpath.selectNodes(gappDocument)
+            .stream().map(elt -> new MavenPlugin((Element)elt)).collect(Collectors.toList());
     }
     catch(JDOMException e) {
       throw new GateRuntimeException(
@@ -252,6 +271,15 @@ public class GappModel {
    */
   public Set<URL> getPluginURLs() {
     return pluginRelpathsMap.keySet();
+  }
+  
+  /**
+   * Get the Maven plugins referenced by this GAPP file.
+   * 
+   * @return the (possibly empty) list of Maven plugins.
+   */
+  public List<MavenPlugin> getMavenPlugins() {
+    return mavenPlugins;
   }
 
   /**
@@ -353,5 +381,20 @@ public class GappModel {
 
     XMLOutputter outputter = new XMLOutputter(Format.getRawFormat());
     outputter.output(gappDocument, out);
+  }
+
+  /**
+   * Very simple "struct" for a set of Maven co-ordinates.
+   */
+  public static class MavenPlugin {
+    public String group;
+    public String artifact;
+    public String version;
+    
+    MavenPlugin(Element pluginElt) {
+      group = pluginElt.getChildText("group");
+      artifact = pluginElt.getChildText("artifact");
+      version = pluginElt.getChildText("version");
+    }
   }
 }

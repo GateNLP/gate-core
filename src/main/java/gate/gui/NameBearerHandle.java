@@ -856,6 +856,8 @@ public class NameBearerHandle implements Handle, StatusListener,
                       "original.xgapp");
               File targetGapp = new File(temporaryDirectory,
                       "application.xgapp");
+              File mavenCache = new File(temporaryDirectory,
+                      "maven-cache.gate");
 
               // save the application in a gapp file
               // When exporting to cloud, the gapp file should not
@@ -871,6 +873,7 @@ public class NameBearerHandle implements Handle, StatusListener,
               task.setProject(project);
               task.setSrc(originalGapp);
               task.setDestFile(targetGapp);
+              task.setMavenCache(mavenCache);
               // sensible default settings
               task.setCopyPlugins(true);
               task.setCopyResourceDirs(true);
