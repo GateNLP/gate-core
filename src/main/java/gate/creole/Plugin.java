@@ -546,7 +546,7 @@ public abstract class Plugin {
     
     @Override
     public boolean hasResources() {   
-      try (FileSystem zipFs = FileSystems.newFileSystem(getArtifactURL().toURI(), new HashMap<>());) {        
+      try (FileSystem zipFs = FileSystems.newFileSystem(getMetadataArtifactURL().toURI(), new HashMap<>());) {        
         Path pathInZip = zipFs.getPath("/resources");
         return Files.isDirectory(pathInZip);
       }
@@ -561,7 +561,7 @@ public abstract class Plugin {
       
       if (artifactURL != null) return artifactURL;
       
-      getMetadataArtifactURL();
+      getMetadataXML();
       
       return metadataArtifactURL;
     }
@@ -672,7 +672,7 @@ public abstract class Plugin {
     public Document getCreoleXML() throws Exception {
       Artifact artifactObj =
               new DefaultArtifact(group, artifact, "jar", version);
-
+      
       Dependency dependency = new Dependency(artifactObj, "runtime");
 
       List<RemoteRepository> repos = getRepositoryList();
