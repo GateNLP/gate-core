@@ -474,7 +474,7 @@ public abstract class Plugin {
       this.artifact = artifact;
       this.version = version;
       
-      name = group+":"+artifact+":"+version;
+      name = artifact;//group+":"+artifact+":"+version;
     }
     
     @Override

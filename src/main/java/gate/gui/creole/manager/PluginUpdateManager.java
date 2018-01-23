@@ -19,6 +19,11 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -260,6 +265,35 @@ public class PluginUpdateManager extends JDialog {
     dispose();
   }
 
-
+  private static Set<Plugin> defaultPlugins = null;
+  
+  /**
+   * Returns the list of default plugins for this version of GATE.
+   */
+  public static Set<Plugin> getDefaultPlugins() {
+    if (defaultPlugins == null) {
+      
+      defaultPlugins = new HashSet<Plugin>();
+      
+      //TODO load the default set from somewhere more sensible
+      try (BufferedReader in = new BufferedReader(new InputStreamReader(PluginUpdateManager.class.getClassLoader().getResource("gate/resources/creole/defaultPlugins.tsv").openStream()))){
+        for (String line = in.readLine(); line != null; line = in.readLine()) {
+          System.out.println(line);
+          String[] parts = line.split("\t",3);
+          
+          //if we don't have three parts then skip this line
+          if (parts.length != 3) continue;
+          
+          defaultPlugins.add(new Plugin.Maven(parts[0], parts[1], parts[2]));
+        }
+      }
+      catch (IOException ioe) {
+        System.err.println("Unable to completely load list of default plugins");
+        ioe.printStackTrace();
+      }
+    }
+    
+    return Collections.unmodifiableSet(defaultPlugins);
+  }
 
 }

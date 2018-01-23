@@ -920,7 +920,10 @@ public class Gate implements GateConstants {
    * @return a {@link List} of {@link URL}s.
    */
   public static Set<Plugin> getKnownPlugins() {
-    return knownPlugins;
+    Set<Plugin> plugins = new HashSet<Plugin>();
+    plugins.addAll(knownPlugins);
+    plugins.addAll(PluginUpdateManager.getDefaultPlugins());
+    return plugins;
   }
 
   /**
@@ -931,6 +934,7 @@ public class Gate implements GateConstants {
    */
   public static void addKnownPlugin(Plugin plugin) {
     if(knownPlugins.contains(plugin)) return;
+    if (PluginUpdateManager.getDefaultPlugins().contains(plugin)) return;
     knownPlugins.add(plugin);
   }
 
