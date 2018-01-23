@@ -378,7 +378,7 @@ public class Gate implements GateConstants {
     }*/
     
     // register plugins installed in the user plugin directory
-    File userPluginsHome = PluginUpdateManager.getUserPluginsHome();
+    /*File userPluginsHome = PluginUpdateManager.getUserPluginsHome();
     if (userPluginsHome != null && userPluginsHome.isDirectory()) {
       for (File dir : userPluginsHome.listFiles()) {
         File creoleFile = new File(dir, "creole.xml");
@@ -393,7 +393,7 @@ public class Gate implements GateConstants {
           }
         }
       }
-    }
+    }*/
 
     // process the autoload plugins
     String pluginPath = getUserConfig().getString(AUTOLOAD_PLUGIN_PATH_KEY);
@@ -783,14 +783,14 @@ public class Gate implements GateConstants {
         "Problem while locating the plug-ins home!", ioe);
     }*/
         
-    String userPluginHomeStr;
+    /*String userPluginHomeStr;
     try {
       File userPluginHome = PluginUpdateManager.getUserPluginsHome();
       userPluginHomeStr = (userPluginHome != null ? userPluginHome.getCanonicalPath() : null);
     }
     catch (IOException ioe) {
       throw new GateRuntimeException("Unable to access user plugin directory!", ioe);
-    }
+    }*/
     
     //TODO need to reinstate this
     

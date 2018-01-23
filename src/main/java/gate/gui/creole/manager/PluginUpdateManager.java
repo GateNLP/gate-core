@@ -19,7 +19,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -37,15 +36,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import gate.Gate;
 import gate.creole.Plugin;
 import gate.gui.MainFrame;
 import gate.resources.img.svg.AvailableIcon;
-import gate.util.Strings;
 
 /**
- * The CREOLE plugin manager which includes the ability to download and
- * install/update plugins from remote update sites.
+ * The CREOLE plugin manager
  *
  * @author Mark A. Greenwood
  */
@@ -59,39 +55,6 @@ public class PluginUpdateManager extends JDialog {
   private JPanel panel = new JPanel(new BorderLayout());
 
   private JTabbedPane tabs = new JTabbedPane();
-
-  private static File userPluginDir;
-
-  private static final String GATE_USER_PLUGINS = "gate.user.plugins";
-
-  public static File getUserPluginsHome() {
-    
-    if(userPluginDir == null) {
-      String upd = System.getProperty(GATE_USER_PLUGINS, Gate.getUserConfig().getString(GATE_USER_PLUGINS));
-      if(upd != null) {
-        userPluginDir = new File(upd);
-        
-        if(!userPluginDir.exists() || !userPluginDir.isDirectory() || !userPluginDir.canWrite()) {
-          userPluginDir = null;
-          Gate.getUserConfig().remove(GATE_USER_PLUGINS);
-        }
-      }
-    }
-    
-    if (userPluginDir == null) {
-      String filePrefix = "";
-      if(Gate.runningOnUnix()) filePrefix = ".";
-
-      String userPluginName =
-        System.getProperty("user.home") + Strings.getFileSep() + filePrefix
-          + "gate-plugins";
-      
-      userPluginDir = new File(userPluginName);
-      userPluginDir.mkdirs();
-    }
-    
-    return userPluginDir;
-  }
 
   /**
    * Load all the data about available plugins/updates from the remote update
