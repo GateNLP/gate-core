@@ -278,13 +278,25 @@ public class PluginUpdateManager extends JDialog {
       //TODO load the default set from somewhere more sensible
       try (BufferedReader in = new BufferedReader(new InputStreamReader(PluginUpdateManager.class.getClassLoader().getResource("gate/resources/creole/defaultPlugins.tsv").openStream()))){
         for (String line = in.readLine(); line != null; line = in.readLine()) {
+
           
-          String[] parts = line.split("\t",3);
-          
-          //if we don't have three parts then skip this line
-          if (parts.length != 3) continue;
-          
-          defaultPlugins.add(new Plugin.Maven(parts[0], parts[1], parts[2]));
+          try {
+            String[] parts = line.split("\t", 3);
+
+            // if we don't have three parts then skip this line
+            if(parts.length != 3) continue;
+
+            Plugin.Maven plugin =
+                new Plugin.Maven(parts[0], parts[1], parts[2]);
+
+            // this triggers the resolve of the creole metadata jar so we have
+            // all the details to fill the table
+            plugin.getMetadataXML();
+            
+            defaultPlugins.add(plugin);
+          } catch(Exception e) {
+            e.printStackTrace();
+          }
         }
       }
       catch (IOException ioe) {
