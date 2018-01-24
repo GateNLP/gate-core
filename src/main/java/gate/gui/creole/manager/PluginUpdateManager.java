@@ -290,7 +290,7 @@ public class PluginUpdateManager extends JDialog {
                 new Plugin.Maven(parts[0], parts[1], parts[2]);
 
             // this triggers the resolve of the creole metadata jar so we have
-            // all the details to fill the table
+            // all the details to fill the table -- but it slows us down!
             plugin.getMetadataXML();
             
             defaultPlugins.add(plugin);
