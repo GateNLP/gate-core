@@ -325,7 +325,7 @@ public class CorefEditor
     // and all chainNodes under it
 
     String annotSet = de.getAnnotationSetName();
-    annotSet = (annotSet == null) ? DEFAULT_ANNOTSET_NAME : annotSet;
+    annotSet = ("".equals(annotSet)) ? DEFAULT_ANNOTSET_NAME : annotSet;
     // find out the currently Selected annotationSetName
     String annotSetName = (String) annotSets.getSelectedItem();
     // remove it from the main data store
@@ -369,12 +369,12 @@ public class CorefEditor
   public void annotationSetAdded(gate.event.DocumentEvent de) {
 
     String annotSet = de.getAnnotationSetName();
-    if(annotSet == null)
+    if("".equals(annotSet))
       document.getAnnotations().addAnnotationSetListener(this);
     else
       document.getAnnotations(annotSet).addAnnotationSetListener(this);
 
-    annotSet = (annotSet == null) ? DEFAULT_ANNOTSET_NAME : annotSet;
+    annotSet = ("".equals(annotSet)) ? DEFAULT_ANNOTSET_NAME : annotSet;
     // find out the currently Selected annotationSetName
     String annotSetName = (String) annotSets.getSelectedItem();
 
@@ -516,7 +516,7 @@ public class CorefEditor
     outer:while (setIter.hasNext()) {
       String currentSet = setIter.next();
       List<List<Integer>> matches = matchesMap.get(currentSet);
-      currentSet = (currentSet == null) ? DEFAULT_ANNOTSET_NAME : currentSet;
+      currentSet = (currentSet == "") ? DEFAULT_ANNOTSET_NAME : currentSet;
 
       if (matches == null)
         continue;
@@ -695,7 +695,7 @@ public class CorefEditor
           explicitCall = true;
           List<Integer> ids = removeIter.next();
           matches.remove(ids);
-          String set = currentSet.equals(DEFAULT_ANNOTSET_NAME) ? null :
+          String set = currentSet.equals(DEFAULT_ANNOTSET_NAME) ? "" :
                        currentSet;
           matchesMap.put(set, matches);
           explicitCall = false;
@@ -956,8 +956,6 @@ public class CorefEditor
       corefTree.setVisible(false);
       return;
     }
-
-    System.out.println("calling from here");
     
     final String currentAnnotSet =
             annotSets.getSelectedItem() != null ? (String)annotSets
@@ -1122,7 +1120,7 @@ public class CorefEditor
 
     //AnnotationSetName --> List of ArrayLists
     //each ArrayList contains Ids of related annotations
-    List<List<Integer>> matches1 = matchesMap.get(isDefaultSet ? null :
+    List<List<Integer>> matches1 = matchesMap.get(isDefaultSet ? "" :
         setName);
     if (matches1 == null) {
       corefChains.put(annotSetNode, chainLinks);
@@ -1190,7 +1188,7 @@ public class CorefEditor
     annotSets.getSelectedItem())).get(chainHead);
 
    String currentSet = (String) annotSets.getSelectedItem();
-   currentSet = (currentSet.equals(DEFAULT_ANNOTSET_NAME)) ? null : currentSet;
+   currentSet = (currentSet.equals(DEFAULT_ANNOTSET_NAME)) ? "" : currentSet;
 
     // we need to update the Co-reference document feature
     Map<String, List<List<Integer>>> matchesMap = null;
@@ -1706,7 +1704,7 @@ public class CorefEditor
               popupWindow.setVisible(false);
 
               String currentSet = (String) annotSets.getSelectedItem();
-              currentSet = (currentSet.equals(DEFAULT_ANNOTSET_NAME)) ? null :
+              currentSet = (currentSet.equals(DEFAULT_ANNOTSET_NAME)) ? "" :
                            currentSet;
 
               Map<String, List<List<Integer>>> matchesMap = null;
@@ -1760,7 +1758,7 @@ public class CorefEditor
               matchesMap = new HashMap<String, List<List<Integer>>>();
             }
             String currentSet = (String) annotSets.getSelectedItem();
-            currentSet = (currentSet.equals(DEFAULT_ANNOTSET_NAME)) ? null :
+            currentSet = (currentSet.equals(DEFAULT_ANNOTSET_NAME)) ? "" :
                          currentSet;
             List<List<Integer>> matches = matchesMap.get(currentSet);
             if (matches == null)
@@ -2008,7 +2006,7 @@ public class CorefEditor
               List<Integer> ids = chains.get(node);
 
               String currentSet = (String) annotSets.getSelectedItem();
-              currentSet = (currentSet.equals(DEFAULT_ANNOTSET_NAME)) ? null : currentSet;
+              currentSet = (currentSet.equals(DEFAULT_ANNOTSET_NAME)) ? "" : currentSet;
 
               // now search this in the document feature map
               Map<String, List<List<Integer>>> matchesMap = null;

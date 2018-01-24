@@ -785,7 +785,7 @@ public class AnnotationSetsView extends AbstractDocumentView
   protected SetHandler getSetHandler(String name){
     for (SetHandler setHandler : setHandlers) {
       if (name == null) { // default annotation set
-        if (setHandler.set.getName() == null) return setHandler;
+        if (setHandler.set.getName().equals("")) return setHandler;
       } else {
         if (name.equals(setHandler.set.getName())) return setHandler;
       }
