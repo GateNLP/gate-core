@@ -109,12 +109,14 @@ public class SimpleMavenCache implements WorkspaceReader, Serializable {
 	public void cacheArtifact(Artifact artifact) throws IOException, SettingsBuildingException,
 			DependencyCollectionException, DependencyResolutionException, ArtifactResolutionException {
 
+	  List<RemoteRepository> repos = getRepositoryList();
+	  
 		Dependency dependency = new Dependency(artifact, "runtime");
 
 		RepositorySystem repoSystem = getRepositorySystem();
 		RepositorySystemSession repoSession = getRepositorySession(repoSystem, null);
 
-		CollectRequest collectRequest = new CollectRequest(dependency, getRepositoryList());
+		CollectRequest collectRequest = new CollectRequest(dependency, repos);
 
 		DependencyNode node = repoSystem.collectDependencies(repoSession, collectRequest).getRoot();
 
@@ -123,16 +125,11 @@ public class SimpleMavenCache implements WorkspaceReader, Serializable {
 
 		DependencyResult result = repoSystem.resolveDependencies(repoSession, dependencyRequest);
 		
-		List<RemoteRepository> repos = getRepositoryList();
-
 		for (ArtifactResult ar : result.getArtifactResults()) {
 			// generate output file name from the *requested* artifact rather
 			// than the resolved one (e.g. if we requested a -SNAPSHOT version
 			// but got a timestamped one)
 			File file = getArtifactFile(ar.getRequest().getArtifact());
-
-			// file.getParentFile().mkdirs();
-			//System.out.println(ar.getArtifact().getFile());
 
 			FileUtils.copyFile(ar.getArtifact().getFile(), file);
 			
