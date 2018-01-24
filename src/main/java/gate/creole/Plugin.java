@@ -652,7 +652,6 @@ public abstract class Plugin {
         ModelBuilder modelBuilder = new DefaultModelBuilderFactory().newInstance(); 
         Model model = modelBuilder.build(req).getEffectiveModel(); 
         
-        name = group+":"+artifact+":"+version;
         if (model.getName() != null && !model.getName().trim().equals("")) name = model.getName();
         
         if (model.getDescription() != null && !model.getDescription().trim().equals("")) description = model.getDescription();
@@ -793,7 +792,6 @@ public abstract class Plugin {
       ModelBuilder modelBuilder = new DefaultModelBuilderFactory().newInstance(); 
       Model model = modelBuilder.build(req).getEffectiveModel(); 
       
-      name = group+":"+artifact+":"+version;
       if (model.getName() != null && !model.getName().trim().equals("")) name = model.getName();
       
       if (model.getDescription() != null && model.getDescription().trim().equals("")) description = model.getDescription();
