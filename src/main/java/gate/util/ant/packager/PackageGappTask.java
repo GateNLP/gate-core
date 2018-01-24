@@ -30,6 +30,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
@@ -39,6 +40,11 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.PatternSet.NameEntry;
 import org.apache.tools.ant.util.FileUtils;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.collection.DependencyCollectionException;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -46,6 +52,7 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 
 import gate.util.Files;
+import gate.util.maven.SimpleMavenCache;
 import gate.util.persistence.PersistenceManager;
 
 /**
@@ -98,6 +105,17 @@ public class PackageGappTask extends Task {
    * to be packaged contains URLs relative to $resourceshome$.
    */
   private File resourcesHome;
+  
+  /**
+   * If set, create a local cache of any Maven plugins referenced by the application,
+   * along with their transitive dependencies.  Typically this would be set to
+   * the directory "maven-cache.gate" as a sibling of the <code>destFile</code>,
+   * which will then be picked up automatically and used as a local cache by
+   * the PersistenceManager when loading the packaged application, but it is
+   * possible to set it to another location (for example if you want to package
+   * a set of related applications and have them all share the same Maven cache).
+   */
+  private File mavenCache;
 
   /**
    * Should we copy the complete contents of referenced plugin
@@ -216,6 +234,24 @@ public class PackageGappTask extends Task {
    */
   public void setResourcesHome(File resourcesHome) {
     this.resourcesHome = resourcesHome;
+  }
+
+  /**
+   * Location where the task should create a local cache of any referenced Maven plugins
+   * and their dependencies.  May be <code>null</code>, in which case no cache will be
+   * created.
+   */
+  public File getMavenCache() {
+	return mavenCache;
+  }
+
+  /**
+   * Set the location where the task should create a local cache of any referenced
+   * Maven plugins and their dependencies.  May be <code>null</code>, in which
+   * case no cache will be created.
+   */
+  public void setMavenCache(File mavenCache) {
+	this.mavenCache = mavenCache;
   }
 
   /**
@@ -642,6 +678,26 @@ public class PackageGappTask extends Task {
     if(dirCopyMap.size() > 0) {
       log("Copying " + dirCopyMap.size() + " resource directories");      
       copyDirectories(dirCopyMap, false);
+    }
+    
+    if(mavenCache != null) {
+      List<GappModel.MavenPlugin> mavenPlugins = gappModel.getMavenPlugins();
+      if(!mavenPlugins.isEmpty()) {
+        log("Creating Maven cache at " + mavenCache.getAbsolutePath());
+        SimpleMavenCache smc = new SimpleMavenCache(mavenCache);
+        for(GappModel.MavenPlugin plugin : mavenPlugins) {
+          log("  Cacheing " + plugin.group + ":" + plugin.artifact + ":" + plugin.version, Project.MSG_VERBOSE);
+          Artifact pluginArtifact = new DefaultArtifact(plugin.group, plugin.artifact, "jar", plugin.version);
+          try {
+            smc.cacheArtifact(pluginArtifact);
+          } catch(DependencyCollectionException | DependencyResolutionException
+              | ArtifactResolutionException | IOException
+              | SettingsBuildingException e) {
+            throw new BuildException("Error cacheing plugin " + plugin.group + ":"
+              + plugin.artifact + ":" + plugin.version, e);
+          }
+        }
+      }
     }
     
   }
