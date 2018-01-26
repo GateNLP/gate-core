@@ -105,7 +105,6 @@ public class SimpleModelResolver implements ModelResolver {
     
   }
 
-  @Override
   public ModelSource resolveModel(Dependency dependency)
       throws UnresolvableModelException {
     return resolveModel(dependency.getGroupId(), dependency.getArtifactId(),
