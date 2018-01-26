@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.building.FileModelSource;
 import org.apache.maven.model.building.ModelSource;
@@ -102,5 +103,12 @@ public class SimpleModelResolver implements ModelResolver {
       boolean replace) throws InvalidRepositoryException {
     // TODO Auto-generated method stub
     
+  }
+
+  @Override
+  public ModelSource resolveModel(Dependency dependency)
+      throws UnresolvableModelException {
+    return resolveModel(dependency.getGroupId(), dependency.getArtifactId(),
+        dependency.getVersion());
   }
 }
