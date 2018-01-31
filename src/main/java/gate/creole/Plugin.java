@@ -659,9 +659,9 @@ public abstract class Plugin {
       List<URL> persistenceURLStack =
           PersistenceManager.currentPersistenceURLStack();
 
-      if(persistenceURLStack != null && !persistenceURLStack.isEmpty()) {
-        List<File> workspaces = new ArrayList<File>();
+      List<File> workspaces = new ArrayList<File>();
 
+      if(persistenceURLStack != null && !persistenceURLStack.isEmpty()) {
         for(URL url : persistenceURLStack) {
           try {
             File file = gate.util.Files.fileFromURL(url);
@@ -673,11 +673,12 @@ public abstract class Plugin {
             // ignore this for now
           }
         }
-
-        if(!workspaces.isEmpty()) {
-          workspace = new SimpleMavenCache(
-              workspaces.toArray(new File[workspaces.size()]));
-        }
+      }
+      workspaces.addAll(gate.util.maven.Utils.getExtraCacheDirectories());
+      
+      if(!workspaces.isEmpty()) {
+        workspace = new SimpleMavenCache(
+            workspaces.toArray(new File[workspaces.size()]));
       }
 
       RepositorySystemSession repoSession =
@@ -751,9 +752,9 @@ public abstract class Plugin {
       
       List<URL> persistenceURLStack = PersistenceManager.currentPersistenceURLStack();
       
+      List<File> workspaces = new ArrayList<File>();
+
       if (persistenceURLStack != null && !persistenceURLStack.isEmpty()) {
-    	  List<File> workspaces = new ArrayList<File>();
-    	  
     	  for (URL url : persistenceURLStack) {
     		  try {
     			  File file = gate.util.Files.fileFromURL(url);
@@ -766,10 +767,11 @@ public abstract class Plugin {
     			  //ignore this for now
     		  }
     	  }
-    	  
-    	  if (!workspaces.isEmpty()) {
-    		  workspace = new SimpleMavenCache(workspaces.toArray(new File[workspaces.size()]));
-    	  }
+      }
+      workspaces.addAll(gate.util.maven.Utils.getExtraCacheDirectories());
+      
+      if (!workspaces.isEmpty()) {
+        workspace = new SimpleMavenCache(workspaces.toArray(new File[workspaces.size()]));
       }
       
       DefaultRepositorySystemSession repoSession = getRepositorySession(repoSystem, workspace);

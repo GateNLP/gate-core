@@ -2,8 +2,10 @@ package gate.util.maven;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.log4j.Logger;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
@@ -52,6 +54,40 @@ public class Utils {
                   System.getProperty("maven.home",
                           envM2Home != null ? envM2Home : ""),
                   "conf/settings.xml");
+  
+  private static List<File> extraCacheDirectories = new CopyOnWriteArrayList<>();
+  
+  /**
+   * A list of extra workspace cache directories that should be
+   * used when resolving Maven plugins.
+   * 
+   * @return an unmodifiable list of the current registered caches
+   */
+  public static List<File> getExtraCacheDirectories() {
+    return Collections.unmodifiableList(extraCacheDirectories);
+  }
+  
+  /**
+   * Add an extra cache directory to be used when resolving Maven plugins.
+   * Caches registered in this way will be searched after the default
+   * caches alongside saved GATE applications.
+   * @param dir the cache directory to add
+   */
+  public void addCacheDirectory(File dir) {
+    extraCacheDirectories.add(0, dir);
+  }
+  
+  /**
+   * Remove a directory from the list of extra caches to be used when
+   * resolving Maven plugins.
+   * @param dir the cache directory to remove
+   * @return <code>true</code> if the directory was removed,
+   * <code>false</code> if not (which may mean it wasn't in the
+   * list to start with)
+   */
+  public boolean removeCacheDirectory(File dir) {
+    return extraCacheDirectories.remove(dir);
+  }
   
   public static Settings loadMavenSettings()
       throws SettingsBuildingException {
