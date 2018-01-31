@@ -73,7 +73,7 @@ public class Utils {
    * caches alongside saved GATE applications.
    * @param dir the cache directory to add
    */
-  public void addCacheDirectory(File dir) {
+  public static void addCacheDirectory(File dir) {
     extraCacheDirectories.add(0, dir);
   }
   
@@ -85,7 +85,7 @@ public class Utils {
    * <code>false</code> if not (which may mean it wasn't in the
    * list to start with)
    */
-  public boolean removeCacheDirectory(File dir) {
+  public static boolean removeCacheDirectory(File dir) {
     return extraCacheDirectories.remove(dir);
   }
   
