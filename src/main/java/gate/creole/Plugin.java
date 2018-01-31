@@ -666,7 +666,6 @@ public abstract class Plugin {
           try {
             File file = gate.util.Files.fileFromURL(url);
             File cache = new File(file.getParentFile(), "maven-cache.gate");
-            System.out.println(cache.getAbsolutePath());
             if(cache.exists() && cache.isDirectory()) {
               workspaces.add(cache);
             }
@@ -759,7 +758,6 @@ public abstract class Plugin {
     		  try {
     			  File file = gate.util.Files.fileFromURL(url);
     			  File cache = new File(file.getParentFile(),"maven-cache.gate");
-    			  System.out.println(cache.getAbsolutePath());
     			  if (cache.exists() && cache.isDirectory()) {
     				  workspaces.add(cache);
     			  }
