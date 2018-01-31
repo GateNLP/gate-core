@@ -659,14 +659,13 @@ public abstract class Plugin {
       List<URL> persistenceURLStack =
           PersistenceManager.currentPersistenceURLStack();
 
-      if(persistenceURLStack != null && !persistenceURLStack.isEmpty()) {
-        List<File> workspaces = new ArrayList<File>();
+      List<File> workspaces = new ArrayList<File>();
 
+      if(persistenceURLStack != null && !persistenceURLStack.isEmpty()) {
         for(URL url : persistenceURLStack) {
           try {
             File file = gate.util.Files.fileFromURL(url);
             File cache = new File(file.getParentFile(), "maven-cache.gate");
-            System.out.println(cache.getAbsolutePath());
             if(cache.exists() && cache.isDirectory()) {
               workspaces.add(cache);
             }
@@ -674,11 +673,12 @@ public abstract class Plugin {
             // ignore this for now
           }
         }
-
-        if(!workspaces.isEmpty()) {
-          workspace = new SimpleMavenCache(
-              workspaces.toArray(new File[workspaces.size()]));
-        }
+      }
+      workspaces.addAll(gate.util.maven.Utils.getExtraCacheDirectories());
+      
+      if(!workspaces.isEmpty()) {
+        workspace = new SimpleMavenCache(
+            workspaces.toArray(new File[workspaces.size()]));
       }
 
       RepositorySystemSession repoSession =
@@ -752,14 +752,13 @@ public abstract class Plugin {
       
       List<URL> persistenceURLStack = PersistenceManager.currentPersistenceURLStack();
       
+      List<File> workspaces = new ArrayList<File>();
+
       if (persistenceURLStack != null && !persistenceURLStack.isEmpty()) {
-    	  List<File> workspaces = new ArrayList<File>();
-    	  
     	  for (URL url : persistenceURLStack) {
     		  try {
     			  File file = gate.util.Files.fileFromURL(url);
     			  File cache = new File(file.getParentFile(),"maven-cache.gate");
-    			  System.out.println(cache.getAbsolutePath());
     			  if (cache.exists() && cache.isDirectory()) {
     				  workspaces.add(cache);
     			  }
@@ -768,10 +767,11 @@ public abstract class Plugin {
     			  //ignore this for now
     		  }
     	  }
-    	  
-    	  if (!workspaces.isEmpty()) {
-    		  workspace = new SimpleMavenCache(workspaces.toArray(new File[workspaces.size()]));
-    	  }
+      }
+      workspaces.addAll(gate.util.maven.Utils.getExtraCacheDirectories());
+      
+      if (!workspaces.isEmpty()) {
+        workspace = new SimpleMavenCache(workspaces.toArray(new File[workspaces.size()]));
       }
       
       DefaultRepositorySystemSession repoSession = getRepositorySession(repoSystem, workspace);
@@ -873,6 +873,29 @@ public abstract class Plugin {
       }*/
       
       return jdomDoc;
+    }
+    
+    // accessors for the Maven coordinates
+
+    /**
+     * Get the Maven group ID of this plugin.
+     */
+    public String getGroup() {
+      return group;
+    }
+
+    /**
+     * Get the Maven artifact ID of this plugin.
+     */
+    public String getArtifact() {
+      return artifact;
+    }
+
+    /**
+     * Get the version of this plugin.
+     */
+    public String getVersion() {
+      return version;
     }
 
     @Override

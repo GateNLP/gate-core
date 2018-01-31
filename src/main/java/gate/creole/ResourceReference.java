@@ -255,8 +255,12 @@ public class ResourceReference implements Serializable {
 
           // create a new URL using the base URL of the plugin and the path from
           // the URI we know points to the resource
-          // NOTE: requiring the additional . seems like a hack
-          return new URL(plugin.getBaseURL(), "." + uri.getPath());
+          String path = uri.getPath();
+          if(path.startsWith("/")) {
+            // strip off leading slash
+            path = path.substring(1);
+          }
+          return new URL(plugin.getBaseURL(), path);
         }
       }
 
