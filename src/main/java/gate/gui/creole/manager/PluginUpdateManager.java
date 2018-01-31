@@ -68,7 +68,8 @@ public class PluginUpdateManager extends JDialog {
   private void loadData() {
     // display the progress panel to stop user input and show progress
     progressPanel.messageChanged("Loading CREOLE Plugin Information...");
-    progressPanel.rangeChanged(0, 0);
+    //progressPanel.rangeChanged(0, 0);
+    progressPanel.reset();
 
     // the assumption is that this code is run from the EDT so we need to run
     // the time consuming stuff in a different thread to stop things locking up
@@ -105,7 +106,8 @@ public class PluginUpdateManager extends JDialog {
 
   private void applyChanges() {
     progressPanel.messageChanged("Updating CREOLE Plugin Configuration...");
-    progressPanel.rangeChanged(0, 0);
+    //progressPanel.rangeChanged(0, 0);
+    progressPanel.reset();
     showProgressPanel(true);
 
     // the assumption is that this code is run from the EDT so we need to run
@@ -117,7 +119,7 @@ public class PluginUpdateManager extends JDialog {
         // (un)load already installed plugins
         progressPanel.messageChanged("Updating CREOLE Plugin Configuration...");
         
-        Set<Plugin> failedPlugins = installed.updateAvailablePlugins();
+        Set<Plugin> failedPlugins = installed.updateAvailablePlugins(progressPanel);
         if (!failedPlugins.isEmpty()) {
           JOptionPane
           .showMessageDialog(

@@ -44,6 +44,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -69,6 +70,9 @@ import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.resolution.DependencyResult;
+import org.eclipse.aether.transfer.TransferCancelledException;
+import org.eclipse.aether.transfer.TransferEvent;
+import org.eclipse.aether.transfer.TransferListener;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.jdom.Attribute;
 import org.jdom.Document;
@@ -93,6 +97,70 @@ import gate.util.maven.SimpleModelResolver;
 import gate.util.persistence.PersistenceManager;
 
 public abstract class Plugin {
+  
+  public static interface DownloadListener {
+    public void downloadStarted(String name);
+    
+    public void downloadProgressed(String name, long totalBytes, long transferredBytes);
+    
+    public void downloadSucceeded(String name);
+    
+    public void downloadFailed(String name, Throwable cause);
+  }
+  
+  protected Vector<DownloadListener> downloadListeners = null;
+  
+  public void addDownloadListener(DownloadListener listener) {
+    @SuppressWarnings("unchecked")
+    Vector<DownloadListener> v = downloadListeners == null
+            ? new Vector<DownloadListener>(2)
+            : (Vector<DownloadListener>)downloadListeners.clone();
+    if(!v.contains(listener)) {
+      v.addElement(listener);
+      downloadListeners = v;
+    }
+  }
+  
+  public void removeDownloadListener(DownloadListener listener) {
+    if(downloadListeners != null && downloadListeners.contains(listener)) {
+      @SuppressWarnings("unchecked")
+      Vector<DownloadListener> v = (Vector<DownloadListener>)downloadListeners.clone();
+      v.removeElement(listener);
+      downloadListeners = v;
+    }
+  }
+  
+  protected void fireDownloadStarted(String name) {
+    if(downloadListeners != null) {
+      for(DownloadListener listener : downloadListeners) {
+        listener.downloadStarted(name);
+      }
+    }
+  }
+  
+  protected void fireDownloadSucceeded(String name) {
+    if(downloadListeners != null) {
+      for(DownloadListener listener : downloadListeners) {
+        listener.downloadSucceeded(name);
+      }
+    }
+  }
+  
+  protected void fireDownloadFailed(String name, Throwable cause) {
+    if(downloadListeners != null) {
+      for(DownloadListener listener : downloadListeners) {
+        listener.downloadFailed(name, cause);
+      }
+    }
+  }
+  
+  protected void fireDownloadProgressed(String name, long totalBytes, long transferredBytes) {
+    if(downloadListeners != null) {
+      for(DownloadListener listener : downloadListeners) {
+        listener.downloadProgressed(name, totalBytes, transferredBytes);
+      }
+    }
+  }
   
   protected static final Logger log = Logger.getLogger(Plugin.class);
   
@@ -461,7 +529,7 @@ public abstract class Plugin {
     }
   }
 
-  public static class Maven extends Plugin implements Serializable {
+  public static class Maven extends Plugin implements Serializable, TransferListener {
 
     private static final long serialVersionUID = -6944695755723023537L;
     
@@ -707,7 +775,7 @@ public abstract class Plugin {
       }
       
       DefaultRepositorySystemSession repoSession = getRepositorySession(repoSystem, workspace);
-      //repoSession.setTransferListener(new LoggingTransferListener());
+      repoSession.setTransferListener(this);
      
       ArtifactResult artifactResult =
           repoSystem.resolveArtifact(repoSession,
@@ -805,6 +873,42 @@ public abstract class Plugin {
       }*/
       
       return jdomDoc;
+    }
+
+    @Override
+    public void transferInitiated(TransferEvent event)
+        throws TransferCancelledException {
+      //ignore this one      
+    }
+
+    @Override
+    public void transferStarted(TransferEvent event)
+        throws TransferCancelledException {
+      fireDownloadStarted(event.getResource().getFile().getName());
+      
+    }
+
+    @Override
+    public void transferProgressed(TransferEvent event)
+        throws TransferCancelledException {
+      fireDownloadProgressed(event.getResource().getFile().getName(), event.getResource().getContentLength(), event.getTransferredBytes());
+      
+    }
+
+    @Override
+    public void transferCorrupted(TransferEvent event)
+        throws TransferCancelledException {
+      fireDownloadFailed(event.getResource().getFile().getName(), event.getException());      
+    }
+
+    @Override
+    public void transferSucceeded(TransferEvent event) {
+      fireDownloadSucceeded(event.getResource().getFile().getName());      
+    }
+
+    @Override
+    public void transferFailed(TransferEvent event) {
+      fireDownloadFailed(event.getResource().getFile().getName(), event.getException());      
     }
   }
   

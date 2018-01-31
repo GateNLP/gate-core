@@ -651,7 +651,7 @@ public class AvailablePlugins extends JPanel {
     return false;
   }
 
-  protected Set<Plugin> updateAvailablePlugins() {
+  protected Set<Plugin> updateAvailablePlugins(Plugin.DownloadListener progressPanel) {
 
     Set<Plugin> creoleDirectories = Gate.getCreoleRegister().getPlugins();
 
@@ -699,12 +699,16 @@ public class AvailablePlugins extends JPanel {
         
         // load the directory
         try {
+          aPluginURL.addDownloadListener(progressPanel);
           ((CreoleRegisterImpl)Gate.getCreoleRegister()).registerPlugin(aPluginURL);
           pluginIter.remove();
         } catch(Throwable ge) {
           //TODO suppress the errors unless we are going to break out of the loop
           //ge.printStackTrace();
           errors.add(ge);
+        }
+        finally {
+          aPluginURL.removeDownloadListener(progressPanel);
         }
       }
       
