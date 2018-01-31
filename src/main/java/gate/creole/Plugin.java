@@ -874,6 +874,29 @@ public abstract class Plugin {
       
       return jdomDoc;
     }
+    
+    // accessors for the Maven coordinates
+
+    /**
+     * Get the Maven group ID of this plugin.
+     */
+    public String getGroup() {
+      return group;
+    }
+
+    /**
+     * Get the Maven artifact ID of this plugin.
+     */
+    public String getArtifact() {
+      return artifact;
+    }
+
+    /**
+     * Get the version of this plugin.
+     */
+    public String getVersion() {
+      return version;
+    }
 
     @Override
     public void transferInitiated(TransferEvent event)
