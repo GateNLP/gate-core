@@ -68,8 +68,6 @@ public class PluginUpdateManager extends JDialog {
   private void loadData() {
     // display the progress panel to stop user input and show progress
     progressPanel.messageChanged("Loading CREOLE Plugin Information...");
-    //progressPanel.rangeChanged(0, 0);
-    progressPanel.reset();
 
     // the assumption is that this code is run from the EDT so we need to run
     // the time consuming stuff in a different thread to stop things locking up
@@ -93,6 +91,9 @@ public class PluginUpdateManager extends JDialog {
 
   private void showProgressPanel(final boolean visible) {
     if(visible == getRootPane().getGlassPane().isVisible()) return;
+    
+    progressPanel.reset();
+    
     if(visible) {
       remove(panel);
       add(progressPanel, BorderLayout.CENTER);
@@ -106,8 +107,6 @@ public class PluginUpdateManager extends JDialog {
 
   private void applyChanges() {
     progressPanel.messageChanged("Updating CREOLE Plugin Configuration...");
-    //progressPanel.rangeChanged(0, 0);
-    progressPanel.reset();
     showProgressPanel(true);
 
     // the assumption is that this code is run from the EDT so we need to run
@@ -131,7 +130,7 @@ public class PluginUpdateManager extends JDialog {
               PluginUpdateManager.this.getTitle(),
               JOptionPane.ERROR_MESSAGE);
         }
-
+        
         // refresh the tables to reflect what we have just done
         loadData();
       }

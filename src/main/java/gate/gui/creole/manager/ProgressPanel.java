@@ -168,7 +168,8 @@ public class ProgressPanel extends JPanel implements ComponentListener,
         progressTotal.setMaximum(0);
         progressTotal.setIndeterminate(true);
         partProgress.removeAll();
-        partProgress.validate();        
+        partProgress.validate();
+        progressMapping.clear();
       }
     });
   }
