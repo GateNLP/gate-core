@@ -56,7 +56,7 @@ public class ProgressPanel extends JPanel implements ComponentListener,
   private Map<String, JProgressBar> progressMapping =
       new HashMap<String, JProgressBar>();
 
-  private JProgressBar progressTotal, progressSingle;
+  private JProgressBar progressTotal;
 
   private JLabel message, dlMsg;
 
@@ -68,21 +68,14 @@ public class ProgressPanel extends JPanel implements ComponentListener,
     super();
 
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    
+    int width = 400;
 
     progressTotal = new SafeJProgressBar();
     progressTotal.setAlignmentX(CENTER_ALIGNMENT);
     progressTotal.setMaximumSize(
-        new Dimension(250, progressTotal.getPreferredSize().height));
+        new Dimension(width, progressTotal.getPreferredSize().height));
     progressTotal.setIndeterminate(true);
-
-    progressSingle = new SafeJProgressBar();
-    progressSingle.setAlignmentX(CENTER_ALIGNMENT);
-    progressSingle.setMaximumSize(
-        new Dimension(250, progressTotal.getPreferredSize().height));
-    progressSingle.setIndeterminate(true);
-    progressSingle.setVisible(false);
-    progressSingle.setMinimum(0);
-    progressSingle.setMaximum(100);
 
     message = new JLabel("");
     message.setIcon(new ProgressIcon(48, 48));
@@ -101,6 +94,12 @@ public class ProgressPanel extends JPanel implements ComponentListener,
     partProgress.setLayout(new BoxLayout(partProgress, BoxLayout.Y_AXIS));
 
     scroller = new JScrollPane(partProgress);
+    scroller.setAlignmentX(CENTER_ALIGNMENT);
+    scroller.setMaximumSize(
+        new Dimension(width, progressTotal.getPreferredSize().height*6));
+    scroller.setPreferredSize(
+        new Dimension(width, progressTotal.getPreferredSize().height*6));
+    
 
     add(Box.createVerticalGlue());
     add(message);
@@ -109,7 +108,6 @@ public class ProgressPanel extends JPanel implements ComponentListener,
     add(Box.createVerticalStrut(10));
     add(dlMsg);
     add(Box.createVerticalStrut(5));
-    // add(progressSingle);
     add(scroller);
 
     add(Box.createVerticalGlue());
@@ -198,9 +196,10 @@ public class ProgressPanel extends JPanel implements ComponentListener,
     int width = Math.min(400, (int)(getSize().width * (2f / 3)));
     progressTotal.setMaximumSize(
         new Dimension(width, progressTotal.getPreferredSize().height));
-    progressSingle.setMaximumSize(
-        new Dimension(width, progressSingle.getPreferredSize().height));
-  }
+    scroller.setMaximumSize(
+        new Dimension(width, progressTotal.getPreferredSize().height*6));
+    scroller.setPreferredSize(
+        new Dimension(width, progressTotal.getPreferredSize().height*6));}
 
   @Override
   public void componentShown(ComponentEvent e) {
