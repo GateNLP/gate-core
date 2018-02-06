@@ -546,6 +546,19 @@ public abstract class Plugin {
     }
     
     @Override
+    public String getName() {
+      if (name == null) {
+        try {
+          getMetadataXML();
+        } catch(Exception e) {
+          //ignore this for now
+        }
+      }
+      
+      return name;
+    }
+    
+    @Override
     public URI getBaseURI() throws URISyntaxException {
     	return new URI("creole://"+group+";"+artifact+";"+version+"/");
     }
@@ -721,6 +734,7 @@ public abstract class Plugin {
         Model model = modelBuilder.build(req).getEffectiveModel(); 
         
         if (model.getName() != null && !model.getName().trim().equals("")) name = model.getName();
+        if (name == null) name = artifact;
         
         if (model.getDescription() != null && !model.getDescription().trim().equals("")) description = model.getDescription();
 
@@ -861,6 +875,7 @@ public abstract class Plugin {
       Model model = modelBuilder.build(req).getEffectiveModel(); 
       
       if (model.getName() != null && !model.getName().trim().equals("")) name = model.getName();
+      if (name == null) name = artifact;
       
       if (model.getDescription() != null && model.getDescription().trim().equals("")) description = model.getDescription();
       
@@ -1012,7 +1027,10 @@ public abstract class Plugin {
     public Component(Class<? extends Resource> resourceClass) throws MalformedURLException {
       this.resourceClass = resourceClass;
       baseURL = (new URL(resourceClass.getResource("/gate/creole/CreoleRegisterImpl.class"), "."));
-      name = resourceClass.getName();
+    }
+    
+    public String getName() {
+      return resourceClass.getName();
     }
     
     @Override
