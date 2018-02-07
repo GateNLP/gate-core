@@ -160,7 +160,7 @@ public class AnnotationDiffGUI extends JFrame{
     final String keyAnnotationSetName, final String responseAnnotationSetName,
     final String annotationType, final Set<String> featureNames){
     super(title);
-    setIconImage(((ImageIcon)MainFrame.getIcon("annotation-diff")).getImage());
+    setIconImage((new AnnotationDiffIcon(64,64)).getImage());
     MainFrame.getGuiRoots().add(this);
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     initLocalData();

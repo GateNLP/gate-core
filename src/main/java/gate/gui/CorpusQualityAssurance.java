@@ -33,12 +33,51 @@ import java.io.Writer;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
-import java.util.Timer;
-import java.text.NumberFormat;
 import java.text.Collator;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import javax.swing.event.ChangeEvent;
@@ -57,16 +96,22 @@ import gate.Factory;
 import gate.Gate;
 import gate.Resource;
 import gate.creole.AbstractVisualResource;
-import gate.event.CorpusEvent;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.GuiType;
+import gate.event.CorpusEvent;
 import gate.event.CorpusListener;
-import gate.swing.XJTable;
+import gate.resources.img.svg.AnnotationDiffIcon;
+import gate.resources.img.svg.DocumentIcon;
+import gate.resources.img.svg.DownloadIcon;
+import gate.resources.img.svg.HelpIcon;
+import gate.resources.img.svg.ProgressIcon;
+import gate.resources.img.svg.RefreshIcon;
 import gate.swing.XJFileChooser;
+import gate.swing.XJTable;
 import gate.util.AnnotationDiffer;
 import gate.util.ClassificationMeasures;
-import gate.util.OntologyMeasures;
 import gate.util.ExtensionFileFilter;
+import gate.util.OntologyMeasures;
 import gate.util.OptionsMap;
 import gate.util.Strings;
 
@@ -1432,8 +1477,15 @@ public class CorpusQualityAssurance extends AbstractVisualResource
       super("Compare");
       putValue(SHORT_DESCRIPTION, "Compare annotations between sets A and B");
       putValue(MNEMONIC_KEY, KeyEvent.VK_ENTER);
-      putValue(SMALL_ICON, MainFrame.getIcon("crystal-clear-action-run"));
+      putValue(SMALL_ICON, new ProgressIcon(MainFrame.ICON_DIMENSION));
     }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+      putValue(SMALL_ICON, new ProgressIcon(MainFrame.ICON_DIMENSION, !enabled));
+      super.setEnabled(enabled);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent evt) {
       boolean useBdm = false;
@@ -1534,11 +1586,18 @@ public class CorpusQualityAssurance extends AbstractVisualResource
 
   class OpenDocumentAction extends AbstractAction{
     public OpenDocumentAction(){
-      super("Open documents", MainFrame.getIcon("document"));
+      super("Open documents", new DocumentIcon(MainFrame.ICON_DIMENSION));
       putValue(SHORT_DESCRIPTION,
         "Opens document for the selected row in a document editor");
       putValue(MNEMONIC_KEY, KeyEvent.VK_UP);
     }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+      putValue(SMALL_ICON, new DocumentIcon(MainFrame.ICON_DIMENSION, !enabled));
+      super.setEnabled(enabled);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e){
       final Document document = corpus.get(measuresType == FSCORE_MEASURES ?
@@ -1553,10 +1612,17 @@ public class CorpusQualityAssurance extends AbstractVisualResource
 
   class OpenAnnotationDiffAction extends AbstractAction{
     public OpenAnnotationDiffAction(){
-      super("Open annotation diff", MainFrame.getIcon("annDiff"));
+      super("Open annotation diff", new AnnotationDiffIcon(MainFrame.ICON_DIMENSION));
+      
       putValue(SHORT_DESCRIPTION,
         "Opens annotation diff for the selected row in the document table");
       putValue(MNEMONIC_KEY, KeyEvent.VK_RIGHT);
+    }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+      putValue(SMALL_ICON, new AnnotationDiffIcon(MainFrame.ICON_DIMENSION, !enabled));
+      super.setEnabled(enabled);
     }
     @Override
     public void actionPerformed(ActionEvent e){
@@ -1582,9 +1648,15 @@ public class CorpusQualityAssurance extends AbstractVisualResource
     public ExportToHtmlAction(){
       super("Export to HTML");
       putValue(SHORT_DESCRIPTION, "Export the tables to HTML");
-      putValue(SMALL_ICON,
-        MainFrame.getIcon("crystal-clear-app-download-manager"));
+      putValue(SMALL_ICON, new DownloadIcon(MainFrame.ICON_DIMENSION));
     }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+      putValue(SMALL_ICON, new DownloadIcon(MainFrame.ICON_DIMENSION, !enabled));
+      super.setEnabled(enabled);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent evt){
       XJFileChooser fileChooser = MainFrame.getFileChooser();
@@ -1680,10 +1752,17 @@ public class CorpusQualityAssurance extends AbstractVisualResource
 
   class ReloadCacheAction extends AbstractAction{
     public ReloadCacheAction(){
-      super("Reload cache", MainFrame.getIcon("crystal-clear-action-reload"));
+      super("Reload cache", new RefreshIcon(MainFrame.ICON_DIMENSION));
       putValue(SHORT_DESCRIPTION,
         "Reload cache for set, type and feature names list");
     }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+      putValue(SMALL_ICON, new RefreshIcon(MainFrame.ICON_DIMENSION, !enabled));
+      super.setEnabled(enabled);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e){
       docsSetsTypesFeatures.clear();
@@ -1695,9 +1774,16 @@ public class CorpusQualityAssurance extends AbstractVisualResource
     public HelpAction() {
       super();
       putValue(SHORT_DESCRIPTION, "User guide for this tool");
-      putValue(SMALL_ICON, MainFrame.getIcon("crystal-clear-action-info"));
+      putValue(SMALL_ICON, new HelpIcon(MainFrame.ICON_DIMENSION));
       putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("F1"));
     }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+      putValue(SMALL_ICON, new HelpIcon(MainFrame.ICON_DIMENSION, !enabled));
+      super.setEnabled(enabled);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
       MainFrame.getInstance().showHelpFrame(

@@ -387,7 +387,7 @@ public class LuceneDataStoreSearchGUI extends AbstractVisualResource implements
     configureStackViewFrame =
             new ConfigureStackViewFrame("Stack view configuration");
     configureStackViewFrame.setIconImage(((ImageIcon)MainFrame
-            .getIcon("crystal-clear-action-window-new")).getImage());
+            .getIcon("WindowNew")).getImage());
     configureStackViewFrame
             .setLocationRelativeTo(LuceneDataStoreSearchGUI.this);
     configureStackViewFrame.getRootPane()
@@ -945,7 +945,7 @@ public class LuceneDataStoreSearchGUI extends AbstractVisualResource implements
       public RemoveCellEditorRenderer() {
         button = new JButton();
         button.setHorizontalAlignment(SwingConstants.CENTER);
-        button.setIcon(MainFrame.getIcon("crystal-clear-action-button-cancel"));
+        button.setIcon(MainFrame.getIcon("Delete"));
         button.setToolTipText("Remove this row.");
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
@@ -1349,7 +1349,7 @@ public class LuceneDataStoreSearchGUI extends AbstractVisualResource implements
               new ButtonBorder(new Color(250, 250, 250),
                       new Insets(0, 3, 0, 3), true);
       removeRowButton.setIcon(MainFrame
-              .getIcon("crystal-clear-action-edit-remove"));
+              .getIcon("Remove"));
       removeRowButton.setToolTipText("Hide this row.");
       final String typeFinal = type;
       final String featureFinal = feature;
@@ -1642,7 +1642,7 @@ public class LuceneDataStoreSearchGUI extends AbstractVisualResource implements
   protected class ExportResultsAction extends AbstractAction {
 
     public ExportResultsAction() {
-      super("Export", MainFrame.getIcon("crystal-clear-app-download-manager"));
+      super("Export", MainFrame.getIcon("Download"));
       super.putValue(SHORT_DESCRIPTION,
               "Export results and statistics to a HTML file.");
       super.putValue(MNEMONIC_KEY, KeyEvent.VK_E);
@@ -1779,7 +1779,7 @@ public class LuceneDataStoreSearchGUI extends AbstractVisualResource implements
   protected class ClearQueryAction extends AbstractAction {
 
     public ClearQueryAction() {
-      super("Clear", MainFrame.getIcon("crystal-clear-action-button-cancel"));
+      super("Clear", MainFrame.getIcon("Delete"));
       super.putValue(SHORT_DESCRIPTION, "Clear the query text box.");
       super.putValue(MNEMONIC_KEY, KeyEvent.VK_BACK_SPACE);
     }
@@ -1797,7 +1797,7 @@ public class LuceneDataStoreSearchGUI extends AbstractVisualResource implements
   protected class ExecuteQueryAction extends AbstractAction {
 
     public ExecuteQueryAction() {
-      super("Search", MainFrame.getIcon("crystal-clear-app-xmag"));
+      super("Search", MainFrame.getIcon("Search"));
       super.putValue(SHORT_DESCRIPTION, "Execute the query.");
       super.putValue(MNEMONIC_KEY, KeyEvent.VK_ENTER);
     }
@@ -1926,7 +1926,7 @@ public class LuceneDataStoreSearchGUI extends AbstractVisualResource implements
   protected class RefreshAnnotationSetsAndFeaturesAction extends AbstractAction {
 
     public RefreshAnnotationSetsAndFeaturesAction() {
-      super("",MainFrame.getIcon("crystal-clear-action-reload"));
+      super("",MainFrame.getIcon("Refresh"));
       super.putValue(SHORT_DESCRIPTION, "Reloads annotations types.");
 
       // assigning F5 as the short cut key for the refresh button
@@ -2028,7 +2028,7 @@ public class LuceneDataStoreSearchGUI extends AbstractVisualResource implements
   protected class ConfigureStackViewAction extends AbstractAction {
 
     public ConfigureStackViewAction() {
-      super("Configure", MainFrame.getIcon("crystal-clear-action-edit-add"));
+      super("Configure", MainFrame.getIcon("Add"));
       super.putValue(SHORT_DESCRIPTION, "Configure the view");
       super.putValue(MNEMONIC_KEY, KeyEvent.VK_LEFT);
     }
@@ -3543,12 +3543,12 @@ public class LuceneDataStoreSearchGUI extends AbstractVisualResource implements
                 int col) {
           if(row == numStackRows) {
             // add button if it's the last row of the table
-            button.setIcon(MainFrame.getIcon("crystal-clear-action-edit-add"));
+            button.setIcon(MainFrame.getIcon("Add"));
             button.setToolTipText("Click to add this line.");
           } else {
             // remove button otherwise
             button.setIcon(MainFrame
-                    .getIcon("crystal-clear-action-button-cancel"));
+                    .getIcon("Delete"));
             button.setToolTipText("Click to remove this line.");
           }
           button.setSelected(isSelected);
@@ -3602,8 +3602,8 @@ public class LuceneDataStoreSearchGUI extends AbstractVisualResource implements
         public Component getTableCellEditorComponent(JTable table,
                 Object value, boolean isSelected, int row, int col) {
           button.setIcon(MainFrame.getIcon(row == numStackRows
-                  ? "crystal-clear-action-edit-add"
-                  : "crystal-clear-action-button-cancel"));
+                  ? "Add"
+                  : "Delete"));
           return button;
         }
       }
