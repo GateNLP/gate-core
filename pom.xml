@@ -18,7 +18,7 @@
         CREOLE plugins or for applications that need to customize the GATE
         dependencies due to conflict with their own dependencies or for lower
         footprint.
-    </description>
+	</description>
 	<url>http://gate.ac.uk/</url>
 
 	<organization>
@@ -51,11 +51,9 @@
 	</mailingLists>
 
 	<scm>
-		<connection>
-            scm:svn:http://svn.code.sf.net/p/gate/code/gate/trunk</connection>
-		<developerConnection>
-            scm:svn:svn+ssh://svn.code.sf.net/p/gate/code/gate/trunk</developerConnection>
-		<url>http://sourceforge.net/p/gate/code/HEAD/tree/gate/trunk</url>
+		<connection>scm:git:git://github.com/GateNLP/gate-core.git</connection>
+		<developerConnection>scm:git:git@github.com:GateNLP/gate-core.git</developerConnection>
+		<url>https://github.com/GateNLP/gate-core</url>
 	</scm>
 
 	<packaging>jar</packaging>
