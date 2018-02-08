@@ -1,0 +1,7 @@
+?package(gate-developer):\
+	needs="x11"\
+	section="Applications/GATE"\
+	title="GATE Developer"\
+	command="/usr/bin/gate-developer"\
+	icon="/usr/share/gate-developer/build/deploy/gate-icon.png"\
+	hints="GATE Developer"

@@ -1,0 +1,45 @@
+Package: gate-developer
+Source: gate-developer
+Version: 5.2-snapshot-3569-0ubuntu1
+Architecture: all
+Maintainer: Hamish Cunningham <hamishagain@googlemail.com>
+Installed-Size: 350000
+Pre-Depends: debconf (>= 0.5) | debconf-2.0
+Depends: sun-java6-jdk
+Suggests: 
+Provides: gate-developer
+Section: science
+Priority: optional
+Homepage: http://gate.ac.uk/
+Description: GATE is...
+ - open source software capable of solving almost any text processing
+   problem;
+ .
+ - a mature and extensive community of developers, users, educators,
+ students and scientists;
+ .
+ - a defined and repeatable process for creating robust and
+ maintainable text processing workflows;
+ .
+ - in active use for all sorts of language processing tasks and
+ applications, including: voice of the customer; cancer research;
+ drug research; decision support; recruitment; web mining;
+ information extraction; semantic annotation;
+ .
+ - the result of a €multi-million R&D programme running since 1995,
+ funded by commercial users, the EC, BBSRC, EPSRC, AHRC, JISC, etc.;
+ .
+ - used by corporations, SMEs, research labs and Universities
+ worldwide;
+ .
+ - the Eclipse of Natural Language Engineering, the Lucene of
+ Information Extraction, the ISO 9001 of Text Mining;
+ .
+ - a world-class team of language processing developers.
+ .
+ .
+ If you need to solve a problem with text analysis or human
+ language processing you're in the right place. For more
+ information see: 
+ .
+ http://gate.ac.uk/

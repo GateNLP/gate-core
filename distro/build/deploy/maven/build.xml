@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<project xmlns:artifact="antlib:org.apache.maven.artifact.ant" name="GATE-MAVEN-DEPLOY" basedir=".">
+    <path id="maven-ant-tasks.classpath" path="maven-ant-tasks-2.1.1.jar"/>
+    <typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="antlib:org.apache.maven.artifact.ant" classpathref="maven-ant-tasks.classpath"/>
+    <description>Ant build file that pushes GATE pieces to the snapshot repository.</description>
+    <property name="top" location="../../.."/>
+    <property name="build" location="build" />
+    <loadfile property="gate.version" srcFile="${top}/build/version.txt"/>
+    <property name="snapshots.repo.url" value="http://repo.gate.ac.uk/content/repositories/snapshots"/>
+    <property name="deploy.username" value="-SET-ME-"/>
+    <property name="deploy.password" value="-SET-ME-"/>
+
+    <!-- snapshot release production. We push the complete set of artifacts.  -->
+    <target name="clean">
+        <delete dir="${build}"/>
+    </target>
+
+    <target name="init">
+        <mkdir dir="${build}"/>
+    </target>
+
+    <target name="prepare.extra.jars" depends="init">
+        <jar destfile="${build}/gate-core-javadoc.jar"
+             basedir="${top}/doc/javadoc"
+             excludes="internal/**, src-html/**" />
+        <jar destfile="${build}/gate-core-sources.jar"
+             basedir="${top}/src/main"/>
+    </target>
+
+    <target name="prepare.snapshot.pom" depends="init">
+        <property name="gate.core.pom"
+                  location="${build}/gate-core.${gate.version}.pom.xml" />
+        <copy tofile="${gate.core.pom}"
+              file="gate-core.pom.template">
+            <filterset>
+                <filter token="gate.version" value="${gate.version}" />
+            </filterset>
+        </copy>
+    </target>
+
+    <target name="snapshot-release" depends="clean, prepare.extra.jars, prepare.snapshot.pom">
+        <artifact:pom id="gate-core.pom" file="${gate.core.pom}"/>
+        <artifact:deploy file="${top}/bin/gate.jar">
+            <attach file="${build}/gate-core-javadoc.jar" classifier="javadoc"/>
+            <attach file="${build}/gate-core-sources.jar" classifier="sources"/>
+            <remoteRepository url="${snapshots.repo.url}">
+                <authentication username="${deploy.username}" password="${deploy.password}"/>
+            </remoteRepository>
+            <pom refid="gate-core.pom"/>
+        </artifact:deploy>
+    </target>
+
+    <!-- Install a copy of gate.jar into your local maven cache -->
+    <target name="snapshot-install" depends="clean, prepare.snapshot.pom">
+        <artifact:pom id="gate-core.pom" file="${gate.core.pom}"/>
+        <artifact:install file="${top}/bin/gate.jar">
+            <pom refid="gate-core.pom"/>
+        </artifact:install>
+    </target>
+
+    <target name="test.snapshot" depends="prepare.snapshot.pom">
+        <artifact:pom id="gate-core.pom" file="${gate.core.pom}"/>
+        <artifact:dependencies filesetId="dependency.fileset" versionsId="dependency.versions" pomRefId="gate-core.pom"/>        
+        <delete dir="lib"/>        
+        <copy todir="lib">
+            <fileset refid="dependency.fileset" />
+            <!-- This mapper strips off all leading directory information -->
+            <!--<mapper classpathref="maven-ant-tasks.classpath" classname="org.apache.maven.artifact.ant.VersionMapper" from="${dependency.versions}" to="flatten" />-->
+            <flattenmapper />
+        </copy>
+
+        <fileset dir="lib" id="onlyinmaven" includes="**/*.jar"> 
+            <present present="srconly" targetdir="${top}/lib"/> 
+        </fileset> 
+
+        <echo>to see dependency tree do 'mvn dependency:tree' on the pom</echo>
+        <echo>these files are only in maven/lib : ${toString:onlyinmaven}</echo> 
+
+        <fileset dir="${top}/lib" id="onlyingate" includes="**/*.jar"> 
+            <present present="srconly" targetdir="lib"/> 
+        </fileset> 
+        <echo> these files are only in gate/lib : ${toString:onlyingate}</echo>
+
+        <fileset dir="lib" id="different" includes="**/*.jar" excludes="gate-core.jar">
+            <different targetdir="${top}/lib" ignoreFileTimes="true"/> 
+        </fileset> 
+        <echo>        these files are different : ${toString:different}</echo>
+    </target>
+
+    <!--
+    Additional targets to publish new releases to sonatype staging
+   
+    For this to work you need an account on sonatype OSS, associated with the
+    uk.ac.gate groupId via a ticket on their JIRA, and a suitable GPG key in
+    the public GPG key servers.
+
+    You must create a file ~/.m2/settings.xml similar to the following (with
+    the correct GPG key settings and sonatype account inserted):
+
+    <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                          http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+      <profiles>
+        <profile>
+          <id>gate-release</id>
+          <properties>
+            <gate.gpg.keyname>my-gpg-key-identifier</gate.gpg.keyname>
+            <gate.gpg.passphrase>my-gpg-key-passphrase</gate.gpg.passphrase>
+          </properties>
+        </profile>
+      </profiles>
+
+      <servers>
+        <server>
+          <id>gate-oss</id>
+          <username>sonatype-username</username>
+          <password>sonatype-password</password>
+        </server>
+      </servers>
+    </settings>
+
+    With this in place, you can use the publish.gate, publish.gate-compiler-jdt
+    and publish.gate-asm targets to push releases of ${top}/bin/gate.jar,
+    ${top}/lib/gate-compiler-jdt.jar and ${top}/lib/gate-asm.jar respectively
+    to the Sonatype staging repository.  For JDT and ASM, you should manually
+    update the relevant .pom.xml file first with the correct version number.
+    -->
+
+    <property name="staging.dir" location="stage" />
+
+    <target name="stage.init">
+        <delete dir="${staging.dir}" />
+        <mkdir dir="${staging.dir}" />
+    </target>
+
+    <!-- stage a gate-core release.  The gate.version Ant property is assumed
+    to contain the version number to be published, and should *not* end in
+    -SNAPSHOT -->
+    <target name="stage.gate" depends="stage.init">
+        <property name="basename.to.stage" location="${staging.dir}/gate-core" />
+        <copy tofile="${basename.to.stage}.pom.xml"
+              file="gate-core.pom.template">
+            <filterset>
+                <filter token="gate.version" value="${gate.version}" />
+            </filterset>
+        </copy>
+        <copy tofile="${basename.to.stage}.jar" file="${top}/bin/gate.jar" />
+        <jar destfile="${basename.to.stage}-javadoc.jar"
+             basedir="${top}/doc/javadoc"
+             excludes="internal/**, src-html/**" />
+        <jar destfile="${basename.to.stage}-sources.jar" basedir="${top}/src/main"/>
+    </target>
+
+    <target name="stage.gate-compiler-jdt" depends="stage.init">
+        <property name="basename.to.stage" location="${staging.dir}/gate-compiler-jdt" />
+        <copy tofile="${basename.to.stage}.pom.xml"
+              file="gate-compiler-jdt.pom.xml" />
+        <copy tofile="${basename.to.stage}.jar"
+              file="${top}/lib/gate-compiler-jdt.jar" />
+        <jar destfile="${basename.to.stage}-javadoc.jar" basedir="." includes="gate-compiler-jdt-readme.txt"/>
+        <jar destfile="${basename.to.stage}-sources.jar" basedir="." includes="gate-compiler-jdt-readme.txt"/>
+    </target>
+
+    <target name="stage.gate-asm" depends="stage.init">
+        <property name="basename.to.stage" location="${staging.dir}/gate-asm" />
+        <copy tofile="${basename.to.stage}.pom.xml"
+              file="gate-asm.pom.xml" />
+        <copy tofile="${basename.to.stage}.jar"
+              file="${top}/lib/gate-asm.jar" />
+        <jar destfile="${basename.to.stage}-javadoc.jar" basedir="." includes="gate-asm-readme.txt"/>
+        <jar destfile="${basename.to.stage}-sources.jar" basedir="." includes="gate-asm-readme.txt"/>
+    </target>
+
+    <!-- Generic target to publish a release of ${basename.to.stage} -->
+    <target name="publish.release">
+        <artifact:mvn pom="sign-and-deploy.pom.xml">
+            <arg value="-Pgate-release,publish-generic"/>
+            <arg value="-Dfile=${basename.to.stage}" />
+        </artifact:mvn>
+    </target>
+
+    <!-- publish a GATE release -->
+    <target name="publish.gate" depends="stage.gate, publish.release" />
+
+    <!-- publish a new version of gate-compiler-jdt -->
+    <target name="publish.gate-compiler-jdt"
+            depends="stage.gate-compiler-jdt, publish.release" />
+
+    <!-- publish a new version of gate-asm -->
+    <target name="publish.gate-asm"
+            depends="stage.gate-asm, publish.release" />
+</project>

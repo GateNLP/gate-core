@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+. /usr/share/debconf/confmodule
+
+
+# Automatically added by dh_installmenu
+if [ "$1" = "configure" ] && [ -x "`which update-menus 2>/dev/null`" ]; then
+	update-menus
+fi
+# End automatically added section
+
+
+exit 0

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Sun Java 6 Console
+Comment=Sun Java 6 Monitoring & Management Console
+Exec=/usr/lib/jvm/java-6-sun-1.6.0.20/bin/jconsole
+Terminal=false
+Type=Application
+Icon=sun-java6
+Categories=Application;System;

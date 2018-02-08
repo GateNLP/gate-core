@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>uk.ac.gate</groupId>
+  <artifactId>gate-dist</artifactId>
+  <version>8.5-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <url>http://gate.ac.uk/</url>
+
+  <name>GATE Core (distribution)</name>
+
+  <description>
+  Assembly module to build a binary distribution of GATE Developer.
+  </description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>distro-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/assembly/distro.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.0.2</version>
+        <executions>
+          <execution>
+            <id>build-classpath</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>build-classpath</goal>
+            </goals>
+            <configuration>
+              <outputFile>gate.classpath</outputFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>uk.ac.gate</groupId>
+      <artifactId>gate-core</artifactId>
+      <version>8.5-SNAPSHOT</version>
+    </dependency>
+
+    <!-- Slightly nasty trick to get the javadocs -->
+    <!--
+    <dependency>
+      <groupId>uk.ac.gate</groupId>
+      <artifactId>gate-core</artifactId>
+      <version>8.5-SNAPSHOT</version>
+      <classifier>javadoc</classifier>
+      <scope>test</scope>
+    </dependency>
+    -->
+  </dependencies>
+
+</project>

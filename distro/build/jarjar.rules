@@ -1,0 +1,2 @@
+rule org.eclipse.** gate.util.compilers.eclipse.@1
+rule org.objectweb.asm.** gate.util.asm.@1

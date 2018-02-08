@@ -1,0 +1,47 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+  <id>distro</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+
+  <fileSets>
+    <fileSet>
+      <directory>bin</directory>
+      <outputDirectory>bin</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>GATE.app</directory>
+      <outputDirectory>GATE.app</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory></directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>gate.exe</include>
+        <include>gate.l4j.ini</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+
+  <dependencySets>
+    <dependencySet>
+      <scope>runtime</scope>
+      <outputDirectory>/lib</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <unpack>false</unpack>
+    </dependencySet>
+
+    <!-- javadocs -->
+    <!--
+    <dependencySet>
+      <scope>test</scope>
+      <outputDirectory>/doc/javadoc</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <unpack>true</unpack>
+    </dependencySet>
+    -->
+  </dependencySets>
+
+</assembly>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<shortcuts>
+
+  <programGroup defaultName="GATE Developer $APP_VER" location="applications"/>
+
+   <shortcut
+     name="GATE Developer $APP_VER"
+     target="$INSTALL_PATH/gate.exe"
+     workingDirectory="$INSTALL_PATH"
+     description="Starts GATE Developer $APP_VER"
+     initialState="normal"
+     iconFile="$INSTALL_PATH/icons/gate-icon.ico"
+     desktop="no"
+     programGroup="yes"
+     encoding="UTF-8">
+     <createForPack name="Core"/>
+   </shortcut>
+
+<!--  This does not work as the removal of keys from Registry requires
+      admin rights but the uninstaller does not escalate privileges.
+      However, the addition of keys to the Registry means that the 
+      uninstall action is available from the Control Panel, so we don't 
+      really need another shortcut for it.  
+      
+   <shortcut
+     name="Uninstall GATE Developer $APP_VER"
+     target="$INSTALL_PATH/uninstaller/gate-uninstaller.jar"
+     description="Remove GATE Developer $APP_VER from your computer"
+     desktop="no"
+     programGroup="yes"
+     workingDirectory="$APPLICATIONS_DEFAULT_ROOT"
+     initialState="normal"
+     encoding="UTF-8">
+     <createForPack name="Core"/>
+   </shortcut>
+-->
+      
+   <shortcut
+     name="GATE $APP_VER User Guide"
+     programGroup="yes"
+     target="$INSTALL_PATH/tao.pdf"
+     description="The GATE User Guide"
+     desktop="no">
+     <createForPack name="User guide"/>
+   </shortcut>
+
+</shortcuts>
