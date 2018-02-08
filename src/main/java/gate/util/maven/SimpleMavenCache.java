@@ -12,6 +12,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.Parent;
+import org.apache.maven.model.building.DefaultModelBuilderFactory;
+import org.apache.maven.model.building.DefaultModelBuildingRequest;
+import org.apache.maven.model.building.ModelBuilder;
+import org.apache.maven.model.building.ModelBuildingException;
+import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -107,7 +114,7 @@ public class SimpleMavenCache implements WorkspaceReader, Serializable {
 	}
 
 	public void cacheArtifact(Artifact artifact) throws IOException, SettingsBuildingException,
-			DependencyCollectionException, DependencyResolutionException, ArtifactResolutionException {
+			DependencyCollectionException, DependencyResolutionException, ArtifactResolutionException, ModelBuildingException {
 
 	  List<RemoteRepository> repos = getRepositoryList();
 	  
@@ -145,10 +152,47 @@ public class SimpleMavenCache implements WorkspaceReader, Serializable {
       
       // but copy it to a file named for the original requested version number
       file = getArtifactFile(new SubArtifact(ar.getRequest().getArtifact(), "", "pom"));
-      FileUtils.copyFile(artifactResult.getArtifact().getFile(), file);
+      FileUtils.copyFile(artifactResult.getArtifact().getFile(), file);        
       
+      cacheParents(artifactResult.getArtifact().getFile(), repoSystem, repoSession, repos);
 		}
 	}
+	
+  private void cacheParents(File pom, RepositorySystem repoSystem,
+      RepositorySystemSession repoSession, List<RemoteRepository> repos)
+      throws ModelBuildingException, IOException, ArtifactResolutionException {
+    
+    ModelBuildingRequest req = new DefaultModelBuildingRequest();
+    req.setProcessPlugins(false);
+    req.setPomFile(pom);
+    req.setModelResolver(
+        new SimpleModelResolver(repoSystem, repoSession, repos));
+    req.setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MINIMAL);
+
+    ModelBuilder modelBuilder = new DefaultModelBuilderFactory().newInstance();
+    Model model = modelBuilder.build(req).getEffectiveModel();
+
+    Parent parent = model.getParent();
+
+    if(parent == null) return;
+
+    Artifact pomArtifact = new DefaultArtifact(parent.getGroupId(),
+        parent.getArtifactId(), "pom", parent.getVersion());
+
+    ArtifactRequest artifactRequest =
+        new ArtifactRequest(pomArtifact, repos, null);
+
+    ArtifactResult artifactResult =
+        repoSystem.resolveArtifact(repoSession, artifactRequest);
+
+    // but copy it to a file named for the original requested version number
+    File file = getArtifactFile(artifactRequest.getArtifact());
+    FileUtils.copyFile(artifactResult.getArtifact().getFile(), file);
+
+    cacheParents(artifactResult.getArtifact().getFile(), repoSystem,
+        repoSession, repos);
+  }
+
 
 	@Override
 	public WorkspaceRepository getRepository() {

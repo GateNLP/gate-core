@@ -30,6 +30,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.apache.maven.model.building.ModelBuildingException;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -692,7 +693,7 @@ public class PackageGappTask extends Task {
             smc.cacheArtifact(pluginArtifact);
           } catch(DependencyCollectionException | DependencyResolutionException
               | ArtifactResolutionException | IOException
-              | SettingsBuildingException e) {
+              | SettingsBuildingException | ModelBuildingException e) {
             throw new BuildException("Error cacheing plugin " + plugin.group + ":"
               + plugin.artifact + ":" + plugin.version, e);
           }
