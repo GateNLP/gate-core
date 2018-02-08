@@ -20,17 +20,19 @@ import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingResult;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
 import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.LocalRepository;
+import org.eclipse.aether.repository.Proxy;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
+import org.eclipse.aether.util.repository.AuthenticationBuilder;
+import org.eclipse.aether.util.repository.DefaultProxySelector;
 
 public class Utils {
   
@@ -125,6 +127,18 @@ public class Utils {
     // Add all repos from settings.xml
     // http://stackoverflow.com/questions/27818659/loading-mavens-settings-xml-for-jcabi-aether-to-use
     Settings effectiveSettings = loadMavenSettings();
+    
+    org.apache.maven.settings.Proxy proxy = effectiveSettings.getActiveProxy();
+    DefaultProxySelector selector = null;
+    if(proxy != null) {
+      selector = new DefaultProxySelector();
+      selector.add(
+          new Proxy(proxy.getProtocol(), proxy.getHost(), proxy.getPort(),
+              new AuthenticationBuilder().addUsername(proxy.getUsername())
+                  .addPassword(proxy.getPassword()).build()),
+          proxy.getNonProxyHosts());
+    }
+        
     Map<String, Profile> profilesMap = effectiveSettings.getProfilesAsMap();
     for(String profileName : effectiveSettings.getActiveProfiles()) {
       Profile profile = profilesMap.get(profileName);
@@ -133,7 +147,13 @@ public class Utils {
         RemoteRepository remoteRepo =
                 new RemoteRepository.Builder(repo.getId(), "default",
                         repo.getUrl()).build();
-      repos.add(remoteRepo);
+        
+        if(selector != null) {
+          remoteRepo = new RemoteRepository.Builder(remoteRepo)
+              .setProxy(selector.getProxy(remoteRepo)).build();
+        }
+        
+        repos.add(remoteRepo);
       }
     }
     
