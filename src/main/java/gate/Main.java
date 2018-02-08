@@ -254,16 +254,6 @@ public class Main {
       }
     });
     registerCreoleUrls();
-    
-    new Thread() {
-      @Override
-      public void run() {
-        // kick this off here so that it does any resolving of creole metadata
-        // jars now rather than the first time you try and open the plugin
-        // manager, which is still a bit slow 
-        PluginUpdateManager.loadDefaultPlugins();
-      }
-    }.start();
   } // runGui()
 
   /**
