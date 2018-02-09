@@ -8,4 +8,8 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 .settings
+.classpath
+.project
+.external*
 lib
+.DS_Store
