@@ -13,3 +13,5 @@ buildNumber.properties
 .external*
 lib
 .DS_Store
+
+antlib
