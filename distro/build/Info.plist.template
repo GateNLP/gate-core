@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>GATE</string>
 	<key>CFBundleGetInfoString</key>
-	<string>GATE @version@ - http://gate.ac.uk/</string>
+	<string>GATE ${project.version} - http://gate.ac.uk/</string>
 	<key>CFBundleIconFile</key>
 	<string>gate-icon.icns</string>
 	<key>CFBundleInfoDictionaryVersion</key>

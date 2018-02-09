@@ -25,6 +25,15 @@
     </fileSet>
   </fileSets>
 
+  <files>
+    <file>
+      <source>build/Info.plist.template</source>
+      <outputDirectory>GATE.app/Contents</outputDirectory>
+      <destName>Info.plist</destName>
+      <filtered>true</filtered>
+    </file>
+  </files>
+
   <dependencySets>
     <dependencySet>
       <scope>runtime</scope>
