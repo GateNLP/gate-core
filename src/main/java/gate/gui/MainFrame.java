@@ -1233,7 +1233,7 @@ public class MainFrame extends JFrame implements ProgressListener,
       JButton annieMenu =
           new JButton(new LoadApplicationAction("ANNIE", "annie-application",
               new ResourceReference(new URI(
-                  "creole://uk.ac.gate.plugins;annie;8.5-SNAPSHOT/resources/"
+                  "creole://uk.ac.gate.plugins;annie;" + gate.Main.version + "/resources/"
                       + ANNIEConstants.DEFAULT_FILE))));
       annieMenu.setText("");
       annieMenu.setToolTipText("Load ANNIE");
@@ -5322,14 +5322,14 @@ public class MainFrame extends JFrame implements ProgressListener,
         final XJMenuItem annie = new XJMenuItem(
             new LoadApplicationAction("ANNIE", "annie-application",
                 new ResourceReference(
-                    new URI("creole://uk.ac.gate.plugins;annie;8.5-SNAPSHOT/resources/"
+                    new URI("creole://uk.ac.gate.plugins;annie;" + gate.Main.version + "/resources/"
                         + ANNIEConstants.DEFAULT_FILE))),
             MainFrame.this);
         
         final XJMenuItem openNLP = new XJMenuItem(
             new LoadApplicationAction("OpenNLP (English)", "application",
                 new ResourceReference(
-                    new URI("creole://uk.ac.gate.plugins;opennlp;8.5-SNAPSHOT/resources/opennlp.gapp"))),
+                    new URI("creole://uk.ac.gate.plugins;opennlp;" + gate.Main.version + "/resources/opennlp.gapp"))),
             MainFrame.this);
 
         addMenuListener(new MenuListener() {
