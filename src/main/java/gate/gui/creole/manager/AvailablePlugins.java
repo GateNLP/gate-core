@@ -839,7 +839,7 @@ public class AvailablePlugins extends JPanel {
       JPanel mavenPanel = new JPanel(new SpringLayout());
       JTextField txtGroup = new JTextField("uk.ac.gate.plugins",20);
       JTextField txtArtifact = new JTextField(20);
-      JTextField txtVersion = new JTextField("8.5-SNAPSHOT",20);
+      JTextField txtVersion = new JTextField(gate.Main.version,20);
       
       mavenPanel.add(new JLabel("Group:"));
       mavenPanel.add(txtGroup);
