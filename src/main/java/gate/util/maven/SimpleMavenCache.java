@@ -73,14 +73,17 @@ public class SimpleMavenCache implements WorkspaceReader, Serializable {
 
 		file = new File(file, artifact.getVersion());
 
-		file = new File(file, artifact.getArtifactId() + "-" + artifact.getVersion() + "." + artifact.getExtension());
+		if("".equals(artifact.getClassifier())) {
+			file = new File(file, artifact.getArtifactId() + "-" + artifact.getVersion() + "." + artifact.getExtension());
+		} else {
+			file = new File(file, artifact.getArtifactId() + "-" + artifact.getVersion() + "-" + artifact.getClassifier() + "." + artifact.getExtension());
+		}
 
 		return file;
 	}
 
 	@Override
 	public File findArtifact(Artifact artifact) {
-
 		File file = getArtifactFile(artifact);
 
 		if (file.exists())
