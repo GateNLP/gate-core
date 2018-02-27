@@ -46,6 +46,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.DependencyCollectionException;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.DependencyResolutionException;
+import org.eclipse.aether.util.artifact.SubArtifact;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -696,6 +697,17 @@ public class PackageGappTask extends Task {
               | SettingsBuildingException | ModelBuildingException e) {
             throw new BuildException("Error cacheing plugin " + plugin.group + ":"
               + plugin.artifact + ":" + plugin.version, e);
+          }
+
+          // and the matching creole.jar if there is one
+          try {
+            smc.cacheArtifact(new SubArtifact(pluginArtifact, "creole", "jar"));
+          } catch(DependencyCollectionException | DependencyResolutionException
+              | ArtifactResolutionException | IOException
+              | SettingsBuildingException | ModelBuildingException e) {
+            log("    Could not cache " + plugin.group + ":" + plugin.artifact + "-"
+                + plugin.version + "-creole.jar -  cache will still work but will "
+                + "print warnings at runtime");
           }
         }
       }
