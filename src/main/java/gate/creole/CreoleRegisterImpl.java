@@ -191,9 +191,16 @@ public class CreoleRegisterImpl extends HashMap<String, ResourceData>
           }
         }
 
-        parseDirectory(plugin, plugin.getCreoleXML(), plugin.getBaseURL(),
-            new URL(plugin.getBaseURL(), "creole.xml"));
-        log.info("CREOLE plugin loaded: " + plugin.getName());
+        Document creoleXML = plugin.getCreoleXML();
+        
+        if (plugin.isValid()) {
+          parseDirectory(plugin, creoleXML, plugin.getBaseURL(),
+              new URL(plugin.getBaseURL(), "creole.xml"));
+          log.info("CREOLE plugin loaded: " + plugin.getName());
+        }
+        else {
+          throw new GateException("plugin is invalid");
+        }
       } catch(Throwable e) {
         // it failed:
         throw (new GateException("couldn't open creole.xml for plugin: "+plugin, e));
