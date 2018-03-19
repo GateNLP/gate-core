@@ -55,6 +55,12 @@ public class GateClassLoader extends URLClassLoader {
 
   /** Debug flag */
   private static final boolean DEBUG = false;
+  
+  static {
+    if (!GateClassLoader.registerAsParallelCapable()) {
+      log.warn("Attempt to register GATE Classloader as parallel capable failed");
+    }
+  }
 
   /** Default construction - use an empty URL list. */
   public GateClassLoader(String name) {
