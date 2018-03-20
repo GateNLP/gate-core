@@ -270,6 +270,9 @@ public abstract class Plugin {
   }
 
   public boolean isValid() {
+    // we need to ensire parseCreole() has been called before we can know if the
+    // valid flag is .... valid
+    getResourceInfoList();
     return valid;
   }
 
