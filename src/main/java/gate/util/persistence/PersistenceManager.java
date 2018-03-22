@@ -486,13 +486,9 @@ public class PersistenceManager {
           logger.debug("CurrentPresistenceURL is "+context+" created="+ret);
           return ret;
         } else if(persistent.startsWith(gatehomePathMarker)) {
-          URL gatehome =  getCanonicalFileIfPossible(getGateHomePath()).toURI().toURL();
-          //return new URL(gatehome, urlString.substring(gatehomePathMarker.length()));
-          return combineContextAndRelative(gatehome.toURI(), persistent.substring(gatehomePathMarker.length()),false);
+          throw new GateRuntimeException("$gatehome$ variable no longer supported, please upgrade your application");
         } else if(persistent.startsWith(gatepluginsPathMarker)) {
-          URL gateplugins = Gate.getPluginsHome().toURI().toURL();
-          //return new URL(gateplugins, urlString.substring(gatepluginsPathMarker.length()));
-          return combineContextAndRelative(gateplugins.toURI(), persistent.substring(gatepluginsPathMarker.length()),false);
+          throw new GateRuntimeException("$gateplugins$ variable no longer supported, please upgrade your application");
         } else if(persistent.startsWith(resourceshomePathMarker)) {
           if(getResourceshomePath() == null) {
             throw new GateRuntimeException("Cannot restore URL "+persistent+

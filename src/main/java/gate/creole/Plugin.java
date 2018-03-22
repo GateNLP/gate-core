@@ -365,13 +365,9 @@ public abstract class Plugin {
               url = new URL(getBaseURL(),
                   urlString.substring(relativePathMarker.length()));
             } else if(urlString.startsWith(gatehomePathMarker)) {
-              URL gatehome = Gate.getGateHome().toURI().toURL();
-              url = new URL(gatehome,
-                  urlString.substring(gatehomePathMarker.length()));
+              throw new IOException("$gatehome$ variable no longer supported in REQUIRES element");
             } else if(urlString.startsWith(gatepluginsPathMarker)) {
-              URL gateplugins = Gate.getPluginsHome().toURI().toURL();
-              url = new URL(gateplugins,
-                  urlString.substring(gatepluginsPathMarker.length()));
+              throw new IOException("$gateplugins$ variable no longer supported in REQUIRES element");
             } else {
               url = new URL(getBaseURL(), urlString);
             }
