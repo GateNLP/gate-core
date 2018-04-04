@@ -1,6 +1,7 @@
 uk.ac.gate.plugins	alignment	${project.version}
 uk.ac.gate.plugins	annie	${project.version}
 uk.ac.gate.plugins	annotation-merging	${project.version}
+uk.ac.gate.plugins	cistem	1.0-SNAPSHOT
 uk.ac.gate.plugins	context	1.0-SNAPSHOT
 uk.ac.gate.plugins	copy-annots-between-docs	${project.version}
 uk.ac.gate.plugins	coref-tools	${project.version}
