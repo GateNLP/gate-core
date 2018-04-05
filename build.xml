@@ -4,6 +4,8 @@
 
   <property name="src.dir" location="src/main/java" />
 
+  <property name="svg.dir" location="src/main/svg" />
+
   <property name="svg.lib" location="build/lib" />
 
   <target name="init">
@@ -46,7 +48,7 @@
       <arg value="gate.resources.img.svg" />
       <arg value="-t" />
       <arg value="scalable" />
-      <arg value="${src.dir}/gate/resources/img/svg" />
+      <arg value="${svg.dir}" />
     </java>
   </target>
 </project>
