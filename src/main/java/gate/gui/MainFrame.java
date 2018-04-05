@@ -193,6 +193,7 @@ import gate.util.NameBearer;
 import gate.util.OptionsMap;
 import gate.util.Out;
 import gate.util.persistence.PersistenceManager;
+import gate.util.persistence.UpgradeXGAPP;
 import gate.util.reporting.DocTimeReporter;
 import gate.util.reporting.PRTimeReporter;
 import gate.util.reporting.exceptions.BenchmarkReportException;
@@ -1140,7 +1141,7 @@ public class MainFrame extends JFrame implements ProgressListener,
       new JCheckBoxMenuItem(new VerboseModeCorpusEvalToolAction());
     corpusEvalMenu.add(verboseModeItem);
 
-    
+    toolsMenu.add(new XJMenuItem(new UpgradeXGAPP.UpgradeAction(), this));
     
     toolsMenu.staticItemsAdded();    
     menuBar.add(toolsMenu);
