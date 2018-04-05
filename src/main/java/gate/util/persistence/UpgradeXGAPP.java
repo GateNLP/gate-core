@@ -29,6 +29,8 @@ import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.VersionRangeRequest;
 import org.eclipse.aether.resolution.VersionRangeResolutionException;
 import org.eclipse.aether.resolution.VersionRangeResult;
+import org.eclipse.aether.util.version.GenericVersionScheme;
+import org.eclipse.aether.version.InvalidVersionSpecificationException;
 import org.eclipse.aether.version.Version;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -51,6 +53,9 @@ public class UpgradeXGAPP {
   private static XMLOutputter outputter =
       new XMLOutputter(Format.getPrettyFormat());
 
+  private static GenericVersionScheme versionScheme =
+      new GenericVersionScheme();
+
   @SuppressWarnings("unchecked")
   public static List<UpgradePath> suggest(Document doc)
       throws IOException, JDOMException {
@@ -66,9 +71,9 @@ public class UpgradeXGAPP {
     Iterator<Element> it = plugins.iterator();
     while(it.hasNext()) {
       Element plugin = it.next();
-      
+
       VersionRangeResult versions;
-      
+
       switch(plugin.getName()){
         case "gate.util.persistence.PersistenceManager-URLHolder":
           String urlString = plugin.getChild("urlString").getValue();
@@ -77,32 +82,39 @@ public class UpgradeXGAPP {
           String oldName = parts[parts.length - 1];
           String newName = oldName.toLowerCase().replaceAll("[\\s_]+", "-");
 
-          versions =
-              getPluginVersions("uk.ac.gate.plugins", newName);
+          versions = getPluginVersions("uk.ac.gate.plugins", newName);
 
           if(versions != null) {
 
             upgrades
                 .add(new UpgradePath(plugin, urlString, "uk.ac.gate.plugins",
-                    newName, versions, versions.getHighestVersion()));
+                    newName, versions, null, versions.getHighestVersion()));
           }
           break;
-          
+
         case "gate.creole.Plugin-Maven":
-          
+
           String group = plugin.getChild("group").getValue();
           String artifact = plugin.getChild("artifact").getValue();
           String version = plugin.getChild("version").getValue();
-          
-          String oldCreoleURI = "creole://" + group + ";" + artifact + ";" + version + "/";
-          
+
+          String oldCreoleURI =
+              "creole://" + group + ";" + artifact + ";" + version + "/";
+
           versions = getPluginVersions(group, artifact);
-          
-          //TODO check to see if there is a newer version of the plugin to use
-          if (versions != null) {
-            upgrades.add(new UpgradePath(plugin, oldCreoleURI, group, artifact, versions, versions.getHighestVersion()));
+
+          if(versions != null) {
+            Version currentVersion;
+            try {
+              currentVersion = versionScheme.parseVersion(version);
+              upgrades.add(new UpgradePath(plugin, oldCreoleURI, group, artifact,
+                  versions, currentVersion, versions.getHighestVersion()));
+            } catch(InvalidVersionSpecificationException e) {
+              // this should be impossible as the version string comes from an
+              // xgapp generated having successfully loaded a plugin
+            }            
           }
-          
+
           break;
         default:
           // some unknown plugin type
@@ -229,31 +241,36 @@ public class UpgradeXGAPP {
 
     private String groupID, artifactID;
 
-    private Version version;
+    private Version selected, current;
 
     private VersionRangeResult versions;
 
     private String oldPath;
 
     protected UpgradePath(Element oldEntry, String oldPath, String groupID,
-        String artifactID, VersionRangeResult versions, Version version) {
+        String artifactID, VersionRangeResult versions, Version current, Version selected) {
       this.oldEntry = oldEntry;
       this.oldPath = oldPath.endsWith("/") ? oldPath : oldPath + "/";
       this.groupID = groupID;
       this.artifactID = artifactID;
       this.versions = versions;
-      this.version = version;
+      this.selected = selected;
+      this.current = current;
     }
 
-    public void setVersion(Version version) {
+    public void setSelectedVersion(Version version) {
       if(!versions.getVersions().contains(version))
         throw new IllegalArgumentException("Supplied version isn't valid");
 
-      this.version = version;
+      this.selected = version;
     }
 
-    public Version getVersion() {
-      return version;
+    public Version getSelectedVersion() {
+      return selected;
+    }
+    
+    public Version getCurrentVersion() {
+      return current;
     }
 
     public String toString() {
@@ -262,7 +279,7 @@ public class UpgradeXGAPP {
     }
 
     public String getNewPath() {
-      return "creole://" + groupID + ";" + artifactID + ";" + version.toString()
+      return "creole://" + groupID + ";" + artifactID + ";" + selected.toString()
           + "/";
     }
 
@@ -280,7 +297,7 @@ public class UpgradeXGAPP {
       artifactElement.setText(artifactID);
 
       Element versionElement = new Element("version");
-      versionElement.setText(version.toString());
+      versionElement.setText(selected.toString());
 
       mavenPlugin.addContent(groupElement);
       mavenPlugin.addContent(artifactElement);
@@ -325,10 +342,22 @@ public class UpgradeXGAPP {
         SAXBuilder builder = new SAXBuilder(false);
         Document doc = builder.build(originalXGapp);
         List<UpgradePath> upgrades = suggest(doc);
-        for(UpgradePath upgrade : upgrades) {
-          System.out.println(upgrade);
+        Iterator<UpgradePath> it = upgrades.iterator();
+        while (it.hasNext()) {
+          UpgradePath upgrade = it.next();
+          if (upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
+            it.remove();
+          }
+          else {
+            System.out.println(upgrade);
+          }
         }
-
+        
+        if (upgrades.isEmpty()) {
+          System.out.println("Nothing to do :(");
+          return;
+        }
+        
         upgrade(doc, upgrades);
 
         if(!originalXGapp
