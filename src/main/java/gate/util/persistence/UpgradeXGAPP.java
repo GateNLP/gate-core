@@ -138,7 +138,7 @@ public class UpgradeXGAPP {
       pluginList.setContent(pluginIndex, upgrade.getNewElement());
     }
 
-    XPath jarXPath = XPath.newInstance("//urlString");
+    XPath jarXPath = XPath.newInstance("//gate.util.persistence.PersistenceManager-URLHolder/urlString | //gate.util.persistence.PersistenceManager-RRPersistence/uriString");
     for(Element element : (List<Element>)jarXPath.selectNodes(doc)) {
 
       String urlString = element.getValue();
@@ -374,6 +374,39 @@ public class UpgradeXGAPP {
       }
     }
 
+  }
+  
+  public static void main(String args[]) {
+    try {
+      SAXBuilder builder = new SAXBuilder(false);
+      Document doc = builder.build(new File("/home/mark/twitie-en.xgapp"));
+      List<UpgradePath> upgrades = suggest(doc);
+      Iterator<UpgradePath> it = upgrades.iterator();
+      while (it.hasNext()) {
+        UpgradePath upgrade = it.next();
+        if (upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
+          it.remove();
+        }
+        else {
+          System.out.println(upgrade);
+        }
+      }
+      
+      if (upgrades.isEmpty()) {
+        System.out.println("Nothing to do :(");
+        return;
+      }
+      
+      upgrade(doc, upgrades);
+
+      
+
+      
+        outputter.output(doc, System.out);
+      
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
   }
 
 }
