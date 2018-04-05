@@ -48,8 +48,6 @@ import gate.util.ExtensionFileFilter;
 @CreoleResource(tool = true, isPrivate = true, autoinstances = @AutoInstance, name = "Upgrade XGapp", comment = "Upgrades an XGapp to use new style GATE plugins")
 public class UpgradeXGAPP {
 
-  private static final long serialVersionUID = -816227103591230313L;
-
   private static XMLOutputter outputter =
       new XMLOutputter(Format.getPrettyFormat());
 
@@ -68,6 +66,9 @@ public class UpgradeXGAPP {
     Iterator<Element> it = plugins.iterator();
     while(it.hasNext()) {
       Element plugin = it.next();
+      
+      VersionRangeResult versions;
+      
       switch(plugin.getName()){
         case "gate.util.persistence.PersistenceManager-URLHolder":
           String urlString = plugin.getChild("urlString").getValue();
@@ -76,7 +77,7 @@ public class UpgradeXGAPP {
           String oldName = parts[parts.length - 1];
           String newName = oldName.toLowerCase().replaceAll("[\\s_]+", "-");
 
-          VersionRangeResult versions =
+          versions =
               getPluginVersions("uk.ac.gate.plugins", newName);
 
           if(versions != null) {
@@ -84,11 +85,24 @@ public class UpgradeXGAPP {
             upgrades
                 .add(new UpgradePath(plugin, urlString, "uk.ac.gate.plugins",
                     newName, versions, versions.getHighestVersion()));
-
-            break;
           }
+          break;
+          
         case "gate.creole.Plugin-Maven":
-          // TODO check to see if there is a newer version of the plugin to use
+          
+          String group = plugin.getChild("group").getValue();
+          String artifact = plugin.getChild("artifact").getValue();
+          String version = plugin.getChild("version").getValue();
+          
+          String oldCreoleURI = "creole://" + group + ";" + artifact + ";" + version + "/";
+          
+          versions = getPluginVersions(group, artifact);
+          
+          //TODO check to see if there is a newer version of the plugin to use
+          if (versions != null) {
+            upgrades.add(new UpgradePath(plugin, oldCreoleURI, group, artifact, versions, versions.getHighestVersion()));
+          }
+          
           break;
         default:
           // some unknown plugin type
