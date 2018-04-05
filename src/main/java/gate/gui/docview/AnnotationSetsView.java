@@ -13,30 +13,6 @@
  */
 package gate.gui.docview;
 
-import gate.Annotation;
-import gate.AnnotationSet;
-import gate.Factory;
-import gate.Gate;
-import gate.Resource;
-import gate.creole.ResourceData;
-import gate.creole.ResourceInstantiationException;
-import gate.event.AnnotationSetEvent;
-import gate.event.AnnotationSetListener;
-import gate.event.DocumentEvent;
-import gate.event.DocumentListener;
-import gate.event.GateEvent;
-import gate.gui.MainFrame;
-import gate.gui.annedit.AnnotationData;
-import gate.gui.annedit.AnnotationDataImpl;
-import gate.gui.annedit.AnnotationEditorOwner;
-import gate.gui.annedit.OwnedAnnotationEditor;
-import gate.swing.ColorGenerator;
-import gate.swing.XJTable;
-import gate.util.Err;
-import gate.util.GateRuntimeException;
-import gate.util.InvalidOffsetException;
-import gate.util.Strings;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
@@ -100,6 +76,32 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.JTextComponent;
+
+import gate.Annotation;
+import gate.AnnotationSet;
+import gate.Factory;
+import gate.Gate;
+import gate.Resource;
+import gate.creole.ResourceData;
+import gate.creole.ResourceInstantiationException;
+import gate.event.AnnotationSetEvent;
+import gate.event.AnnotationSetListener;
+import gate.event.DocumentEvent;
+import gate.event.DocumentListener;
+import gate.event.GateEvent;
+import gate.gui.MainFrame;
+import gate.gui.annedit.AnnotationData;
+import gate.gui.annedit.AnnotationDataImpl;
+import gate.gui.annedit.AnnotationEditorOwner;
+import gate.gui.annedit.OwnedAnnotationEditor;
+import gate.resources.img.svg.ExpandedIcon;
+import gate.resources.img.svg.ClosedIcon;
+import gate.swing.ColorGenerator;
+import gate.swing.XJTable;
+import gate.util.Err;
+import gate.util.GateRuntimeException;
+import gate.util.InvalidOffsetException;
+import gate.util.Strings;
 
 /**
  * Display document annotation sets and types in a tree view like with a table.
@@ -1058,8 +1060,8 @@ public class AnnotationSetsView extends AbstractDocumentView
                 													Object oldValue,
                 													Object newValue){}
       };
-      setChk.setSelectedIcon(MainFrame.getIcon("expanded"));
-      setChk.setIcon(MainFrame.getIcon("closed"));
+      setChk.setSelectedIcon(new ExpandedIcon(12, 12));
+      setChk.setIcon(new ClosedIcon(12,12));
       setChk.setMaximumSize(setChk.getMinimumSize());
       setChk.setOpaque(true);
       
@@ -1128,8 +1130,8 @@ public class AnnotationSetsView extends AbstractDocumentView
                                       implements TableCellEditor{
     public SetsTableCellEditor(){
       setChk = new JCheckBox();
-      setChk.setSelectedIcon(MainFrame.getIcon("expanded"));
-      setChk.setIcon(MainFrame.getIcon("closed"));
+      setChk.setSelectedIcon(new ExpandedIcon(12,12));
+      setChk.setIcon(new ClosedIcon(12,12));
 //      setChk.setMaximumSize(setChk.getMinimumSize());
       setChk.setOpaque(true);
       setChk.addActionListener(new ActionListener(){
