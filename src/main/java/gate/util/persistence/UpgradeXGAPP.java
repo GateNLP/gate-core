@@ -40,6 +40,8 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jdom.xpath.XPath;
 
+import gate.Gate;
+import gate.Main;
 import gate.creole.metadata.AutoInstance;
 import gate.creole.metadata.CreoleResource;
 import gate.gui.MainFrame;
@@ -55,6 +57,28 @@ public class UpgradeXGAPP {
 
   private static GenericVersionScheme versionScheme =
       new GenericVersionScheme();
+
+  private static Version getDefaultSelection(List<Version> versions) {
+    // is the version of GATE we are running a SNAPSHOT?
+    boolean isSnapshot = Main.version.toUpperCase().endsWith("-SNAPSHOT");
+
+    int i = versions.size() - 1;
+
+    while(i >= 0 && !isSnapshot) {
+      // if GATE isn't a SNAPSHOT then work back through the versions until...
+      Version v = versions.get(i);
+      if(!v.toString().toUpperCase().endsWith("-SNAPSHOT")) {
+        // we find one that isn't a SNAPSHOT
+        return v;
+      }
+
+      --i;
+    }
+
+    // either GATE is a SNAPSHOT release or all the versions are SNAPSHOTS and
+    // in either case we just return the latest
+    return versions.get(versions.size() - 1);
+  }
 
   @SuppressWarnings("unchecked")
   public static List<UpgradePath> suggest(Document doc)
@@ -88,7 +112,7 @@ public class UpgradeXGAPP {
 
             upgrades
                 .add(new UpgradePath(plugin, urlString, "uk.ac.gate.plugins",
-                    newName, versions, null, versions.getHighestVersion()));
+                    newName, versions, null, getDefaultSelection(versions.getVersions())));
           }
           break;
 
@@ -109,7 +133,7 @@ public class UpgradeXGAPP {
               currentVersion = versionScheme.parseVersion(version);
               upgrades
                   .add(new UpgradePath(plugin, oldCreoleURI, group, artifact,
-                      versions, currentVersion, versions.getHighestVersion()));
+                      versions, currentVersion, getDefaultSelection(versions.getVersions())));
             } catch(InvalidVersionSpecificationException e) {
               // this should be impossible as the version string comes from an
               // xgapp generated having successfully loaded a plugin
