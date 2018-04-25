@@ -48,10 +48,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -61,19 +58,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -197,6 +182,14 @@ import gate.util.persistence.UpgradeXGAPP;
 import gate.util.reporting.DocTimeReporter;
 import gate.util.reporting.PRTimeReporter;
 import gate.util.reporting.exceptions.BenchmarkReportException;
+import org.codehaus.httpcache4j.HTTPRequest;
+import org.codehaus.httpcache4j.cache.CacheStorage;
+import org.codehaus.httpcache4j.cache.FilePersistentCacheStorage;
+import org.codehaus.httpcache4j.cache.HTTPCache;
+import org.codehaus.httpcache4j.cache.NullCacheStorage;
+import org.codehaus.httpcache4j.payload.Payload;
+import org.codehaus.httpcache4j.resolver.ConnectionConfiguration;
+import org.codehaus.httpcache4j.resolver.JavaNetResponseResolver;
 
 /**
  * The main Gate GUI frame.
@@ -283,6 +276,8 @@ public class MainFrame extends JFrame implements ProgressListener,
   protected TabHighlighter logHighlighter;
 
   protected NewResourceDialog newResourceDialog;
+
+  protected volatile HTTPCache httpCache;
 
   /**
    * Holds all the icons used in the Gate GUI indexed by filename. This
@@ -4110,6 +4105,10 @@ public class MainFrame extends JFrame implements ProgressListener,
               }
             }
 
+            // close the HTTPCache, if there is one
+            if(httpCache != null) {
+              httpCache.shutdown();
+            }
           }
           catch(GateException e) {
             // we just ignore this
@@ -5462,4 +5461,29 @@ public class MainFrame extends JFrame implements ProgressListener,
     }
   }
 
+  private HTTPCache getHttpCache() {
+    HTTPCache cache = httpCache;
+    if(cache == null) {
+      synchronized(this) {
+        cache = httpCache;
+        if(cache == null) {
+          File cacheDir = new File(new File(System.getProperty("user.home"), ".gate"), "download-cache");
+          cacheDir.mkdirs();
+          CacheStorage storage;
+          if(cacheDir.exists()) {
+            storage = new FilePersistentCacheStorage(cacheDir);
+          } else {
+            storage = new NullCacheStorage();
+          }
+          httpCache = cache = new HTTPCache(storage, new JavaNetResponseResolver(new ConnectionConfiguration()));
+        }
+      }
+    }
+    return cache;
+  }
+
+  public Optional<InputStream> downloadWithCache(String url) {
+    HTTPCache cache = getHttpCache();
+    return cache.execute(new HTTPRequest(url)).getPayload().map(Payload::getInputStream);
+  }
 } // class MainFrame

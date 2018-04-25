@@ -41,6 +41,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import gate.Main;
 import gate.creole.Plugin;
 import gate.gui.MainFrame;
 import gate.resources.img.svg.AvailableIcon;
@@ -62,6 +63,15 @@ public class PluginUpdateManager extends JDialog {
   private JTabbedPane tabs = new JTabbedPane();
 
   /**
+   * Location of the default plugins list online - this is a
+   * {@link String#format} pattern with one %s placeholder, which
+   * will be replaced with the current GATE version number.
+   */
+  public static final String DEFAULT_PLUGINS_URL_PATTERN =
+          "https://raw.githubusercontent.com/GateNLP/gate-metadata/" +
+          "master/default-plugins/plugins-%s.tsv";
+
+  /**
    * Load all the data about available plugins/updates from the remote update
    * sites as well as checking what is installed in the user plugin directory
    */
@@ -75,7 +85,7 @@ public class PluginUpdateManager extends JDialog {
       @Override
       public void run() {
         // reset the info ready for a reload
-                SwingUtilities.invokeLater(new Thread() {
+                SwingUtilities.invokeLater(new Runnable() {
           @Override
           public void run() {
             // update all the tables
@@ -273,34 +283,33 @@ public class PluginUpdateManager extends JDialog {
 
     defaultPlugins = new HashSet<Plugin>();
 
-    // TODO load the default set from somewhere more sensible
-    try (BufferedReader in = new BufferedReader(
-        new InputStreamReader(PluginUpdateManager.class.getClassLoader()
-            .getResource("gate/resources/creole/defaultPlugins.tsv")
-            .openStream()))) {
-      for(String line = in.readLine(); line != null; line = in.readLine()) {
+    MainFrame.getInstance().downloadWithCache(String.format(DEFAULT_PLUGINS_URL_PATTERN, Main.version)).ifPresent((is) -> {
+      try(BufferedReader in = new BufferedReader(
+              new InputStreamReader(is, "UTF-8"))) {
+        for(String line = in.readLine(); line != null; line = in.readLine()) {
 
-        try {
-          String[] parts = line.split("\t", 3);
+          try {
+            String[] parts = line.split("\t", 3);
 
-          // if we don't have three parts then skip this line
-          if(parts.length != 3) continue;
+            // if we don't have three parts then skip this line
+            if(parts.length != 3) continue;
 
-          Plugin.Maven plugin = new Plugin.Maven(parts[0], parts[1], parts[2]);
+            Plugin.Maven plugin = new Plugin.Maven(parts[0], parts[1], parts[2]);
 
-          // this triggers the resolve of the creole metadata jar so we have
-          // all the details to fill the table -- but it slows us down!
-          plugin.getMetadataXML();
+            // this triggers the resolve of the creole metadata jar so we have
+            // all the details to fill the table -- but it slows us down!
+            plugin.getMetadataXML();
 
-          defaultPlugins.add(plugin);
-        } catch(Exception e) {
-          e.printStackTrace();
+            defaultPlugins.add(plugin);
+          } catch(Exception e) {
+            e.printStackTrace();
+          }
         }
+      } catch(IOException ioe) {
+        System.err.println("Unable to completely load list of default plugins");
+        ioe.printStackTrace();
       }
-    } catch(IOException ioe) {
-      System.err.println("Unable to completely load list of default plugins");
-      ioe.printStackTrace();
-    }
+    });
   }
 
   /**

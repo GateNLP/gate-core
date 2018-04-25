@@ -445,6 +445,18 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Used to cache the default plugins list -->
+		<dependency>
+			<groupId>org.codehaus.httpcache4j</groupId>
+			<artifactId>httpcache4j-core</artifactId>
+			<version>5.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.httpcache4j.storage</groupId>
+			<artifactId>storage-file</artifactId>
+			<version>5.1.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
