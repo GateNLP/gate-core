@@ -49,3 +49,4 @@ Plugins are no longer part of this `gate-core` repository - by default GATE will
   </activeProfiles>
 </settings>
 ```
+
