@@ -33,6 +33,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -335,72 +337,67 @@ public class Gate implements GateConstants {
   protected static void initCreoleRepositories() {
     // the logic is:
     // get the list of know plugins from gate.xml
-    // add all the installed plugins
+    // add all the installed plugins (if pluginsHome has been explicitly set)
     // get the list of loadable plugins
     // load loadable plugins
 
-    //TODO reinstate this bit
-    
+    Pattern mavenPluginPattern = Pattern.compile("\\[(.*?):(.*?):(.*?)]");
+
     // process the known plugins list
-    /*String knownPluginsPath =
+    String knownPluginsPath =
       (String)getUserConfig().get(KNOWN_PLUGIN_PATH_KEY);
+    if(knownPluginsPath != null) {
+      knownPluginsPath = knownPluginsPath.trim();
+    }
     if(knownPluginsPath != null && knownPluginsPath.length() > 0) {
       StringTokenizer strTok =
         new StringTokenizer(knownPluginsPath, ";", false);
       while(strTok.hasMoreTokens()) {
-        String aKnownPluginPath = strTok.nextToken();
-        try {
-          URL aPluginURL = new URL(aKnownPluginPath);
-          addKnownPlugin(aPluginURL);
-        }
-        catch(MalformedURLException mue) {
-          log.error("Plugin error: " + aKnownPluginPath + " is an invalid URL!");
+        String aKnownPluginPath = strTok.nextToken().trim();
+        Matcher m = mavenPluginPattern.matcher(aKnownPluginPath);
+        if(m.matches()) {
+          // Maven coordinates [group:artifact:version]
+          addKnownPlugin(new Plugin.Maven(m.group(1), m.group(2), m.group(3)));
+        } else {
+          // assume it's a URL to a directory plugin
+          try {
+            URL aPluginURL = new URL(aKnownPluginPath);
+            addKnownPlugin(new Plugin.Directory(aPluginURL));
+          } catch(MalformedURLException mue) {
+            log.error("Plugin error: " + aKnownPluginPath + " is an invalid URL!");
+          }
         }
       }
     }
-    // add all the installed plugins
-    // pluginsHome is now set by initLocalPaths
-    // File pluginsHome = new File(System.getProperty(GATE_HOME_PROPERTY_NAME),
-    // "plugins");
-    File[] dirs = pluginsHome.listFiles();
-    for(int i = 0; i < dirs.length; i++) {
-      File creoleFile = new File(dirs[i], "creole.xml");
-      if(creoleFile.exists()) {
-        try {
-          URL pluginURL = dirs[i].toURI().toURL();
-          addKnownPlugin(new Plugin.Directory(pluginURL));
-        }
-        catch(MalformedURLException mue) {
-          // this should never happen
-          throw new GateRuntimeException(mue);
-        }
-      }
-    }*/
-    
-    // register plugins installed in the user plugin directory
-    /*File userPluginsHome = PluginUpdateManager.getUserPluginsHome();
-    if (userPluginsHome != null && userPluginsHome.isDirectory()) {
-      for (File dir : userPluginsHome.listFiles()) {
-        File creoleFile = new File(dir, "creole.xml");
+
+    if(pluginsHome != null) {
+      // add all the installed plugins (note pluginsHome will only be set
+      // if there has been an explicit call to setPluginsHome, it is now
+      // null by default)
+      File[] dirs = pluginsHome.listFiles();
+      for(int i = 0; i < dirs.length; i++) {
+        File creoleFile = new File(dirs[i], "creole.xml");
         if(creoleFile.exists()) {
           try {
-            URL pluginURL = dir.toURI().toURL();
+            URL pluginURL = dirs[i].toURI().toURL();
             addKnownPlugin(new Plugin.Directory(pluginURL));
-          }
-          catch(MalformedURLException mue) {
+          } catch(MalformedURLException mue) {
             // this should never happen
             throw new GateRuntimeException(mue);
           }
         }
       }
-    }*/
-
+    }
+    
     // process the autoload plugins
     String pluginPath = getUserConfig().getString(AUTOLOAD_PLUGIN_PATH_KEY);
     // can be overridden by system property
     String prop = System.getProperty(AUTOLOAD_PLUGIN_PATH_PROPERTY_NAME);
     if(prop != null && prop.length() > 0) pluginPath = prop;
 
+    if(pluginPath != null) {
+      pluginPath = pluginPath.trim();
+    }
     if(pluginPath == null || pluginPath.length() == 0) {
       // no plugin to load stop here
       return;
@@ -409,14 +406,20 @@ public class Gate implements GateConstants {
     // load all loadable plugins
     StringTokenizer strTok = new StringTokenizer(pluginPath, ";", false);
     while(strTok.hasMoreTokens()) {
-      String aDir = strTok.nextToken();
-      try {
-        URL aPluginURL = new URL(aDir);
-        Plugin plugin = new Plugin.Directory(aPluginURL);
-        addAutoloadPlugin(plugin);
-      }
-      catch(MalformedURLException mue) {
-        log.error("Cannot load " + aDir + " CREOLE repository.",mue);
+      String aDir = strTok.nextToken().trim();
+      Matcher m = mavenPluginPattern.matcher(aDir);
+      if(m.matches()) {
+        // Maven coordinates [group:artifact:version]
+        addAutoloadPlugin(new Plugin.Maven(m.group(1), m.group(2), m.group(3)));
+      } else {
+        // assume it's a URL to a directory plugin
+        try {
+          URL aPluginURL = new URL(aDir);
+          Plugin plugin = new Plugin.Directory(aPluginURL);
+          addAutoloadPlugin(plugin);
+        } catch(MalformedURLException mue) {
+          log.error("Cannot load " + aDir + " CREOLE repository.", mue);
+        }
       }
       try {
         Iterator<Plugin> loadPluginsIter = getAutoloadPlugins().iterator();
@@ -774,60 +777,69 @@ public class Gate implements GateConstants {
     //if we are running in a sandbox then don't try and write anything
     if (sandboxed) return;
 
-    /*String pluginsHomeStr;
-    try {
-      pluginsHomeStr = pluginsHome.getCanonicalPath();
-    }
-    catch(IOException ioe) {
-      throw new GateRuntimeException(
-        "Problem while locating the plug-ins home!", ioe);
-    }*/
-        
-    /*String userPluginHomeStr;
-    try {
-      File userPluginHome = PluginUpdateManager.getUserPluginsHome();
-      userPluginHomeStr = (userPluginHome != null ? userPluginHome.getCanonicalPath() : null);
-    }
-    catch (IOException ioe) {
-      throw new GateRuntimeException("Unable to access user plugin directory!", ioe);
-    }*/
-    
-    //TODO need to reinstate this
-    
-    // update the values for knownPluginPath
-    /*String knownPluginPath = "";
-    Iterator<URL> pluginIter = getKnownPlugins().iterator();
-    while(pluginIter.hasNext()) {
-      URL aPluginURL = pluginIter.next();
-      // do not save installed plug-ins - they get loaded automatically
-      if(aPluginURL.getProtocol().equals("file")) {
-        File pluginDirectory = Files.fileFromURL(aPluginURL);
-        try {
-          if(pluginDirectory.getCanonicalPath().startsWith(pluginsHomeStr))
-            continue;
-          
-          if (userPluginHomeStr != null && pluginDirectory.getCanonicalPath().startsWith(userPluginHomeStr))
-            continue;
-        }
-        catch(IOException ioe) {
-          throw new GateRuntimeException("Problem while locating the plug-in"
-            + aPluginURL.toString(), ioe);
-        }
+    String pluginsHomeStr = null;
+    if(pluginsHome != null) {
+      try {
+        pluginsHomeStr = pluginsHome.getCanonicalPath();
+      } catch(IOException ioe) {
+        throw new GateRuntimeException(
+                "Problem while locating the plug-ins home!", ioe);
       }
-      if(knownPluginPath.length() > 0) knownPluginPath += ";";
-      knownPluginPath += aPluginURL.toExternalForm();
     }
-    getUserConfig().put(KNOWN_PLUGIN_PATH_KEY, knownPluginPath);*/
+        
+    // update the values for knownPluginPath
+    String knownPluginPath = "";
+    Set<Plugin> defaultPlugins = PluginUpdateManager.getDefaultPlugins();
+    Iterator<Plugin> pluginIter = getKnownPlugins().iterator();
+    while(pluginIter.hasNext()) {
+      Plugin aPlugin = pluginIter.next();
+      String pluginStr = null;
+      if(aPlugin instanceof Plugin.Maven) {
+        Plugin.Maven mavenPlugin = (Plugin.Maven)aPlugin;
+        if(!defaultPlugins.contains(aPlugin)) {
+          pluginStr = "[" + mavenPlugin.getGroup() + ":"
+                  + mavenPlugin.getArtifact() + ":" + mavenPlugin.getVersion() + "]";
+        }
+      } else if(aPlugin instanceof Plugin.Directory) {
+        URL aPluginURL = aPlugin.getBaseURL();
+        // do not save installed plug-ins - they get loaded automatically
+        if(aPluginURL.getProtocol().equals("file")) {
+          File pluginDirectory = Files.fileFromURL(aPluginURL);
+          try {
+            if(pluginDirectory.getCanonicalPath().startsWith(pluginsHomeStr))
+              continue;
+          } catch(IOException ioe) {
+            throw new GateRuntimeException("Problem while locating the plug-in"
+                    + aPluginURL.toString(), ioe);
+          }
+        }
+        pluginStr = aPluginURL.toExternalForm();
+      } // no else - we don't save other types of plugin
+      if(pluginStr != null) {
+        if(knownPluginPath.length() > 0) knownPluginPath += ";";
+        knownPluginPath += pluginStr;
+      }
+    }
+    getUserConfig().put(KNOWN_PLUGIN_PATH_KEY, knownPluginPath);
 
     // update the autoload plugin list
-    /*String loadPluginPath = "";
+    String loadPluginPath = "";
     pluginIter = getAutoloadPlugins().iterator();
     while(pluginIter.hasNext()) {
-      URL aPluginURL = pluginIter.next();
+      Plugin aPlugin = pluginIter.next();
+      String pluginStr = null;
+      if(aPlugin instanceof Plugin.Maven) {
+        Plugin.Maven mavenPlugin = (Plugin.Maven)aPlugin;
+        pluginStr = "[" + mavenPlugin.getGroup() + ":"
+                + mavenPlugin.getArtifact() + ":" + mavenPlugin.getVersion() + "]";
+      } else {
+        pluginStr = aPlugin.getBaseURL().toExternalForm();
+      }
+
       if(loadPluginPath.length() > 0) loadPluginPath += ";";
-      loadPluginPath += aPluginURL.toExternalForm();
+      loadPluginPath += pluginStr;
     }
-    getUserConfig().put(AUTOLOAD_PLUGIN_PATH_KEY, loadPluginPath);*/
+    getUserConfig().put(AUTOLOAD_PLUGIN_PATH_KEY, loadPluginPath);
 
     // the user's config file
     // String configFileName = getUserConfigFileName();
