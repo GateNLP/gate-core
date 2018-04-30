@@ -27,14 +27,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -602,10 +595,10 @@ public abstract class Plugin {
         throw new UnsupportedOperationException(
             "this plugin doesn't have any resources you can copy as you would know had you called hasResources first :P");
 
+      Path target = Paths.get(dir.toURI());
       try (FileSystem zipFs =
           FileSystems.newFileSystem(artifactURL.toURI(), new HashMap<>());) {
 
-        Path target = Paths.get(dir.toURI());
         Path pathInZip = zipFs.getPath("/resources");
 
         Files.walkFileTree(pathInZip, new SimpleFileVisitor<Path>() {
@@ -625,6 +618,16 @@ public abstract class Plugin {
             return FileVisitResult.CONTINUE;
           }
         });
+      }
+    }
+
+    public void walkResources(FileVisitor<? super Path> visitor) throws URISyntaxException, IOException {
+      try (FileSystem zipFs =
+                   FileSystems.newFileSystem(artifactURL.toURI(), new HashMap<>())) {
+        Path resourcesPath = zipFs.getPath("/resources");
+        if(Files.isDirectory(resourcesPath)) {
+          Files.walkFileTree(resourcesPath, visitor);
+        }
       }
     }
 
