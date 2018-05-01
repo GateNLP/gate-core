@@ -3,10 +3,10 @@ package gate.swing;
 import gate.Gate;
 import gate.creole.Plugin;
 import gate.creole.Plugin.Maven;
-import gate.creole.ResourceReference;
 import gate.event.PluginListener;
-import gate.gui.MainFrame;
 import gate.resources.img.svg.GATEIcon;
+import gate.resources.img.svg.InvalidIcon;
+import gate.util.ExtensionFileFilter;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -31,6 +31,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("serial")
@@ -47,9 +48,15 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
 
   private static final int APPROVE_RESOURCE = 2;
 
+  private final InvalidIcon invalidIcon = new InvalidIcon(16, 16);
+
   private XJFileChooser fileChooser;
 
   private JOptionPane pluginChooser;
+
+  private JLabel pluginChooserStatus;
+
+  private JComboBox<PluginFileFilter> pluginFileFilterBox;
 
   private JTree pluginTree;
 
@@ -61,9 +68,6 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
 
   /** set to true when setSelectedResource is called with a creole: URI */
   private boolean isResourceSelected = false;
-
-  /** File suffixes of interest */
-  private String[] suffixes = new String[] {""};
 
   // only valid during a call to showDialog
   private int returnValue = ERROR;
@@ -94,7 +98,7 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
       public void ancestorRemoved(AncestorEvent event) {
         // reinitialise fields when the file chooser is hidden
         isResourceSelected = false;
-        suffixes = new String[] {""};
+        setSuffixes(null);
       }
       @Override
       public void ancestorMoved(AncestorEvent event) { /* do nothing */ }
@@ -102,6 +106,23 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
 
 
     JPanel pluginPanel = new JPanel(new BorderLayout());
+    pluginChooserStatus = new JLabel("Select a resource");
+    pluginChooserStatus.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    pluginPanel.add(pluginChooserStatus, BorderLayout.NORTH);
+
+    pluginFileFilterBox = new JComboBox<>();
+    pluginFileFilterBox.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    Box fileTypeBox = Box.createHorizontalBox();
+    fileTypeBox.add(Box.createHorizontalGlue());
+    fileTypeBox.add(pluginFileFilterBox);
+    fileTypeBox.add(Box.createHorizontalGlue());
+    pluginPanel.add(fileTypeBox, BorderLayout.SOUTH);
+    pluginFileFilterBox.addActionListener((e) -> {
+      // trick to force the tree to recalculate label widths
+      //pluginTree.setRowHeight(pluginTree.getRowHeight());
+      pluginTree.repaint();
+    });
+
     treeRoot = new DefaultMutableTreeNode();
     pluginTreeModel = new DefaultTreeModel(treeRoot);
     pluginTree = new JTree(pluginTreeModel);
@@ -114,12 +135,33 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
     pluginChooser = new JOptionPane(pluginPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
     pluginChooser.addPropertyChangeListener(JOptionPane.VALUE_PROPERTY, (e) -> {
       if(dialog != null && e.getNewValue() instanceof Integer) {
-        if(((Integer)e.getNewValue()).intValue() == JOptionPane.OK_OPTION) {
-          returnValue = APPROVE_RESOURCE;
+        if(((Integer)e.getNewValue()) == JOptionPane.OK_OPTION) {
+          if(pluginTree.getSelectionCount() > 0) {
+            try {
+              String selected = ((AsUri)pluginTree.getSelectionPath().getLastPathComponent()).getAsURI();
+              if(((PluginFileFilter)pluginFileFilterBox.getSelectedItem()).pattern.matcher(selected).find()) {
+                returnValue = APPROVE_RESOURCE;
+                dialog.setVisible(false);
+              } else {
+                pluginChooser.setValue(JOptionPane.UNINITIALIZED_VALUE);
+                pluginChooserStatus.setIcon(invalidIcon);
+                pluginChooserStatus.setText("Selected resource does not have the right suffix");
+              }
+            } catch(URISyntaxException ex) {
+              // shouldn't happen
+              pluginChooser.setValue(JOptionPane.UNINITIALIZED_VALUE);
+              pluginChooserStatus.setIcon(invalidIcon);
+              pluginChooserStatus.setText("Error extracting selected resource from tree");
+            }
+          } else {
+            pluginChooser.setValue(JOptionPane.UNINITIALIZED_VALUE);
+            pluginChooserStatus.setIcon(invalidIcon);
+            pluginChooserStatus.setText("Nothing selected - please select a resource");
+          }
         } else {
           returnValue = CANCEL;
+          dialog.setVisible(false);
         }
-        dialog.setVisible(false);
       }
     });
     tabPane.addTab("Plugin resource", pluginChooser);
@@ -128,6 +170,8 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
     pluginTree.addTreeWillExpandListener(this);
 
     Gate.getCreoleRegister().addPluginListener(this);
+    // trigger initial populate of the file type drop downs
+    setSuffixes(null);
   }
 
   @SuppressWarnings("unchecked")
@@ -326,6 +370,35 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
     }
   }
 
+  public void setSuffixes(Collection<String> suffixes) {
+    fileChooser.resetChoosableFileFilters();
+    fileChooser.setAcceptAllFileFilterUsed(true);
+    fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
+
+    pluginFileFilterBox.removeAllItems();
+    PluginFileFilter allFilter = new PluginFileFilter();
+    allFilter.pattern = Pattern.compile("");
+    allFilter.description = "All files";
+    pluginFileFilterBox.addItem(allFilter);
+    pluginFileFilterBox.setSelectedItem(allFilter);
+
+    if(suffixes != null && !suffixes.isEmpty()) {
+      ExtensionFileFilter fileFilter = new ExtensionFileFilter();
+      suffixes.forEach((suf) -> fileFilter.addExtension(suf));
+      fileFilter.setDescription("Known file types " + suffixes.toString());
+      fileChooser.addChoosableFileFilter(fileFilter);
+      fileChooser.setFileFilter(fileFilter);
+
+      PluginFileFilter suffixFilter = new PluginFileFilter();
+      suffixFilter.description = "Known file types " + suffixes.toString();
+      suffixFilter.pattern = Pattern.compile("(?:" +
+              suffixes.stream().map((suf) -> Pattern.quote(suf)).collect(Collectors.joining("|"))
+              + ")$");
+      pluginFileFilterBox.addItem(suffixFilter);
+      pluginFileFilterBox.setSelectedItem(suffixFilter);
+    }
+  }
+
   @SuppressWarnings("unchecked")
   public String showDialog(Frame parent) {
     if(dialog != null) {
@@ -353,7 +426,10 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
 
     dialog = new JDialog(parent, "Select Resource", true);
     try {
-      pluginChooser.setValue(null);
+      pluginChooser.setValue(JOptionPane.UNINITIALIZED_VALUE);
+      pluginChooserStatus.setIcon(null);
+      pluginChooserStatus.setText("Select a resource");
+      dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
       dialog.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosing(WindowEvent e) {
@@ -368,7 +444,7 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
       dialog.setVisible(true); // blocks until window closed
 
       if(returnValue == APPROVE_RESOURCE) {
-        TreePath selected = pluginTree.getLeadSelectionPath();
+        TreePath selected = pluginTree.getSelectionPath();
         if(selected== null) {
           return null;
         } else {
@@ -529,14 +605,28 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
     }
   }
 
-  static class Renderer extends DefaultTreeCellRenderer {
+  class Renderer extends DefaultTreeCellRenderer {
     private Icon pluginIcon;
 
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
       JLabel renderer = (JLabel)super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
       if(value instanceof PluginTreeNode) {
+        renderer.setEnabled(true);
         renderer.setIcon(pluginIcon);
+      } else if(value instanceof PluginResourceTreeNode) {
+        PluginResourceTreeNode node = (PluginResourceTreeNode)value;
+        if(node.fullPath.endsWith("/") || ((PluginFileFilter)pluginFileFilterBox.getSelectedItem()).pattern.matcher(node.fullPath).find()) {
+          renderer.setEnabled(true);
+        } else {
+          // trick lifted from DefaultTreeCellRenderer to get the right disabled icon
+          Icon icon = renderer.getIcon();
+          LookAndFeel laf = UIManager.getLookAndFeel();
+          Icon disabledIcon = laf.getDisabledIcon(tree, icon);
+          if (disabledIcon != null) icon = disabledIcon;
+          renderer.setDisabledIcon(icon);
+          renderer.setEnabled(false);
+        }
       }
       return renderer;
     }
@@ -545,8 +635,18 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
     public void updateUI() {
       super.updateUI();
       Icon defaultIcon = getDefaultClosedIcon();
-      // create plugin icon at the same size as the default icon from the L&F
+      // create plugin icon at the same size as the default closed folder icon from the L&F
       pluginIcon = new GATEIcon(defaultIcon.getIconWidth(), defaultIcon.getIconHeight());
+    }
+  }
+
+  static class PluginFileFilter {
+    Pattern pattern;
+
+    String description;
+
+    public String toString() {
+      return description;
     }
   }
 
@@ -557,6 +657,7 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
     Gate.init();
     SwingUtilities.invokeLater(() -> {
       ResourceReferenceChooser chooser = new ResourceReferenceChooser();
+      chooser.setSuffixes(Arrays.asList(".def", ".jape"));
       System.out.println(chooser.showDialog(null));
     });
   }
