@@ -20,6 +20,8 @@ import gate.gui.MainFrame;
 
 import java.awt.Component;
 import java.awt.HeadlessException;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.io.File;
 import java.util.Map;
 
@@ -53,19 +55,17 @@ public class XJFileChooser extends JFileChooser {
   private Map<String, String> locations;
 
   public XJFileChooser() {
-    addAncestorListener(new AncestorListener() {
+    addHierarchyListener(new HierarchyListener() {
       @Override
-      public void ancestorAdded(AncestorEvent event) { /* do nothing */ }
-      @Override
-      public void ancestorRemoved(AncestorEvent event) {
-        // reinitialise fields when the file chooser is hidden
-        resource = null;
-        fileName = null;
-        isFileSelected = false;
-        resetChoosableFileFilters();
+      public void hierarchyChanged(HierarchyEvent e) {
+        if((e.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) != 0 && !isDisplayable()) {
+          // reinitialise fields when the file chooser is hidden
+          resource = null;
+          fileName = null;
+          isFileSelected = false;
+          resetChoosableFileFilters();
+        }
       }
-      @Override
-      public void ancestorMoved(AncestorEvent event) { /* do nothing */ }
     });
     locations = getLocations();
   }
