@@ -18,8 +18,7 @@ import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -91,17 +90,15 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
       }
     });
 
-    tabPane.addAncestorListener(new AncestorListener() {
+    tabPane.addHierarchyListener(new HierarchyListener() {
       @Override
-      public void ancestorAdded(AncestorEvent event) { /* do nothing */ }
-      @Override
-      public void ancestorRemoved(AncestorEvent event) {
-        // reinitialise fields when the file chooser is hidden
-        isResourceSelected = false;
-        setSuffixes(null);
+      public void hierarchyChanged(HierarchyEvent e) {
+        if((e.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) != 0 && !tabPane.isDisplayable()) {
+          // reinitialise fields when the file chooser is hidden
+          isResourceSelected = false;
+          setSuffixes(null);
+        }
       }
-      @Override
-      public void ancestorMoved(AncestorEvent event) { /* do nothing */ }
     });
 
 
@@ -114,6 +111,9 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
     pluginFileFilterBox.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     Box fileTypeBox = Box.createHorizontalBox();
     fileTypeBox.add(Box.createHorizontalGlue());
+    JLabel ffLabel = new JLabel("File format:");
+    ffLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    fileTypeBox.add(ffLabel);
     fileTypeBox.add(pluginFileFilterBox);
     fileTypeBox.add(Box.createHorizontalGlue());
     pluginPanel.add(fileTypeBox, BorderLayout.SOUTH);
@@ -169,6 +169,19 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
     pluginTree.expandPath(new TreePath(treeRoot));
     pluginTree.addTreeWillExpandListener(this);
 
+    // handle double click on leaf node as equivalent to clicking OK
+    pluginTree.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        if(e.getClickCount() == 2) {
+          TreePath selPath = pluginTree.getPathForLocation(e.getX(), e.getY());
+          if(((DefaultMutableTreeNode)selPath.getLastPathComponent()).isLeaf()) {
+            pluginChooser.setValue(JOptionPane.OK_OPTION);
+          }
+        }
+      }
+    });
+
     Gate.getCreoleRegister().addPluginListener(this);
     // trigger initial populate of the file type drop downs
     setSuffixes(null);
@@ -180,8 +193,6 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
             .filter(p -> (p instanceof Plugin.Maven) && p.hasResources())
             .map(p -> (Plugin.Maven)p)
             .sorted(PLUGIN_COMPARATOR).collect(Collectors.toList());
-
-    System.err.println("mavenPluginsWithResources: " + mavenPluginsWithResources);
 
     // first, remove any nodes for plugins that are no longer loaded
     Enumeration<PluginTreeNode> nodes = treeRoot.children();
@@ -371,6 +382,10 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
   }
 
   public void setSuffixes(Collection<String> suffixes) {
+    setSuffixes((suffixes == null ? null : "Known file types " + suffixes.toString()), suffixes);
+  }
+
+  public void setSuffixes(String description, Collection<String> suffixes) {
     fileChooser.resetChoosableFileFilters();
     fileChooser.setAcceptAllFileFilterUsed(true);
     fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
@@ -385,12 +400,12 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
     if(suffixes != null && !suffixes.isEmpty()) {
       ExtensionFileFilter fileFilter = new ExtensionFileFilter();
       suffixes.forEach((suf) -> fileFilter.addExtension(suf));
-      fileFilter.setDescription("Known file types " + suffixes.toString());
+      fileFilter.setDescription(description);
       fileChooser.addChoosableFileFilter(fileFilter);
       fileChooser.setFileFilter(fileFilter);
 
       PluginFileFilter suffixFilter = new PluginFileFilter();
-      suffixFilter.description = "Known file types " + suffixes.toString();
+      suffixFilter.description = description;
       suffixFilter.pattern = Pattern.compile("(?:" +
               suffixes.stream().map((suf) -> Pattern.quote(suf)).collect(Collectors.joining("|"))
               + ")$");
@@ -400,12 +415,15 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
   }
 
   @SuppressWarnings("unchecked")
-  public String showDialog(Frame parent) {
+  public String showDialog(Window parent, String title) {
     if(dialog != null) {
       throw new IllegalStateException("ResourceReferenceChooser dialog already showing");
     }
     fileChooser.setSelectedFileFromPreferences();
     if(!isResourceSelected) {
+      // nothing was selected, so prefer file chooser tab
+      tabPane.setSelectedIndex(0);
+
       String resourceClass = getResource();
       if(resourceClass != null) {
         // attempt to find a plugin that defines this resource
@@ -419,12 +437,18 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
             pluginTree.expandPath(path);
             pluginTree.scrollPathToVisible(path);
             break;
+          } else {
+            // collapse everything else
+            Enumeration<DefaultMutableTreeNode> descendants = node.postorderEnumeration();
+            while(descendants.hasMoreElements()) {
+              pluginTree.collapsePath(new TreePath(descendants.nextElement().getPath()));
+            }
           }
         }
       }
     }
 
-    dialog = new JDialog(parent, "Select Resource", true);
+    dialog = new JDialog(parent, title, Dialog.DEFAULT_MODALITY_TYPE);
     try {
       pluginChooser.setValue(JOptionPane.UNINITIALIZED_VALUE);
       pluginChooserStatus.setIcon(null);
@@ -658,7 +682,7 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
     SwingUtilities.invokeLater(() -> {
       ResourceReferenceChooser chooser = new ResourceReferenceChooser();
       chooser.setSuffixes(Arrays.asList(".def", ".jape"));
-      System.out.println(chooser.showDialog(null));
+      System.out.println(chooser.showDialog(null, "Select a resource"));
     });
   }
 }

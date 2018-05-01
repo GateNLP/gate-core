@@ -37,22 +37,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.swing.AbstractCellEditor;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultCellEditor;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -69,6 +54,7 @@ import gate.creole.ResourceData;
 import gate.creole.ResourceInstantiationException;
 import gate.event.CreoleEvent;
 import gate.event.CreoleListener;
+import gate.swing.ResourceReferenceChooser;
 import gate.swing.XJFileChooser;
 import gate.swing.XJTable;
 import gate.util.Err;
@@ -114,6 +100,7 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
     }
     tableModel.fireTableDataChanged();
     fileChooser = MainFrame.getFileChooser();
+    resourceReferenceChooser = MainFrame.getResourceReferenceChooser();
     // must be saved now as it will be reset when the file chooser is hidden
     fileChooserResource = (resource != null) ?
       resource.getClass().getName() : fileChooser.getResource();
@@ -282,6 +269,11 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
    * A pointer to the filechooser from MainFrame.
    */
   static XJFileChooser fileChooser;
+
+  /**
+   * A pointer to the RR chooser from MainFrame.
+   */
+  static ResourceReferenceChooser resourceReferenceChooser;
 
   String fileChooserResource;
 
@@ -752,6 +744,30 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
         }
       });
 
+      rrButton = new JButton(MainFrame.getIcon("open-file"));
+      rrButton.setToolTipText("Browse the file system and plugins");
+      rrButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          resourceReferenceChooser.setResource(fileChooserResource);
+          String uri = textField.getText();
+          if(uri != null && !"".equals(uri)) {
+            resourceReferenceChooser.setSelectedResource(uri);
+          }
+          uri = resourceReferenceChooser.showDialog(
+                  findWindow(ResourceParametersEditor.this),
+                  "Select a file");
+          if(uri != null) {
+            textField.setText(uri);
+            fireEditingStopped();
+          }
+          else {
+            fireEditingCanceled();
+          }
+        }
+      });
+
+
       listButton = new JButton(MainFrame.getIcon("edit-list"));
       listButton.setToolTipText("Edit the list");
       listButton.addActionListener(new ActionListener() {
@@ -872,7 +888,7 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
         }
 
         textField.setText((value == null) ? "" : value.toString());
-        if(type.equals("java.net.URL") || type.equals("gate.creole.ResourceReference")) {
+        if(type.equals("java.net.URL")) {
           // clean up all filters
           fileChooser.resetChoosableFileFilters();
           fileChooser.setAcceptAllFileFilterUsed(true);
@@ -909,6 +925,33 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
           textButtonBox.add(textField);
           textButtonBox.add(Box.createHorizontalStrut(5));
           textButtonBox.add(fileButton);
+          return textButtonBox;
+        }
+        else if(type.equals("gate.creole.ResourceReference")) {
+          Parameter param = pDisj.getParameter();
+
+          Set<String> sufixes = null;
+
+          //This handles the special case of the sourceUrl param when creating documents
+          //so that we get the suffix list from the set of loaded document formats rather
+          //than from the data for the resource type we are loading.
+          if(resourceData != null) {
+            if(param.getName().equals("sourceUrl") && resourceData.getClassName().equals(DocumentImpl.class.getName())) {
+              sufixes = DocumentFormat.getSupportedFileSuffixes();
+            }
+          }
+
+          //if we haven't loaded any suffixes then fall back to the original behaviour
+          if(sufixes == null || sufixes.isEmpty()) sufixes = param.getSuffixes();
+
+          if(sufixes != null) {
+            resourceReferenceChooser.setSuffixes(sufixes);
+          }
+          textField.setEditable(true);
+          textButtonBox.removeAll();
+          textButtonBox.add(textField);
+          textButtonBox.add(Box.createHorizontalStrut(5));
+          textButtonBox.add(rrButton);
           return textButtonBox;
         }
         else if(type.equals("java.lang.Boolean")) {
@@ -1049,6 +1092,8 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
 
     JButton fileButton;
 
+    JButton rrButton;
+
     JButton listButton;
 
     JButton fmButton;
@@ -1082,6 +1127,21 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
    */
   protected String textForFeatureMap(FeatureMap fm) {
     return (fm == null) ? "" : fm.toString();
+  }
+
+  /**
+   * Find the nearest containing window (Frame or Dialog) of the given component
+   * @param component
+   * @return
+   */
+  private static Window findWindow(Component component) {
+    if(component == null) {
+      return JOptionPane.getRootFrame();
+    } else if(component instanceof Window) {
+      return (Window) component;
+    } else {
+      return findWindow(component.getParent());
+    }
   }
 
 }// class NewResourceDialog

@@ -122,6 +122,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import gate.swing.*;
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Layout;
@@ -161,12 +162,6 @@ import gate.resources.img.svg.AvailableIcon;
 import gate.resources.img.svg.GATEIcon;
 import gate.resources.img.svg.GATEVersionIcon;
 import gate.resources.img.svg.ReadyMadeIcon;
-import gate.swing.JMenuButton;
-import gate.swing.XJFileChooser;
-import gate.swing.XJMenu;
-import gate.swing.XJMenuItem;
-import gate.swing.XJPopupMenu;
-import gate.swing.XJTabbedPane;
 import gate.util.Benchmark;
 import gate.util.CorpusBenchmarkTool;
 import gate.util.ExtensionFileFilter;
@@ -266,6 +261,8 @@ public class MainFrame extends JFrame implements ProgressListener,
   protected JToolBar toolbar;
 
   protected static XJFileChooser fileChooser;
+
+  protected static ResourceReferenceChooser resourceReferenceChooser;
 
   private static MainFrame instance;
 
@@ -376,6 +373,14 @@ public class MainFrame extends JFrame implements ProgressListener,
    */
   static public XJFileChooser getFileChooser() {
     return fileChooser;
+  }
+
+  /**
+   * Get the {@link ResourceReference} chooser.
+   * @return the current chooser
+   */
+  static public ResourceReferenceChooser getResourceReferenceChooser() {
+    return resourceReferenceChooser;
   }
 
   /**
@@ -532,6 +537,10 @@ public class MainFrame extends JFrame implements ProgressListener,
       dialog.getContentPane().removeAll();
       dialog.dispose();
       dialog = null;
+    }
+
+    if(resourceReferenceChooser == null) {
+      resourceReferenceChooser = new ResourceReferenceChooser();
     }
     enableEvents(AWTEvent.WINDOW_EVENT_MASK);
     initLocalData();
@@ -1364,7 +1373,9 @@ public class MainFrame extends JFrame implements ProgressListener,
             value = ((DefaultMutableTreeNode)value).getUserObject();
             if(value instanceof Handle) {
               handle = (Handle)value;
-              fileChooser.setResource(handle.getTarget().getClass().getName());
+              String resName = handle.getTarget().getClass().getName();
+              fileChooser.setResource(resName);
+              resourceReferenceChooser.setResource(resName);
               if(e.isPopupTrigger()) { popup = handle.getPopup(); }
             }
           }
@@ -2832,6 +2843,7 @@ public class MainFrame extends JFrame implements ProgressListener,
                       pr.getName() + " was not possible to load.");
                   }
                   fileChooser.setResource(resData.getClassName());
+                  resourceReferenceChooser.setResource(resData.getClassName());
                   if(newResourceDialog.show(resData, "Parameters for the new "
                     + resData.getName())) {
                     // add the PR with user parameters
@@ -3010,6 +3022,7 @@ public class MainFrame extends JFrame implements ProgressListener,
           newResourceDialog.setTitle("Parameters for the new "
             + rData.getName());
           fileChooser.setResource(rData.getClassName());
+          resourceReferenceChooser.setResource(rData.getClassName());
           newResourceDialog.show(rData);
         }
       };
@@ -3664,56 +3677,59 @@ public class MainFrame extends JFrame implements ProgressListener,
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      ExtensionFileFilter filter = new ExtensionFileFilter(
-        "GATE Application files (.gapp, .xgapp)", ".gapp", ".xgapp");
-      fileChooser.addChoosableFileFilter(filter);
-      fileChooser.setFileFilter(filter);
-      fileChooser.setDialogTitle("Select a file for this resource");
-      fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-      fileChooser.setResource("lastapplication");
+      resourceReferenceChooser.setSuffixes("GATE Application files (.gapp, .xgapp)", Arrays.asList(".gapp", ".xgapp"));
+      resourceReferenceChooser.setResource("lastapplication");
 
-      if (fileChooser.showOpenDialog(MainFrame.this)
-        == JFileChooser.APPROVE_OPTION) {
-        final File file = fileChooser.getSelectedFile();
-        Runnable runnable = new Runnable() { @Override
-        public void run() {
+      String gappUri = resourceReferenceChooser.showDialog(MainFrame.this, "Select application to load");
+      if(gappUri != null) {
+      //if (fileChooser.showOpenDialog(MainFrame.this)
+      //  == JFileChooser.APPROVE_OPTION) {
         try {
-          Object resource = PersistenceManager.loadObjectFromFile(file);
-          if(resource instanceof Resource) {
-            Map<String, String> locations = fileChooser.getLocations();
-            Resource res = (Resource) resource;
-            // save also the location of the application with its name
-            locations.put("application."+res.getName(),file.getAbsolutePath());
-            locations.put("application.zip."+res.getName(),
-              file.getAbsolutePath().replaceFirst("\\.[^.]{3,5}$", ".zip"));
-            // add this application to the list of recent applications
-            String list = locations.get("applications");
-            if (list == null) { list = ""; }
-            list = list.replaceFirst("\\Q"+res.getName()+"\\E(;|$)", "");
-            list = res.getName() + ";" + list;
-            locations.put("applications", list);
-            fileChooser.setLocations(locations);
-          }
-        }
-        catch(MalformedURLException e) {
-          log.error("Error when saving the resource URL.", e);
-        }
-        catch (final Exception error) {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              String message = error.getMessage();
-              log.error(message, error);
+          final ResourceReference rr = new ResourceReference(URI.create(gappUri));
+          Runnable runnable = new Runnable() { @Override
+          public void run() {
+          try {
+            Object resource = PersistenceManager.loadObjectFromUrl(rr.toURL());
+            if(gappUri.startsWith("file:") && resource instanceof Resource) {
+              File file = new File(rr.toURI());
+              Map<String, String> locations = fileChooser.getLocations();
+              Resource res = (Resource) resource;
+              // save also the location of the application with its name
+              locations.put("application."+res.getName(),file.getAbsolutePath());
+              locations.put("application.zip."+res.getName(),
+                file.getAbsolutePath().replaceFirst("\\.[^.]{3,5}$", ".zip"));
+              // add this application to the list of recent applications
+              String list = locations.get("applications");
+              if (list == null) { list = ""; }
+              list = list.replaceFirst("\\Q"+res.getName()+"\\E(;|$)", "");
+              list = res.getName() + ";" + list;
+              locations.put("applications", list);
+              fileChooser.setLocations(locations);
             }
-          });
+          }
+          catch(MalformedURLException e) {
+            log.error("Error when saving the resource URL.", e);
+          }
+          catch (final Exception error) {
+            SwingUtilities.invokeLater(new Runnable() {
+              @Override
+              public void run() {
+                String message = error.getMessage();
+                log.error(message, error);
+              }
+            });
+          }
+          finally {
+            processFinished();
+          }
+          }};
+          Thread thread = new Thread(runnable, "LoadResourceFromFileAction");
+          thread.setPriority(Thread.MIN_PRIORITY);
+          thread.start();
+        } catch(URISyntaxException e1) {
+          // shouldn't happen
+          log.error("Unexpected exception", e1);
         }
-        finally {
-          processFinished();
-        }
-        }};
-        Thread thread = new Thread(runnable, "LoadResourceFromFileAction");
-        thread.setPriority(Thread.MIN_PRIORITY);
-        thread.start();
       }
     }
   }
