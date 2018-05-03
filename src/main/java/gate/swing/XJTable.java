@@ -120,6 +120,10 @@ public class XJTable extends JTable{
       if (colCount == 0) { return; }
       //recalculate the preferred sizes if anything changed 
       if(!componentSizedProperly){
+        // start from our parent's width, if there is one
+        if(getParent() != null) {
+          setSize(getParent().getWidth(), getHeight());
+        }
         Dimension spacing = getIntercellSpacing();
         //start with all columns at header size
         for(int col = 0; col < colCount; col++){
