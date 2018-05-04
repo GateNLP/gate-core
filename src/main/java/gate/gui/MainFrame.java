@@ -5083,7 +5083,7 @@ public class MainFrame extends JFrame implements ProgressListener,
         setToolTipText("Resources tree root ");
       }
       else if(value == applicationsRoot) {
-        setIcon(MainFrame.getIcon("applications"));
+        setIcon(MainFrame.getIcon("Applications"));
         setToolTipText("Run processes on data ");
       }
       else if(value == languageResourcesRoot) {
@@ -5095,7 +5095,7 @@ public class MainFrame extends JFrame implements ProgressListener,
         setToolTipText("Processes that annotate data ");
       }
       else if(value == datastoresRoot) {
-        setIcon(MainFrame.getIcon("datastores"));
+        setIcon(MainFrame.getIcon("Datastores"));
         setToolTipText("Repositories for large data ");
       }
       else {
