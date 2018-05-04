@@ -463,12 +463,19 @@ public class PersistenceManager {
         throw new PersistenceException(e);
       }
     }
-    
+
     public static URI unpackPersistentRepresentation(String persistent) throws PersistenceException {
+      try {
+        return unpackPersistentRepresentation(currentPersistenceURL().toURI(), persistent);
+      } catch(URISyntaxException mue) {
+        throw new PersistenceException(mue);
+      }
+    }
+
+    public static URI unpackPersistentRepresentation(URI context, String persistent) throws PersistenceException {
       try {
         
         if(persistent.startsWith(relativePathMarker)) {
-          URI context = currentPersistenceURL().toURI();
           // If the part after the $relpath$ marker is empty, the normal method
           // would get us the URL of the context which will be the URL of the pipeline, not
           // of the directory where the pipeline is located. 

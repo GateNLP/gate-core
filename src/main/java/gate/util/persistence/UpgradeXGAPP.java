@@ -14,9 +14,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.JFileChooser;
+import javax.swing.*;
 
+import gate.gui.persistence.XgappUpgradeSelector;
+import org.apache.log4j.Logger;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -51,6 +52,8 @@ import gate.util.ExtensionFileFilter;
 
 @CreoleResource(tool = true, isPrivate = true, autoinstances = @AutoInstance, name = "Upgrade XGapp", comment = "Upgrades an XGapp to use new style GATE plugins")
 public class UpgradeXGAPP {
+
+  private static final Logger log = Logger.getLogger(UpgradeXGAPP.class);
 
   private static XMLOutputter outputter =
       new XMLOutputter(Format.getPrettyFormat());
@@ -158,9 +161,11 @@ public class UpgradeXGAPP {
     Element pluginList = root.getChild("urlList").getChild("localList");
 
     for(UpgradePath upgrade : upgrades) {
-      int pluginIndex = pluginList.indexOf(upgrade.getOldElement());
+      if(upgrade.isShouldUpgrade()) {
+        int pluginIndex = pluginList.indexOf(upgrade.getOldElement());
 
-      pluginList.setContent(pluginIndex, upgrade.getNewElement());
+        pluginList.setContent(pluginIndex, upgrade.getNewElement());
+      }
     }
 
     XPath jarXPath = XPath.newInstance(
@@ -170,7 +175,7 @@ public class UpgradeXGAPP {
       String urlString = element.getValue();
 
       for(UpgradePath upgrade : upgrades) {
-        if(urlString.startsWith(upgrade.getOldPath())) {
+        if(upgrade.isShouldUpgrade() && urlString.startsWith(upgrade.getOldPath())) {
 
           String urlSuffix = urlString.substring(upgrade.getOldPath().length());
 
@@ -262,7 +267,7 @@ public class UpgradeXGAPP {
     }
   }
 
-  static class UpgradePath {
+  public static class UpgradePath {
     private Element oldEntry;
 
     private String groupID, artifactID;
@@ -272,6 +277,8 @@ public class UpgradeXGAPP {
     private VersionRangeResult versions;
 
     private String oldPath;
+
+    private boolean shouldUpgrade = true;
 
     protected UpgradePath(Element oldEntry, String oldPath, String groupID,
         String artifactID, VersionRangeResult versions, Version current,
@@ -312,6 +319,26 @@ public class UpgradeXGAPP {
 
     public String getOldPath() {
       return oldPath;
+    }
+
+    public String getGroupID() {
+      return groupID;
+    }
+
+    public String getArtifactID() {
+      return artifactID;
+    }
+
+    public List<Version> getVersions() {
+      return versions.getVersions();
+    }
+
+    public boolean isShouldUpgrade() {
+      return shouldUpgrade;
+    }
+
+    public void setShouldUpgrade(boolean shouldUpgrade) {
+      this.shouldUpgrade = shouldUpgrade;
     }
 
     protected Element getNewElement() {
@@ -365,39 +392,63 @@ public class UpgradeXGAPP {
 
       File originalXGapp = fileChooser.getSelectedFile();
 
-      try {
-        SAXBuilder builder = new SAXBuilder(false);
-        Document doc = builder.build(originalXGapp);
-        List<UpgradePath> upgrades = suggest(doc);
-        Iterator<UpgradePath> it = upgrades.iterator();
-        while(it.hasNext()) {
-          UpgradePath upgrade = it.next();
-          if(upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
-            it.remove();
-          } else {
-            System.out.println(upgrade);
+      MainFrame.lockGUI("Gathering details of plugins");
+      new Thread(() -> {
+        final List<UpgradePath> upgrades;
+        final Document doc;
+        try {
+          try {
+            SAXBuilder builder = new SAXBuilder(false);
+            doc = builder.build(originalXGapp);
+            upgrades = suggest(doc);
+          } catch(Exception e) {
+            log.error("Problem parsing GAPP file", e);
+            return;
           }
+        } finally {
+          MainFrame.unlockGUI();
         }
 
-        if(upgrades.isEmpty()) {
-          System.out.println("Nothing to do :(");
-          return;
-        }
+        SwingUtilities.invokeLater(() -> {
+          if(new XgappUpgradeSelector(originalXGapp.toURI(), upgrades).showDialog(MainFrame.getInstance())) {
+            Iterator<UpgradePath> it = upgrades.iterator();
+            while(it.hasNext()) {
+              UpgradePath upgrade = it.next();
+              if(!upgrade.isShouldUpgrade() || upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
+                it.remove();
+              } else {
+                System.out.println("Upgrading " + upgrade.getOldPath() + " to " + upgrade.getNewPath());
+              }
+            }
 
-        upgrade(doc, upgrades);
+            if(upgrades.isEmpty()) {
+              System.out.println("Nothing to do :(");
+              return;
+            }
 
-        if(!originalXGapp
-            .renameTo(new File(originalXGapp.getAbsolutePath() + ".bak"))) {
-          System.err.println("unable to back up existing xgapp");
-          return;
-        }
+            new Thread(() -> {
+              MainFrame.lockGUI("Upgrading application");
+              try {
+                upgrade(doc, upgrades);
 
-        try (FileOutputStream out = new FileOutputStream(originalXGapp)) {
-          outputter.output(doc, out);
-        }
-      } catch(Exception e) {
-        e.printStackTrace();
-      }
+                if(!originalXGapp
+                        .renameTo(new File(originalXGapp.getAbsolutePath() + ".bak"))) {
+                  System.err.println("unable to back up existing xgapp");
+                  return;
+                }
+
+                try(FileOutputStream out = new FileOutputStream(originalXGapp)) {
+                  outputter.output(doc, out);
+                }
+              } catch(Exception e) {
+                log.error("Error upgrading application", e);
+              } finally {
+                MainFrame.unlockGUI();
+              }
+            }).start();
+          }
+        });
+      }).start();
     }
 
   }
@@ -410,7 +461,7 @@ public class UpgradeXGAPP {
       Iterator<UpgradePath> it = upgrades.iterator();
       while(it.hasNext()) {
         UpgradePath upgrade = it.next();
-        if(upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
+        if(!upgrade.isShouldUpgrade() || upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
           it.remove();
         } else {
           System.out.println(upgrade);
