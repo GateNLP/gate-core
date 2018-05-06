@@ -410,42 +410,46 @@ public class UpgradeXGAPP {
         }
 
         SwingUtilities.invokeLater(() -> {
-          if(new XgappUpgradeSelector(originalXGapp.toURI(), upgrades).showDialog(MainFrame.getInstance())) {
-            Iterator<UpgradePath> it = upgrades.iterator();
-            while(it.hasNext()) {
-              UpgradePath upgrade = it.next();
-              if(!upgrade.isShouldUpgrade() || upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
-                it.remove();
-              } else {
-                System.out.println("Upgrading " + upgrade.getOldPath() + " to " + upgrade.getNewPath());
-              }
-            }
-
-            if(upgrades.isEmpty()) {
-              System.out.println("Nothing to do :(");
-              return;
-            }
-
-            new Thread(() -> {
-              MainFrame.lockGUI("Upgrading application");
-              try {
-                upgrade(doc, upgrades);
-
-                if(!originalXGapp
-                        .renameTo(new File(originalXGapp.getAbsolutePath() + ".bak"))) {
-                  System.err.println("unable to back up existing xgapp");
-                  return;
+          if(upgrades.isEmpty()) {
+            JOptionPane.showMessageDialog(MainFrame.getInstance(), "No upgradeable plugins found!", "Upgrade XGapp", JOptionPane.WARNING_MESSAGE);
+          } else {
+            if(new XgappUpgradeSelector(originalXGapp.toURI(), upgrades).showDialog(MainFrame.getInstance())) {
+              Iterator<UpgradePath> it = upgrades.iterator();
+              while(it.hasNext()) {
+                UpgradePath upgrade = it.next();
+                if(!upgrade.isShouldUpgrade() || upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
+                  it.remove();
+                } else {
+                  System.out.println("Upgrading " + upgrade.getOldPath() + " to " + upgrade.getNewPath());
                 }
-
-                try(FileOutputStream out = new FileOutputStream(originalXGapp)) {
-                  outputter.output(doc, out);
-                }
-              } catch(Exception e) {
-                log.error("Error upgrading application", e);
-              } finally {
-                MainFrame.unlockGUI();
               }
-            }).start();
+
+              if(upgrades.isEmpty()) {
+                JOptionPane.showMessageDialog(MainFrame.getInstance(), "Nothing to do!", "Upgrade XGapp", JOptionPane.INFORMATION_MESSAGE);
+                return;
+              }
+
+              new Thread(() -> {
+                MainFrame.lockGUI("Upgrading application");
+                try {
+                  upgrade(doc, upgrades);
+
+                  if(!originalXGapp
+                          .renameTo(new File(originalXGapp.getAbsolutePath() + ".bak"))) {
+                    System.err.println("unable to back up existing xgapp");
+                    return;
+                  }
+
+                  try(FileOutputStream out = new FileOutputStream(originalXGapp)) {
+                    outputter.output(doc, out);
+                  }
+                } catch(Exception e) {
+                  log.error("Error upgrading application", e);
+                } finally {
+                  MainFrame.unlockGUI();
+                }
+              }).start();
+            }
           }
         });
       }).start();
