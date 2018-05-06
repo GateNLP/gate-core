@@ -14,6 +14,7 @@
  */
 package gate.gui.persistence;
 
+import gate.gui.AlternatingTableCellEditor;
 import gate.persist.PersistenceException;
 import gate.swing.XJTable;
 import gate.util.persistence.PersistenceManager;
@@ -22,15 +23,9 @@ import org.eclipse.aether.version.Version;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class XgappUpgradeSelector {
 
@@ -53,8 +48,9 @@ public class XgappUpgradeSelector {
     pluginTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     scroller = new JScrollPane(pluginTable);
 
-    UpgradeVersionEditor cellEditor = new UpgradeVersionEditor();
-    pluginTable.getColumnModel().getColumn(3).setCellEditor(cellEditor);
+    // Alternate between two different cell editor components to avoid combo box rendering weirdness
+    pluginTable.getColumnModel().getColumn(3).setCellEditor(
+            new AlternatingTableCellEditor(new UpgradeVersionEditor(), new UpgradeVersionEditor()));
   }
 
   public boolean showDialog(Window parent) {
@@ -192,4 +188,5 @@ public class XgappUpgradeSelector {
       return combo;
     }
   }
+
 }
