@@ -1,24 +1,15 @@
 package gate.swing;
 
-import gate.Gate;
-import gate.creole.Plugin;
-import gate.creole.Plugin.Maven;
-import gate.event.PluginListener;
-import gate.resources.img.svg.GATEIcon;
-import gate.resources.img.svg.InvalidIcon;
-import gate.util.ExtensionFileFilter;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
-import javax.swing.*;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
-import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeWillExpandListener;
-import javax.swing.tree.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Window;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -28,10 +19,57 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.Icon;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTree;
+import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeWillExpandListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import gate.Gate;
+import gate.creole.Plugin;
+import gate.creole.Plugin.Maven;
+import gate.event.PluginListener;
+import gate.resources.img.svg.GATEIcon;
+import gate.resources.img.svg.InvalidIcon;
+import gate.util.ExtensionFileFilter;
 
 @SuppressWarnings("serial")
 public class ResourceReferenceChooser implements PluginListener, TreeWillExpandListener {
@@ -78,7 +116,11 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
     this.fileChooser = new XJFileChooser();
 
     tabPane = new JTabbedPane();
-    tabPane.addTab("File", fileChooser);
+    
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.add(fileChooser, BorderLayout.CENTER);
+    
+    tabPane.addTab("File", panel);
     fileChooser.addActionListener((e) -> {
       if(JFileChooser.APPROVE_SELECTION.equals(e.getActionCommand())) {
         returnValue = APPROVE_FILE;
