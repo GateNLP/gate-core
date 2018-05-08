@@ -1764,93 +1764,83 @@ public class MainFrame extends JFrame implements ProgressListener,
    * print a warning.
    */
   protected void initMacListeners() {
-    // What this method effectively does is:
+    // What this method effectively does on Java 8 is:
     //
     // com.apple.eawt.Application app = Application.getApplication();
-    // app.addApplicationListener(new ApplicationAdapter() {
-    // public void handleAbout(ApplicationEvent e) {
-    // e.setHandled(true);
-    // new HelpAboutAction().actionPerformed(null);
-    // }
-    // public void handleQuit(ApplicationEvent e) {
-    // e.setHandled(false);
-    // new ExitGateAction().actionPerformed(null);
-    // }
-    // public void handlePreferences(ApplicationEvent e) {
-    // e.setHandled(true);
-    // optionsDialog.showDialog();
-    // optionsDialog.dispose();
-    // }
+    // app.setQuitHandler((quitEvent, quitResponse) -> new ExitGateAction().actionPerformed(null));
+    // app.setAboutHandler((aboutEvent) -> new HelpAboutAction().actionPerformed(null));
+    // app.setPreferencesHandler((prefEvent) -> {
+    //   optionsDialog.showDialog();
+    //   optionsDialog.dispose();
     // });
     //
-    // app.setEnabledPreferencesMenu(true);
-    //
+    // and on Java 9 the equivalent with java.awt.Desktop,
     // except that it does it all by reflection so as not to
-    // compile-time
-    // depend on Apple classes.
+    // compile-time depend on Apple or J9-only classes.
     try {
-      // load the Apple classes
-      final Class<?> eawtApplicationClass =
-        Gate.getClassLoader().loadClass("com.apple.eawt.Application");
-      final Class<?> eawtApplicationListenerInterface =
-        Gate.getClassLoader().loadClass("com.apple.eawt.ApplicationListener");
-      final Class<?> eawtApplicationEventClass =
-        Gate.getClassLoader().loadClass("com.apple.eawt.ApplicationEvent");
+      Object applicationObject = java.awt.Desktop.getDesktop();
+      // try to find the Java 9 handler interfaces, if they aren't there
+      // then fall back to Java 8 com.apple.eawt-style
+      Class<?> applicationClass = java.awt.Desktop.class;
+      Class<?> aboutHandlerClass = null;
+      Class<?> preferencesHandlerClass = null;
+      Class<? extends Enum> quitStrategyClass = null;
 
-      // method used in the InvocationHandler
-      final Method appEventSetHandledMethod =
-        eawtApplicationEventClass.getMethod("setHandled", boolean.class);
+      try {
+        aboutHandlerClass = Gate.getClassLoader().loadClass("java.awt.desktop.AboutHandler");
+        preferencesHandlerClass = Gate.getClassLoader().loadClass("java.awt.desktop.PreferencesHandler");
+        quitStrategyClass = Gate.getClassLoader().loadClass("java.awt.desktop.QuitStrategy").asSubclass(Enum.class);
+      } catch(ClassNotFoundException e) {
+        // try the Java 8 com.apple classes instead
+        applicationClass = Gate.getClassLoader().loadClass("com.apple.eawt.Application");
+        Method getApplicationMethod =
+                applicationClass.getMethod("getApplication");
+        applicationObject = getApplicationMethod.invoke(null);
 
-      // Invocation handler used to process Apple application events
+        aboutHandlerClass = Gate.getClassLoader().loadClass("com.apple.eawt.AboutHandler");
+        preferencesHandlerClass = Gate.getClassLoader().loadClass("com.apple.eawt.PreferencesHandler");
+        quitStrategyClass = Gate.getClassLoader().loadClass("com.apple.eawt.QuitStrategy").asSubclass(Enum.class);
+      }
+
+      // Invocation handler used to process events
       InvocationHandler handler = new InvocationHandler() {
         private Action aboutAction = new HelpAboutAction();
 
-        private Action exitAction = new ExitGateAction();
-
         @Override
         public Object invoke(Object proxy, Method method, Object[] args)
-          throws Throwable {
-          Object appEvent = args[0];
-          if("handleAbout".equals(method.getName())) {
-            appEventSetHandledMethod.invoke(appEvent, Boolean.TRUE);
-            aboutAction.actionPerformed(null);
-          }
-          else if("handleQuit".equals(method.getName())) {
-            appEventSetHandledMethod.invoke(appEvent, Boolean.FALSE);
-            exitAction.actionPerformed(null);
-          }
-          else if("handlePreferences".equals(method.getName())) {
-            appEventSetHandledMethod.invoke(appEvent, Boolean.TRUE);
-            optionsDialog.showDialog();
-            optionsDialog.dispose();
-          }
+                throws Throwable {
+          SwingUtilities.invokeLater(() -> {
+            if("handleAbout".equals(method.getName())) {
+              aboutAction.actionPerformed(null);
+            } else if("handlePreferences".equals(method.getName())) {
+              optionsDialog.showDialog();
+              optionsDialog.dispose();
+            }
+          });
 
           return null;
         }
       };
 
-      // Create an ApplicationListener proxy instance
+      // Create an proxy instance for all the handler interfaces
       Object applicationListenerObject =
-        Proxy.newProxyInstance(Gate.getClassLoader(),
-          new Class<?>[]{eawtApplicationListenerInterface}, handler);
+              Proxy.newProxyInstance(Gate.getClassLoader(),
+                      new Class<?>[]{aboutHandlerClass, preferencesHandlerClass}, handler);
 
       // get hold of the Application object
-      Method getApplicationMethod =
-        eawtApplicationClass.getMethod("getApplication");
-      Object applicationObject = getApplicationMethod.invoke(null);
 
-      // enable the preferences menu item
-      Method setEnabledPreferencesMenuMethod =
-        eawtApplicationClass.getMethod("setEnabledPreferencesMenu",
-          boolean.class);
-      setEnabledPreferencesMenuMethod.invoke(applicationObject, Boolean.TRUE);
-
-      // Register our proxy instance as an ApplicationListener
-      Method addApplicationListenerMethod =
-        eawtApplicationClass.getMethod("addApplicationListener",
-          eawtApplicationListenerInterface);
-      addApplicationListenerMethod.invoke(applicationObject,
-        applicationListenerObject);
+      // Register our proxy instance as the right handlers
+      // happily all the J9 java.awt.Desktop methods and QuitStrategy constants
+      // are named the same as the old Apple ones
+      applicationClass.getMethod("setAboutHandler",
+              aboutHandlerClass).invoke(applicationObject,
+              applicationListenerObject);
+      applicationClass.getMethod("setPreferencesHandler",
+              preferencesHandlerClass).invoke(applicationObject,
+              applicationListenerObject);
+      applicationClass.getMethod("setQuitStrategy",
+              quitStrategyClass).invoke(applicationObject,
+              Enum.valueOf(quitStrategyClass, "CLOSE_ALL_WINDOWS"));
     }
     catch(Throwable error) {
       // oh well, we tried
