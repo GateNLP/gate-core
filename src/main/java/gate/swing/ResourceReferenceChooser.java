@@ -575,7 +575,7 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
             if(name.endsWith(sep)) {
               name = name.substring(0, name.length() - sep.length());
             }
-            PluginResourceTreeNode dirNode = new PluginResourceTreeNode(thisPlugin, dir.toString(), name);
+            PluginResourceTreeNode dirNode = new PluginResourceTreeNode(thisPlugin, dir.toString(), name, true);
             childLists.getLast().add(dirNode); // add this dir to parent list
             childLists.addLast(new ArrayList<>()); // and start a new list for us
             nodeStack.addLast(dirNode);
@@ -585,7 +585,7 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
 
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-          PluginResourceTreeNode fileNode = new PluginResourceTreeNode(thisPlugin, file.toString(), file.getFileName().toString());
+          PluginResourceTreeNode fileNode = new PluginResourceTreeNode(thisPlugin, file.toString(), file.getFileName().toString(), false);
           childLists.getLast().add(fileNode);
           return FileVisitResult.CONTINUE;
         }
@@ -607,9 +607,11 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
   static class PluginResourceTreeNode extends DefaultMutableTreeNode implements Comparable<PluginResourceTreeNode>, AsUri {
     private Plugin.Maven plugin;
     private String fullPath;
+    private boolean directory;
 
-    PluginResourceTreeNode(Plugin.Maven plugin, String fullPath, String myName) {
+    PluginResourceTreeNode(Plugin.Maven plugin, String fullPath, String myName, boolean directory) {
       super(myName);
+      this.directory = directory;
       this.plugin = plugin;
       this.fullPath = fullPath;
     }
@@ -621,6 +623,11 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
     public String getAsURI() throws URISyntaxException {
       URI pluginBase = plugin.getBaseURI();
       return new URI(pluginBase.getScheme(), pluginBase.getAuthority(), fullPath, null, null).toString();
+    }
+
+    @Override
+    public boolean isLeaf() {
+      return !directory;
     }
 
     @Override
@@ -640,7 +647,7 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
         renderer.setIcon(pluginIcon);
       } else if(value instanceof PluginResourceTreeNode) {
         PluginResourceTreeNode node = (PluginResourceTreeNode)value;
-        if(node.fullPath.endsWith("/") || ((PluginFileFilter)pluginFileFilterBox.getSelectedItem()).pattern.matcher(node.fullPath).find()) {
+        if(!node.isLeaf() || ((PluginFileFilter)pluginFileFilterBox.getSelectedItem()).pattern.matcher(node.fullPath).find()) {
           renderer.setEnabled(true);
         } else {
           // trick lifted from DefaultTreeCellRenderer to get the right disabled icon
