@@ -11,6 +11,7 @@ buildNumber.properties
 .classpath
 .project
 .external*
+*.iml
 lib
 .DS_Store
 
