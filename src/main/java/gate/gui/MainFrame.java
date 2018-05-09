@@ -5490,6 +5490,12 @@ public class MainFrame extends JFrame implements ProgressListener,
 
   public Optional<InputStream> downloadWithCache(String url) {
     HTTPCache cache = getHttpCache();
-    return cache.execute(new HTTPRequest(url)).getPayload().map(Payload::getInputStream);
+    try {
+      return cache.execute(new HTTPRequest(url)).getPayload().map(Payload::getInputStream);
+    }
+    catch (RuntimeException e) {
+      log.warn("Unable to download list of default plugins. Please check your Internet connection and restart GATE");
+      return Optional.empty();
+    }
   }
 } // class MainFrame
