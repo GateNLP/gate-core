@@ -521,14 +521,41 @@ public class AvailablePlugins extends JPanel {
       switch(columnIndex){
         case LOAD_NOW_COLUMN:
           loadNowByURL.put(plugin, valueBoolean);
+          handleDependencies(plugin, valueBoolean, loadNowByURL);
           // for some reason the focus is sometime lost after editing
           // however it is needed for Enter key to execute OkAction
           mainTable.requestFocusInWindow();
           break;
         case LOAD_ALWAYS_COLUMN:
           loadAlwaysByURL.put(plugin, valueBoolean);
+          handleDependencies(plugin, valueBoolean, loadAlwaysByURL);
           mainTable.requestFocusInWindow();
           break;
+      }
+    }
+    
+    private void handleDependencies(Plugin plugin, Boolean load, Map<Plugin,Boolean> allPlugins) {
+      if (load) {
+        Set<Plugin> dependencies = plugin.getRequiredPlugins();
+        for (Plugin dependency : dependencies) {
+          if (allPlugins.containsKey(dependency)) {
+            allPlugins.put(dependency, true);
+            handleDependencies(dependency, load, allPlugins);
+          }
+        }
+      }
+      else {
+        Set<Plugin> toUnload = new HashSet<Plugin>();
+        for (Map.Entry<Plugin, Boolean> entry : allPlugins.entrySet()) {
+          if (entry.getKey().getRequiredPlugins().contains(plugin)) {
+            entry.setValue(false);
+            toUnload.add(entry.getKey());
+          }
+        }
+        
+        for (Plugin other : toUnload) {
+          handleDependencies(other, false, allPlugins);
+        }
       }
     }
   }

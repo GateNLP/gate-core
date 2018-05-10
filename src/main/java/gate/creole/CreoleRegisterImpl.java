@@ -421,6 +421,17 @@ public class CreoleRegisterImpl extends HashMap<String, ResourceData>
   @Override
   public void unregisterPlugin(Plugin plugin) {
     if(plugins.remove(plugin)) {
+      
+      List<Plugin> dependantPlugins = new ArrayList<Plugin>();
+      for (Plugin otherPlugin : plugins) {
+        if (otherPlugin.getRequiredPlugins().contains(plugin))
+          dependantPlugins.add(otherPlugin);
+      }
+      
+      for (Plugin otherPlugin : dependantPlugins) {
+        unregisterPlugin(otherPlugin);
+      }
+      
       int prCount = 0;
 
       for(ResourceInfo rInfo : plugin.getResourceInfoList()) {
@@ -468,6 +479,7 @@ public class CreoleRegisterImpl extends HashMap<String, ResourceData>
    * @param directory
    */
   @Override
+  @Deprecated
   public void removeDirectory(URL directory) {
 
     if(directory == null) return;
