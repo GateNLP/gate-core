@@ -41,7 +41,6 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jdom.xpath.XPath;
 
-import gate.Gate;
 import gate.Main;
 import gate.creole.metadata.AutoInstance;
 import gate.creole.metadata.CreoleResource;
@@ -61,7 +60,11 @@ public class UpgradeXGAPP {
   private static GenericVersionScheme versionScheme =
       new GenericVersionScheme();
 
-  private static Version getDefaultSelection(List<Version> versions) {
+  public static Version getDefaultSelection(VersionRangeResult vrr) {
+    if(vrr == null) {
+      return null;
+    }
+    List<Version> versions = vrr.getVersions();
     // is the version of GATE we are running a SNAPSHOT?
     boolean isSnapshot = Main.version.toUpperCase().endsWith("-SNAPSHOT");
 
@@ -111,12 +114,9 @@ public class UpgradeXGAPP {
 
           versions = getPluginVersions("uk.ac.gate.plugins", newName);
 
-          if(versions != null) {
-
-            upgrades
-                .add(new UpgradePath(plugin, urlString, "uk.ac.gate.plugins",
-                    newName, versions, null, getDefaultSelection(versions.getVersions())));
-          }
+          upgrades
+              .add(new UpgradePath(plugin, urlString, (versions == null ? null : "uk.ac.gate.plugins"),
+                  newName, versions, null, getDefaultSelection(versions)));
           break;
 
         case "gate.creole.Plugin-Maven":
@@ -136,7 +136,7 @@ public class UpgradeXGAPP {
               currentVersion = versionScheme.parseVersion(version);
               upgrades
                   .add(new UpgradePath(plugin, oldCreoleURI, group, artifact,
-                      versions, currentVersion, getDefaultSelection(versions.getVersions())));
+                      versions, currentVersion, getDefaultSelection(versions)));
             } catch(InvalidVersionSpecificationException e) {
               // this should be impossible as the version string comes from an
               // xgapp generated having successfully loaded a plugin
@@ -161,7 +161,7 @@ public class UpgradeXGAPP {
     Element pluginList = root.getChild("urlList").getChild("localList");
 
     for(UpgradePath upgrade : upgrades) {
-      if(upgrade.isShouldUpgrade()) {
+      if(upgrade.getUpgradeStrategy().upgradePlugin) {
         int pluginIndex = pluginList.indexOf(upgrade.getOldElement());
 
         pluginList.setContent(pluginIndex, upgrade.getNewElement());
@@ -175,7 +175,7 @@ public class UpgradeXGAPP {
       String urlString = element.getValue();
 
       for(UpgradePath upgrade : upgrades) {
-        if(upgrade.isShouldUpgrade() && urlString.startsWith(upgrade.getOldPath())) {
+        if(upgrade.getUpgradeStrategy().upgradeResources && urlString.startsWith(upgrade.getOldPath())) {
 
           String urlSuffix = urlString.substring(upgrade.getOldPath().length());
 
@@ -286,6 +286,33 @@ public class UpgradeXGAPP {
   }
 
   public static class UpgradePath {
+
+    public enum UpgradeStrategy {
+      UPGRADE("Upgrade", "Replace all references to the old plugin with the new one", true, true),
+      PLUGIN_ONLY("Plugin only", "Load the new plugin, but use resources from " +
+              "the old location (for example if you have copied a core GATE plugin and " +
+              "modified its files in-place)", true, false),
+      SKIP("Skip", "Do nothing with this plugin", false, false);
+
+      public final String label;
+
+      public final String tooltip;
+
+      public final boolean upgradePlugin;
+
+      public final boolean upgradeResources;
+
+      UpgradeStrategy(String label, String tooltip, boolean upgradePlugin, boolean upgradeResources) {
+        this.label = label;
+        this.tooltip = tooltip;
+        this.upgradePlugin = upgradePlugin;
+        this.upgradeResources = upgradeResources;
+      }
+
+      public String toString() {
+        return label;
+      }
+    }
     private Element oldEntry;
 
     private String groupID, artifactID;
@@ -296,7 +323,7 @@ public class UpgradeXGAPP {
 
     private String oldPath;
 
-    private boolean shouldUpgrade = true;
+    private UpgradeStrategy upgradeStrategy;
 
     protected UpgradePath(Element oldEntry, String oldPath, String groupID,
         String artifactID, VersionRangeResult versions, Version current,
@@ -308,6 +335,7 @@ public class UpgradeXGAPP {
       this.versions = versions;
       this.selected = selected;
       this.current = current;
+      this.upgradeStrategy = (versions == null ? UpgradeStrategy.SKIP : UpgradeStrategy.UPGRADE);
     }
 
     public void setSelectedVersion(Version version) {
@@ -343,20 +371,32 @@ public class UpgradeXGAPP {
       return groupID;
     }
 
+    public void setGroupID(String groupID) {
+      this.groupID = groupID;
+    }
+
     public String getArtifactID() {
       return artifactID;
+    }
+
+    public void setArtifactID(String artifactID) {
+      this.artifactID = artifactID;
     }
 
     public List<Version> getVersions() {
       return versions.getVersions();
     }
 
-    public boolean isShouldUpgrade() {
-      return shouldUpgrade;
+    public void setVersionRangeResult(VersionRangeResult result) {
+      this.versions = result;
     }
 
-    public void setShouldUpgrade(boolean shouldUpgrade) {
-      this.shouldUpgrade = shouldUpgrade;
+    public UpgradeStrategy getUpgradeStrategy() {
+      return upgradeStrategy;
+    }
+
+    public void setUpgradeStrategy(UpgradeStrategy upgradeStrategy) {
+      this.upgradeStrategy = upgradeStrategy;
     }
 
     protected Element getNewElement() {
@@ -435,7 +475,7 @@ public class UpgradeXGAPP {
               Iterator<UpgradePath> it = upgrades.iterator();
               while(it.hasNext()) {
                 UpgradePath upgrade = it.next();
-                if(!upgrade.isShouldUpgrade() || upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
+                if(!upgrade.getUpgradeStrategy().upgradePlugin || upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
                   it.remove();
                 } else {
                   System.out.println("Upgrading " + upgrade.getOldPath() + " to " + upgrade.getNewPath());
@@ -483,7 +523,7 @@ public class UpgradeXGAPP {
       Iterator<UpgradePath> it = upgrades.iterator();
       while(it.hasNext()) {
         UpgradePath upgrade = it.next();
-        if(!upgrade.isShouldUpgrade() || upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
+        if(!upgrade.getUpgradeStrategy().upgradePlugin || upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
           it.remove();
         } else {
           System.out.println(upgrade);
