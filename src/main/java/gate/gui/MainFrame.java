@@ -2963,14 +2963,25 @@ public class MainFrame extends JFrame implements ProgressListener,
   class NewBootStrapAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
     public NewBootStrapAction() {
-      super("BootStrap Wizard", getIcon("application"));
+      super("Bootstrap Wizard", getIcon("application"));
       putValue(SHORT_DESCRIPTION, "Create a generic resource to be completed");
     }// NewBootStrapAction
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      BootStrapDialog bootStrapDialog = new BootStrapDialog(MainFrame.this);
-      bootStrapDialog.setVisible(true);
+      //BootStrapDialog bootStrapDialog = new BootStrapDialog(MainFrame.this);
+      //bootStrapDialog.setVisible(true);
+      JLabel msg = new JLabel("<html><body>The bootstrap wizard has been replaced by a Maven archetype. "+
+          "To create a new plugin please run the following command from a console<br><br>");
+      
+      JTextField txtCommand = new JTextField("mvn archetype:generate -DarchetypeGroupId=uk.ac.gate -DarchetypeArtifactId=gate-plugin-archetype -DarchetypeVersion="+Main.version);
+      txtCommand.setEditable(false);
+            
+      JPanel panel = new JPanel(new BorderLayout());
+      panel.add(msg, BorderLayout.NORTH);
+      panel.add(txtCommand, BorderLayout.CENTER);
+      
+      JOptionPane.showMessageDialog(MainFrame.getInstance(), panel, "Bootstrap Wizard",JOptionPane.INFORMATION_MESSAGE);
     }// actionPerformed();
   }// class NewBootStrapAction
 
