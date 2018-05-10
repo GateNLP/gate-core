@@ -202,7 +202,7 @@ public class UpgradeXGAPP {
 
   }
 
-  private static VersionRangeResult getPluginVersions(String group,
+  public static VersionRangeResult getPluginVersions(String group,
       String artifact) {
     try {
       Artifact artifactObj =
@@ -230,26 +230,44 @@ public class UpgradeXGAPP {
 
         Version version = it.next();
         try {
+          ArtifactResult artifactResult = null;
+          // try creole.jar first
+          try {
+            artifactObj = new DefaultArtifact(group, artifact, "creole",
+                    "jar", version.toString());
+            ArtifactRequest artifactRequest =
+                    new ArtifactRequest(artifactObj, repos, null);
 
-          artifactObj =
-              new DefaultArtifact(group, artifact, "jar", version.toString());
+            artifactResult =
+                    repoSystem.resolveArtifact(repoSession, artifactRequest);
 
-          ArtifactRequest artifactRequest =
-              new ArtifactRequest(artifactObj, repos, null);
+            URL creoleUrl = new URL("jar:"
+                    + artifactResult.getArtifact().getFile().toURI().toURL()
+                    + "!/META-INF/gate/creole.xml");
 
-          ArtifactResult artifactResult =
-              repoSystem.resolveArtifact(repoSession, artifactRequest);
+            try(InputStream creoleStream = creoleUrl.openStream()) {
+              // no op
+            }
+          } catch(ArtifactResolutionException e) {
+            // no -creole.jar, try the normal jar
+            artifactObj =
+                    new DefaultArtifact(group, artifact, "jar", version.toString());
 
-          // TODO check if it is compatible with this version of GATE
+            ArtifactRequest artifactRequest =
+                    new ArtifactRequest(artifactObj, repos, null);
 
-          URL artifactURL = new URL("jar:"
-              + artifactResult.getArtifact().getFile().toURI().toURL() + "!/");
+            artifactResult =
+                    repoSystem.resolveArtifact(repoSession, artifactRequest);
 
-          // check it has a creole.xml at the root
-          URL directoryXmlFileUrl = new URL(artifactURL, "creole.xml");
+            URL artifactURL = new URL("jar:"
+                    + artifactResult.getArtifact().getFile().toURI().toURL() + "!/");
 
-          try (InputStream creoleStream = directoryXmlFileUrl.openStream()) {
-            // no op
+            // check it has a creole.xml at the root
+            URL directoryXmlFileUrl = new URL(artifactURL, "creole.xml");
+
+            try (InputStream creoleStream = directoryXmlFileUrl.openStream()) {
+              // no op
+            }
           }
         } catch(ArtifactResolutionException | IOException e) {
           e.printStackTrace();
