@@ -27,7 +27,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.*;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +52,6 @@ import java.util.jar.JarInputStream;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.building.DefaultModelBuilder;
 import org.apache.maven.model.building.DefaultModelBuilderFactory;
 import org.apache.maven.model.building.DefaultModelBuildingRequest;
 import org.apache.maven.model.building.ModelBuilder;
@@ -176,6 +183,8 @@ public abstract class Plugin {
   protected transient String name;
 
   protected transient String description;
+  
+  protected transient String version;
 
   /**
    * The list of {@link gate.Gate.ResourceInfo} objects within this plugin
@@ -215,6 +224,13 @@ public abstract class Plugin {
 
   public String getDescription() {
     return description;
+  }
+  
+  /**
+   * Get the version of this plugin.
+   */
+  public String getVersion() {
+    return version;
   }
 
   public Set<Plugin> getRequiredPlugins() {
@@ -527,7 +543,7 @@ public abstract class Plugin {
 
     private static final long serialVersionUID = -6944695755723023537L;
 
-    private String group, artifact, version;
+    private String group, artifact;
 
     private transient URL artifactURL, metadataArtifactURL;
 
@@ -903,13 +919,6 @@ public abstract class Plugin {
      */
     public String getArtifact() {
       return artifact;
-    }
-
-    /**
-     * Get the version of this plugin.
-     */
-    public String getVersion() {
-      return version;
     }
 
     @Override

@@ -484,7 +484,9 @@ public class AvailablePlugins extends JPanel {
       if(dInfo == null) { return null; }
       switch(column){
         case NAME_COLUMN:
-          return dInfo.getName();
+          String name = dInfo.getName();
+          String version = dInfo.getVersion();
+          return name + (version != null && !version.trim().isEmpty() ? " ("+version.trim()+")" : "");
           //return dInfo.toHTMLString();
         case ICON_COLUMN:
           if(!dInfo.isValid()) return invalidIcon;
