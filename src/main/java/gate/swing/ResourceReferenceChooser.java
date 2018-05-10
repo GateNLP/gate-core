@@ -237,14 +237,14 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
             .sorted(PLUGIN_COMPARATOR).collect(Collectors.toList());
 
     // first, remove any nodes for plugins that are no longer loaded
-    Enumeration<PluginTreeNode> nodes = treeRoot.children();
+    Enumeration<TreeNode> nodes = treeRoot.children();
     Iterator<Plugin.Maven> listIt = mavenPluginsWithResources.iterator();
     Plugin.Maven curPlug = listIt.hasNext() ? listIt.next() : null;
     List<Integer> indicesToRemove = new ArrayList<>(treeRoot.getChildCount());
     List<PluginTreeNode> nodesToRemove = new ArrayList<>(treeRoot.getChildCount());
     int i = 0;
     while(nodes.hasMoreElements()) {
-      PluginTreeNode n = nodes.nextElement();
+      PluginTreeNode n = (PluginTreeNode)nodes.nextElement();
       Plugin.Maven nodePlugin = (Plugin.Maven)n.getUserObject();
       int cmp = -1;
       // advance listIt until we find a curPlug that is >= nodePlugin
@@ -274,7 +274,7 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
     // now we need to add new nodes for plugins that have been loaded since last time we checked
     nodes = treeRoot.children();
     listIt = mavenPluginsWithResources.iterator();
-    PluginTreeNode curNode = nodes.hasMoreElements() ? nodes.nextElement() : null;
+    PluginTreeNode curNode = nodes.hasMoreElements() ? (PluginTreeNode)nodes.nextElement() : null;
     List<Integer> indicesToAdd = new ArrayList<>(mavenPluginsWithResources.size());
     List<PluginTreeNode> nodesToAdd = new ArrayList<>(mavenPluginsWithResources.size());
     i = 0;
@@ -282,7 +282,7 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
       Plugin.Maven p = listIt.next();
       int cmp = -1;
       while(curNode != null && (cmp = PLUGIN_COMPARATOR.compare(p, (Plugin.Maven)curNode.getUserObject())) > 0) {
-        curNode = nodes.hasMoreElements() ? nodes.nextElement() : null;
+        curNode = nodes.hasMoreElements() ? (PluginTreeNode)nodes.nextElement() : null;
         i++;
       }
       if(cmp < 0) {
@@ -314,7 +314,7 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
       Map<String, List<PluginTreeNode>> groupByDesc = new HashMap<>();
       nodes = treeRoot.children();
       while(nodes.hasMoreElements()) {
-        PluginTreeNode n = nodes.nextElement();
+        PluginTreeNode n = (PluginTreeNode)nodes.nextElement();
         groupByDesc.computeIfAbsent(n.toString(), (k) -> new ArrayList<>()).add(n);
       }
       boolean anyDups = false;
@@ -346,9 +346,9 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
         URI pluginBaseUri = uri.resolve("/");
         // find the plugin node matching this base URI
         PluginTreeNode pluginNode = null;
-        Enumeration<PluginTreeNode> pluginNodes = treeRoot.children();
+        Enumeration<TreeNode> pluginNodes = treeRoot.children();
         while(pluginNodes.hasMoreElements()) {
-          PluginTreeNode n = pluginNodes.nextElement();
+          PluginTreeNode n = (PluginTreeNode)pluginNodes.nextElement();
           URI bu = ((Plugin.Maven) n.getUserObject()).getBaseURI();
           if(bu.equals(pluginBaseUri)) {
             pluginNode = n;
@@ -361,9 +361,9 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
           pluginTree.expandPath(new TreePath(new Object[] {treeRoot, pluginNode}));
           DefaultMutableTreeNode nearestNode = pluginNode;
           LinkedList<PluginResourceTreeNode> nodesToTry = new LinkedList<>();
-          Enumeration<PluginResourceTreeNode> children = pluginNode.children();
+          Enumeration<TreeNode> children = pluginNode.children();
           while(children.hasMoreElements()) {
-            nodesToTry.add(children.nextElement());
+            nodesToTry.add((PluginResourceTreeNode)children.nextElement());
           }
           ListIterator<PluginResourceTreeNode> iter = nodesToTry.listIterator();
           while(iter.hasNext()) {
@@ -375,7 +375,7 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
               int stepsBack = 0;
               children = n.children();
               while(children.hasMoreElements()) {
-                iter.add(children.nextElement());
+                iter.add((PluginResourceTreeNode)children.nextElement());
                 stepsBack++;
               }
               for(int i = 0; i < stepsBack; i++) {
@@ -393,9 +393,9 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
           // collapse siblings at each level except the very top
           for(int i = 1; i < pathToRoot.length; i++) {
             DefaultMutableTreeNode n = (DefaultMutableTreeNode)pathToRoot[i];
-            Enumeration<DefaultMutableTreeNode> siblings = n.getParent().children();
+            Enumeration<? extends TreeNode> siblings = n.getParent().children();
             while(siblings.hasMoreElements()) {
-              DefaultMutableTreeNode sib = siblings.nextElement();
+              DefaultMutableTreeNode sib = (DefaultMutableTreeNode)siblings.nextElement();
               if(sib != n) {
                 pluginTree.collapsePath(new TreePath(sib.getPath()));
               }
@@ -449,7 +449,7 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
       PluginFileFilter suffixFilter = new PluginFileFilter();
       suffixFilter.description = description;
       suffixFilter.pattern = Pattern.compile("(?:" +
-              suffixes.stream().map((suf) -> Pattern.quote(suf)).collect(Collectors.joining("|"))
+              suffixes.stream().map(Pattern::quote).collect(Collectors.joining("|"))
               + ")$");
       pluginFileFilterBox.addItem(suffixFilter);
       pluginFileFilterBox.setSelectedItem(suffixFilter);
@@ -469,9 +469,9 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
       String resourceClass = getResource();
       if(resourceClass != null) {
         // attempt to find a plugin that defines this resource
-        Enumeration<PluginTreeNode> nodes = treeRoot.children();
+        Enumeration<TreeNode> nodes = treeRoot.children();
         while(nodes.hasMoreElements()) {
-          PluginTreeNode node = nodes.nextElement();
+          PluginTreeNode node = (PluginTreeNode)nodes.nextElement();
           Plugin.Maven plugin = (Plugin.Maven)node.getUserObject();
           if(plugin.getResourceInfoList().stream().anyMatch(ri -> resourceClass.equals(ri.getResourceClassName()))) {
             TreePath path = new TreePath(node.getPath());
@@ -481,9 +481,9 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
             break;
           } else {
             // collapse everything else
-            Enumeration<DefaultMutableTreeNode> descendants = node.postorderEnumeration();
+            Enumeration<TreeNode> descendants = node.postorderEnumeration();
             while(descendants.hasMoreElements()) {
-              pluginTree.collapsePath(new TreePath(descendants.nextElement().getPath()));
+              pluginTree.collapsePath(new TreePath(((DefaultMutableTreeNode)descendants.nextElement()).getPath()));
             }
           }
         }
