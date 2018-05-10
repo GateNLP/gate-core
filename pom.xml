@@ -75,44 +75,33 @@
 
 		<!-- aether and it's dependencies for loading CREOLE plugins via Maven -->
 		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-api</artifactId>
-			<version>1.1.0</version>
-			<scope>compile</scope>
+			<groupId>org.apache.maven.resolver</groupId>
+			<artifactId>maven-resolver-impl</artifactId>
+			<version>1.1.1</version>
 		</dependency>
-
+	
 		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-util</artifactId>
-			<version>1.1.0</version>
-			<scope>compile</scope>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-model-builder</artifactId>
+			<version>3.5.3</version>
 		</dependency>
-
+	
 		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-impl</artifactId>
-			<version>1.1.0</version>
-			<scope>compile</scope>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-resolver-provider</artifactId>
+			<version>3.5.3</version>
 		</dependency>
-
+	
 		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-connector-basic</artifactId>
-			<version>1.1.0</version>
-			<scope>compile</scope>
+			<groupId>org.apache.maven.resolver</groupId>
+			<artifactId>maven-resolver-connector-basic</artifactId>
+			<version>1.1.1</version>
 		</dependency>
-
+	
 		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-transport-file</artifactId>
-			<version>1.1.0</version>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-transport-http</artifactId>
-			<version>1.1.0</version>
+			<groupId>org.apache.maven.resolver</groupId>
+			<artifactId>maven-resolver-transport-http</artifactId>
+			<version>1.1.1</version>
 			<scope>compile</scope>
 			<exclusions>
 				<exclusion>
@@ -121,26 +110,23 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
+	
 		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-transport-wagon</artifactId>
-			<version>1.1.0</version>
-			<scope>compile</scope>
+			<groupId>org.apache.maven.resolver</groupId>
+			<artifactId>maven-resolver-transport-file</artifactId>
+			<version>1.1.1</version>
 		</dependency>
-
+	
 		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-aether-provider</artifactId>
-			<version>3.3.9</version>
-			<scope>compile</scope>
+			<groupId>org.apache.maven.resolver</groupId>
+			<artifactId>maven-resolver-transport-wagon</artifactId>
+			<version>1.1.1</version>
 		</dependency>
-
+	
 		<dependency>
-			<groupId>org.apache.maven.wagon</groupId>
-			<artifactId>wagon-ssh</artifactId>
-			<version>2.10</version>
-			<scope>compile</scope>
+			<groupId>org.apache.maven.resolver</groupId>
+			<artifactId>maven-resolver-transport-classpath</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 
 		<dependency>
@@ -148,7 +134,7 @@
 			<artifactId>maven-settings-builder</artifactId>
 			<version>3.3.9</version>
 			<scope>compile</scope>
-		</dependency>
+		</dependency> 
 
 		<!-- needed to ensure the same version across configurations -->
 		<dependency>
