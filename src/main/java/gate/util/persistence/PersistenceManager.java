@@ -1294,9 +1294,9 @@ public class PersistenceManager {
           Object anUrl = urlIter.next();
           try {
             if (anUrl instanceof URL)
-              Gate.getCreoleRegister().registerPlugin(new Plugin.Directory((URL)anUrl),false);
+              Gate.getCreoleRegister().registerPlugin(new Plugin.Directory((URL)anUrl));
             else if (anUrl instanceof Plugin)
-              Gate.getCreoleRegister().registerPlugin((Plugin)anUrl, false);              
+              Gate.getCreoleRegister().registerPlugin((Plugin)anUrl);              
           }
           catch(GateException ge) {
             System.out.println("We've hit an error!");
