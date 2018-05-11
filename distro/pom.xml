@@ -4,7 +4,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>uk.ac.gate</groupId>
-  <artifactId>gate-dist</artifactId>
+  <artifactId>gate-developer</artifactId>
   <version>8.5-SNAPSHOT</version>
   <packaging>pom</packaging>
   <url>http://gate.ac.uk/</url>
@@ -14,6 +14,12 @@
   <description>
   Assembly module to build a binary distribution of GATE Developer.
   </description>
+
+  <properties>
+    <izpack.version>5.1.3-SNAPSHOT</izpack.version>
+    <gate.version>${project.version}</gate.version>
+    <tao.pdf>/path/to/tao.pdf</tao.pdf>
+  </properties>
 
   <build>
     <plugins>
@@ -35,6 +41,8 @@
           </execution>
         </executions>
       </plugin>
+
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -55,6 +63,92 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>installer</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.izpack</groupId>
+            <artifactId>izpack-maven-plugin</artifactId>
+            <version>${izpack.version}</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals><goal>izpack</goal></goals>
+                <configuration>
+                  <!-- base for relative paths in izpack descriptor -->
+                  <baseDir>${basedir}</baseDir>
+                  <installFile>${basedir}/src/main/izpack/install.xml</installFile>
+                  <classifier>installer</classifier>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.codehaus.izpack</groupId>
+                <artifactId>izpack-panel</artifactId>
+                <version>${izpack.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+          
+          <plugin>
+            <groupId>com.akathist.maven.plugins.launch4j</groupId>
+            <artifactId>launch4j-maven-plugin</artifactId>
+            <version>1.7.21</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals><goal>launch4j</goal></goals>
+                <configuration>
+                  <headerType>gui</headerType>
+                  <outfile>target/gate-developer-${project.version}-installer.exe</outfile>
+                  <jar>target/gate-developer-${project.version}-installer.jar</jar>
+                  <errTitle>GATE Developer</errTitle>
+                  <supportUrl>https://gate.ac.uk</supportUrl>
+                  <customProcName>false</customProcName>
+                  <stayAlive>false</stayAlive>
+                  <icon>build/deploy/gate-installer.ico</icon>
+                  <jre>
+                    <minVersion>1.8.0</minVersion>
+                  </jre>
+                  <splash>
+                    <file>build/deploy/splash.bmp</file>
+                    <waitForWindow>true</waitForWindow>
+                    <timeout>60</timeout>
+                  </splash>
+                  <messages>
+                    <startupErr>An error occurred while starting the installer.</startupErr>
+                    <bundledJreErr>This application was configured to use a bundled Java Runtime Environment but the runtime is missing or corrupted.</bundledJreErr>
+                    <jreVersionErr>GATE requires a Java Runtime Environment, and works best with a JDK.  Click OK to download one - minimum version</jreVersionErr>
+                    <launcherErr>The registry refers to a nonexistent Java Runtime Environment installation or the runtime is corrupted.  Please ensure you have a valid installation of Java 5.0 or later.</launcherErr>
+                  </messages>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+
+      <!-- Sonatype OSS snapshot repository, as latest izpack release version
+      is broken on Java 9+.  Once ixpack 5.1.3 comes out we can switch to that
+      and remove this repo. -->
+      <repositories>
+        <repository>
+          <id>oss-snapshots</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>oss-snapshots</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+
   <dependencies>
     <dependency>
       <groupId>uk.ac.gate</groupId>
@@ -73,5 +167,6 @@
     </dependency>
     -->
   </dependencies>
+
 
 </project>
