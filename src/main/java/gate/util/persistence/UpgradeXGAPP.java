@@ -5,18 +5,20 @@ import static gate.util.maven.Utils.getRepositorySession;
 import static gate.util.maven.Utils.getRepositorySystem;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.swing.*;
 
 import gate.gui.persistence.XgappUpgradeSelector;
+import gate.persist.PersistenceException;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.eclipse.aether.RepositorySystem;
@@ -339,9 +341,15 @@ public class UpgradeXGAPP {
     }
 
     public void setSelectedVersion(Version version) {
-      if(!versions.getVersions().contains(version))
+      if(versions == null) {
+        if(version == null) {
+          this.selected = null;
+        } else {
+          throw new IllegalArgumentException("Supplied version isn't valid");
+        }
+      } else if(!versions.getVersions().contains(version)) {
         throw new IllegalArgumentException("Supplied version isn't valid");
-
+      }
       this.selected = version;
     }
 
@@ -360,7 +368,7 @@ public class UpgradeXGAPP {
 
     public String getNewPath() {
       return "creole://" + groupID + ";" + artifactID + ";"
-          + selected.toString() + "/";
+          + Objects.toString(selected) + "/";
     }
 
     public String getOldPath() {
@@ -423,6 +431,136 @@ public class UpgradeXGAPP {
     }
   }
 
+  /**
+   * <p>Save details of the given set of upgrade paths to a TSV file that can be re-used
+   * later when upgrading other apps.  Each line has either two or five fields:</p>
+   * <ul>
+   *   <li>The <code>oldPath</code>, with <code>$relpath$</code>,
+   *   <code>$sysprop$</code> and <code>$resourceshome</code> expanded to absolute URIs</li>
+   *   <li>The upgrade strategy (<code>SKIP</code>, <code>PLUGIN_ONLY</code> or
+   *   <code>UPGRADE</code>).</li>
+   *   <li>If the strategy is not SKIP then there are three more columns
+   *   for the selected groupId, artifactId and version.</li>
+   * </ul>
+   *
+   * @param paths the list of upgrade paths to persist
+   * @param xgappUri the location of the xgapp file we are upgrading, against which
+   *                 <code>$relpath$</code> locations will be resolved.
+   * @param outputFile the file in which to save the output.
+   * @throws IOException if an error occurs writing the file.
+   */
+  public static void saveUpgradePaths(List<UpgradePath> paths, URI xgappUri, File outputFile) throws IOException {
+    try(PrintWriter w = new PrintWriter(Files.newBufferedWriter(outputFile.toPath(), StandardCharsets.UTF_8))) {
+      for(UpgradePath path : paths) {
+        StringBuilder line = new StringBuilder();
+        String oldPath = path.getOldPath();
+        if(oldPath.startsWith("$") && !oldPath.startsWith("$gate")) {
+          // $relpath, $sysprop or $resourceshome
+          try {
+            oldPath = PersistenceManager.URLHolder.unpackPersistentRepresentation(xgappUri, oldPath).toString();
+          } catch(PersistenceException e) {
+            throw new FileNotFoundException("Couldn't translate " + oldPath + " to a URI"
+                    + (oldPath.startsWith("$res") ? " - please set resources home" : ""));
+          }
+        }
+        line.append(oldPath);
+        line.append('\t');
+        line.append(path.getUpgradeStrategy().name());
+        if(path.getUpgradeStrategy().upgradePlugin) {
+          line.append('\t');
+          line.append(path.getGroupID());
+          line.append('\t');
+          line.append(path.getArtifactID());
+          line.append('\t');
+          line.append(path.getSelectedVersion());
+        }
+
+        w.println(line);
+      }
+    }
+  }
+
+  /**
+   * Load a saved upgrade definition TSV file (such as would be written by
+   * {@link #saveUpgradePaths}) and apply its instructions to the given list of
+   * upgrade paths extracted from another xgapp.
+   * @param paths the list of upgrade paths to modify according to the saved
+   *              instructions
+   * @param xgappUri the location of the xgapp from which <code>paths</code>
+   *                 were extracted, used to resolve any <code>$relpath$</code>
+   *                 locations
+   * @param inputFile the TSV file of upgrade instructions
+   * @throws IOException if an error occurs while reading the file.
+   */
+  public static void loadUpgradePaths(List<UpgradePath> paths, URI xgappUri, File inputFile) throws IOException {
+    Map<String, List<UpgradePath>> pathsByOldPath = new HashMap<>();
+    for(UpgradePath path : paths) {
+      String oldPath = path.getOldPath();
+      if(oldPath.startsWith("$") && !oldPath.startsWith("$gate")) {
+        // $relpath, $sysprop or $resourceshome
+        try {
+          oldPath = PersistenceManager.URLHolder.unpackPersistentRepresentation(xgappUri, oldPath).toString();
+        } catch(PersistenceException e) {
+          throw new FileNotFoundException("Couldn't translate " + oldPath + " to a URI"
+                  + (oldPath.startsWith("$res") ? " - please set resources home" : ""));
+        }
+      }
+      pathsByOldPath.computeIfAbsent(oldPath, (k) -> new ArrayList<>()).add(path);
+    }
+    try(BufferedReader r = Files.newBufferedReader(inputFile.toPath(), StandardCharsets.UTF_8)) {
+      String line;
+      int lineNo = 0;
+      while((line = r.readLine()) != null) {
+        lineNo++;
+        line = line.trim();
+        if(line.isEmpty() || line.startsWith("#")) {
+          // ignore comments and blank lines
+          continue;
+        }
+        String[] fields = line.split("\\s+", 5);
+        if(fields.length < 2) {
+          throw new IllegalArgumentException("Malformed upgrade file at line " + lineNo + ", expected either " +
+                  "\"oldPlugin  SKIP\" or \"oldPlugin  UPGRADE/PLUGIN_ONLY  group  artifact  version\" " +
+                  "but found \"" + line + "\"");
+        }
+        String oldPath = fields[0];
+        List<UpgradePath> thesePaths = pathsByOldPath.get(oldPath);
+        if(thesePaths != null) {
+          UpgradePath.UpgradeStrategy strategy = UpgradePath.UpgradeStrategy.valueOf(fields[1]);
+          String groupId = null;
+          String artifactId = null;
+          String version = null;
+          if(fields.length >= 5) {
+            groupId = fields[2];
+            artifactId = fields[3];
+            version = fields[4];
+          }
+
+          VersionRangeResult vrr = (groupId == null ? null : getPluginVersions(groupId, artifactId));
+          List<Version> versions = (vrr == null ? null : vrr.getVersions());
+
+          for(UpgradePath path : thesePaths) {
+            path.setUpgradeStrategy(strategy);
+            if(groupId != null) {
+              if(versions != null && !versions.isEmpty()) {
+                path.setGroupID(groupId);
+                path.setArtifactID(artifactId);
+                path.setVersionRangeResult(vrr);
+                try {
+                  path.setSelectedVersion(version == null ? null : versionScheme.parseVersion(version));
+                } catch(InvalidVersionSpecificationException | IllegalArgumentException e) {
+                  path.setSelectedVersion(getDefaultSelection(vrr));
+                  log.warn("Version " + version + " not valid for plugin " + groupId + ":" + artifactId
+                          + ", using " + path.getSelectedVersion() + " instead");
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   public static class UpgradeAction extends AbstractAction {
 
     private static final long serialVersionUID = 5104380211427809600L;
@@ -438,6 +576,7 @@ public class UpgradeXGAPP {
 
       ExtensionFileFilter filter = new ExtensionFileFilter(
           "GATE Application files (.gapp, .xgapp)", ".gapp", ".xgapp");
+      fileChooser.resetChoosableFileFilters();
       fileChooser.addChoosableFileFilter(filter);
       fileChooser.setFileFilter(filter);
       fileChooser.setDialogTitle("Select an XGapp to Upgrade");
@@ -448,100 +587,141 @@ public class UpgradeXGAPP {
           MainFrame.getInstance()) != XJFileChooser.APPROVE_OPTION)
         return;
 
-      File originalXGapp = fileChooser.getSelectedFile();
+      try {
+        File originalXGapp = fileChooser.getSelectedFile().getCanonicalFile();
 
-      MainFrame.lockGUI("Gathering details of plugins");
-      new Thread(() -> {
-        final List<UpgradePath> upgrades;
-        final Document doc;
-        try {
+        MainFrame.lockGUI("Gathering details of plugins");
+        new Thread(() -> {
+          final List<UpgradePath> upgrades;
+          final Document doc;
           try {
-            SAXBuilder builder = new SAXBuilder(false);
-            doc = builder.build(originalXGapp);
-            upgrades = suggest(doc);
-          } catch(Exception e) {
-            log.error("Problem parsing GAPP file", e);
-            return;
-          }
-        } finally {
-          MainFrame.unlockGUI();
-        }
-
-        SwingUtilities.invokeLater(() -> {
-          if(upgrades.isEmpty()) {
-            JOptionPane.showMessageDialog(MainFrame.getInstance(), "No upgradeable plugins found!", "Upgrade XGapp", JOptionPane.WARNING_MESSAGE);
-          } else {
-            if(new XgappUpgradeSelector(originalXGapp.toURI(), upgrades).showDialog(MainFrame.getInstance())) {
-              Iterator<UpgradePath> it = upgrades.iterator();
-              while(it.hasNext()) {
-                UpgradePath upgrade = it.next();
-                if(!upgrade.getUpgradeStrategy().upgradePlugin || upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
-                  it.remove();
-                } else {
-                  System.out.println("Upgrading " + upgrade.getOldPath() + " to " + upgrade.getNewPath());
-                }
-              }
-
-              if(upgrades.isEmpty()) {
-                JOptionPane.showMessageDialog(MainFrame.getInstance(), "Nothing to do!", "Upgrade XGapp", JOptionPane.INFORMATION_MESSAGE);
-                return;
-              }
-
-              new Thread(() -> {
-                MainFrame.lockGUI("Upgrading application");
-                try {
-                  upgrade(doc, upgrades);
-
-                  if(!originalXGapp
-                          .renameTo(new File(originalXGapp.getAbsolutePath() + ".bak"))) {
-                    System.err.println("unable to back up existing xgapp");
-                    return;
-                  }
-
-                  try(FileOutputStream out = new FileOutputStream(originalXGapp)) {
-                    outputter.output(doc, out);
-                  }
-                } catch(Exception e) {
-                  log.error("Error upgrading application", e);
-                } finally {
-                  MainFrame.unlockGUI();
-                }
-              }).start();
+            try {
+              SAXBuilder builder = new SAXBuilder(false);
+              doc = builder.build(originalXGapp);
+              upgrades = suggest(doc);
+            } catch(Exception e) {
+              log.error("Problem parsing GAPP file", e);
+              return;
             }
+          } finally {
+            MainFrame.unlockGUI();
           }
-        });
-      }).start();
+
+          SwingUtilities.invokeLater(() -> {
+            if(upgrades.isEmpty()) {
+              JOptionPane.showMessageDialog(MainFrame.getInstance(), "No upgradeable plugins found!", "Upgrade XGapp", JOptionPane.WARNING_MESSAGE);
+            } else {
+              if(new XgappUpgradeSelector(originalXGapp.toURI(), upgrades).showDialog(MainFrame.getInstance())) {
+                Iterator<UpgradePath> it = upgrades.iterator();
+                while(it.hasNext()) {
+                  UpgradePath upgrade = it.next();
+                  if(!upgrade.getUpgradeStrategy().upgradePlugin || upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
+                    it.remove();
+                  } else {
+                    System.out.println("Upgrading " + upgrade.getOldPath() + " to " + upgrade.getNewPath());
+                  }
+                }
+
+                if(upgrades.isEmpty()) {
+                  JOptionPane.showMessageDialog(MainFrame.getInstance(), "Nothing to do!", "Upgrade XGapp", JOptionPane.INFORMATION_MESSAGE);
+                  return;
+                }
+
+                new Thread(() -> {
+                  MainFrame.lockGUI("Upgrading application");
+                  try {
+                    upgrade(doc, upgrades);
+
+                    if(!originalXGapp
+                            .renameTo(new File(originalXGapp.getAbsolutePath() + ".bak"))) {
+                      System.err.println("unable to back up existing xgapp");
+                      return;
+                    }
+
+                    try(FileOutputStream out = new FileOutputStream(originalXGapp)) {
+                      outputter.output(doc, out);
+                    }
+                  } catch(Exception e) {
+                    log.error("Error upgrading application", e);
+                  } finally {
+                    MainFrame.unlockGUI();
+                  }
+                }).start();
+              }
+            }
+          });
+        }).start();
+      } catch(IOException e) {
+        log.error("Can't canonicalise file " + fileChooser.getSelectedFile(), e);
+      }
     }
 
   }
 
-  public static void main(String args[]) {
-    try {
-      SAXBuilder builder = new SAXBuilder(false);
-      Document doc = builder.build(new File("/home/mark/twitie-en.xgapp"));
-      List<UpgradePath> upgrades = suggest(doc);
-      Iterator<UpgradePath> it = upgrades.iterator();
-      while(it.hasNext()) {
-        UpgradePath upgrade = it.next();
-        if(!upgrade.getUpgradeStrategy().upgradePlugin || upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
-          it.remove();
-        } else {
-          System.out.println(upgrade);
-        }
-      }
+  public static void main(String args[]) throws Exception {
+    BasicConfigurator.configure();
+    Logger.getRootLogger().setLevel(Level.ERROR);
+    Logger.getLogger("gate").setLevel(Level.INFO);
 
-      if(upgrades.isEmpty()) {
-        System.out.println("Nothing to do :(");
-        return;
-      }
-
-      upgrade(doc, upgrades);
-
-      outputter.output(doc, System.out);
-
-    } catch(Exception e) {
-      e.printStackTrace();
+    if(args.length == 0) {
+      System.err.println("Usage:");
+      System.err.println();
+      System.err.println("  java [java_options] gate.util.persistence.UpgradeXGAPP <xgapp> [<script>]");
+      System.err.println();
+      System.err.println(" <xgapp>  - the xgapp file to upgrade");
+      System.err.println(" <script> - (optional) a TSV file specifying any specific actions to take");
+      System.err.println("            for certain plugins.  Typically this file would have been created");
+      System.err.println("            by saving settings while upgrading an xgapp in the GUI.");
+      System.err.println();
+      System.err.println("The upgraded xgapp will replace the original one, with the original saved");
+      System.err.println("with an extra .bak extension.");
+      System.err.println();
+      System.err.println("Note: if the xgapp references any plugins using $resourceshome$ or");
+      System.err.println("$sysprop:...$ style URLs then you must pass the appropriate -D arguments to");
+      System.err.println("java to set the relevant properties (-Dgate.user.resourceshome=... in the");
+      System.err.println("case of $resourceshome$).");
+      System.exit(1);
     }
+
+    SAXBuilder builder = new SAXBuilder(false);
+    File gappFile = new File(args[0]).getCanonicalFile();
+    System.out.println("Upgrading xgapp file " + gappFile);
+    Document doc = builder.build(gappFile);
+    List<UpgradePath> upgrades = suggest(doc);
+    if(args.length > 1) {
+      System.out.println("Loading upgrade script from " + args[1]);
+      loadUpgradePaths(upgrades, gappFile.toURI(), new File(args[1]));
+    }
+    Iterator<UpgradePath> it = upgrades.iterator();
+    while(it.hasNext()) {
+      UpgradePath upgrade = it.next();
+      if(!upgrade.getUpgradeStrategy().upgradePlugin || upgrade.getSelectedVersion().equals(upgrade.getCurrentVersion())) {
+        it.remove();
+      } else {
+        System.out.println("Upgrading " + upgrade.getOldPath() + " to " + upgrade.getNewPath()
+                + (upgrade.getUpgradeStrategy().upgradeResources ? " (including resource references)" : " (plugin only)"));
+      }
+    }
+
+    if(upgrades.isEmpty()) {
+      System.out.println("Nothing to do :(");
+      return;
+    }
+
+    upgrade(doc, upgrades);
+
+    if(!gappFile
+            .renameTo(new File(gappFile.getPath() + ".bak"))) {
+      System.err.println("unable to back up existing xgapp");
+      return;
+    }
+
+    try(FileOutputStream out = new FileOutputStream(gappFile)) {
+      outputter.output(doc, out);
+    }
+
+    System.out.println("Done!");
+
   }
 
 }

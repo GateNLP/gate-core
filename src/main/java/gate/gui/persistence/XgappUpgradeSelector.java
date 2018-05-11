@@ -15,14 +15,15 @@
 package gate.gui.persistence;
 
 import gate.gui.AlternatingTableCellEditor;
+import gate.gui.MainFrame;
 import gate.persist.PersistenceException;
-import gate.resources.img.svg.GreenBallIcon;
-import gate.resources.img.svg.InvalidIcon;
-import gate.resources.img.svg.RedBallIcon;
-import gate.resources.img.svg.YellowBallIcon;
+import gate.resources.img.svg.*;
+import gate.swing.XJFileChooser;
 import gate.swing.XJTable;
+import gate.util.ExtensionFileFilter;
 import gate.util.persistence.PersistenceManager;
 import gate.util.persistence.UpgradeXGAPP;
+import org.apache.log4j.Logger;
 import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.version.Version;
 
@@ -32,21 +33,21 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.EnumMap;
 import java.util.EventObject;
 import java.util.List;
 
-public class XgappUpgradeSelector {
+public class XgappUpgradeSelector implements ActionListener {
 
-  private XJTable pluginTable;
-
-  private JScrollPane scroller;
+  private static final Logger log = Logger.getLogger(XgappUpgradeSelector.class);
 
   private List<UpgradeXGAPP.UpgradePath> upgrades;
-
-  private UpgradePathTableModel model;
 
   private URI gappUri;
 
@@ -60,11 +61,13 @@ public class XgappUpgradeSelector {
 
   private Icon warningIcon = new InvalidIcon(16, 16);
 
+  private UpgradePathTableModel model;
+
 
   public XgappUpgradeSelector(URI gappUri, List<UpgradeXGAPP.UpgradePath> upgrades) {
     this.gappUri = gappUri;
     this.upgrades = upgrades;
-    this.model = new UpgradePathTableModel(upgrades);
+    model = new UpgradePathTableModel(upgrades);
 
     strategyIcons = new EnumMap<UpgradeXGAPP.UpgradePath.UpgradeStrategy, Icon>(UpgradeXGAPP.UpgradePath.UpgradeStrategy.class);
     strategyIcons.put(UpgradeXGAPP.UpgradePath.UpgradeStrategy.UPGRADE, new GreenBallIcon(16, 16));
@@ -72,12 +75,32 @@ public class XgappUpgradeSelector {
     strategyIcons.put(UpgradeXGAPP.UpgradePath.UpgradeStrategy.SKIP, new RedBallIcon(16, 16));
     disabledStrategyIcon = new RedBallIcon(16, 16, true);
 
-    pluginTable = new XJTable(model);
+    XJTable pluginTable = new XJTable(model);
     pluginTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-    scroller = new JScrollPane(pluginTable);
+    JScrollPane scroller = new JScrollPane(pluginTable);
     statusLabel = new JLabel("Select plugin versions to upgrade to");
+    JPanel topPanel = new JPanel(new BorderLayout());
+    topPanel.add(statusLabel, BorderLayout.CENTER);
+
+    Box buttonBox = Box.createHorizontalBox();
+    JButton loadButton = new JButton();
+    loadButton.setIcon(new OpenFileIcon(24, 24));
+    loadButton.setToolTipText("Load a saved upgrade script");
+    loadButton.setActionCommand("LOADSCRIPT");
+    loadButton.addActionListener(this);
+    buttonBox.add(loadButton);
+    buttonBox.add(Box.createHorizontalStrut(5));
+
+    JButton saveButton = new JButton();
+    saveButton.setIcon(new SaveIcon(24, 24));
+    saveButton.setToolTipText("Save selected upgrades as a script");
+    saveButton.setActionCommand("SAVESCRIPT");
+    saveButton.addActionListener(this);
+    buttonBox.add(saveButton);
+    topPanel.add(buttonBox, BorderLayout.SOUTH);
+
     mainPanel = new JPanel(new BorderLayout());
-    mainPanel.add(statusLabel, BorderLayout.NORTH);
+    mainPanel.add(topPanel, BorderLayout.NORTH);
     mainPanel.add(scroller, BorderLayout.CENTER);
 
     DefaultTableCellRenderer newPluginRenderer = new DefaultTableCellRenderer();
@@ -98,6 +121,9 @@ public class XgappUpgradeSelector {
             new AlternatingTableCellEditor(new UpgradeStrategyEditor(), new UpgradeStrategyEditor()));
     pluginTable.getColumnModel().getColumn(3).setCellEditor(
             new AlternatingTableCellEditor(new UpgradeVersionEditor(), new UpgradeVersionEditor()));
+
+    // initial sort
+    model.fireTableDataChanged();
   }
 
   public boolean showDialog(Window parent) {
@@ -106,6 +132,42 @@ public class XgappUpgradeSelector {
     dialog.setResizable(true);
     dialog.setVisible(true);
     return (((Integer)optionPane.getValue()).intValue() == JOptionPane.OK_OPTION);
+  }
+
+  public void actionPerformed(ActionEvent event) {
+    XJFileChooser fileChooser = MainFrame.getFileChooser();
+    fileChooser.setResource("xgappUpgradeScript");
+    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    ExtensionFileFilter filter = new ExtensionFileFilter("Tab-separated values", ".tsv");
+    fileChooser.resetChoosableFileFilters();
+    fileChooser.addChoosableFileFilter(filter);
+    fileChooser.setFileFilter(filter);
+    if("SAVESCRIPT".equals(event.getActionCommand())) {
+      fileChooser.setDialogTitle("Save upgrade script");
+      int result = fileChooser.showSaveDialog(mainPanel);
+      if(result == JFileChooser.APPROVE_OPTION) {
+        try {
+          UpgradeXGAPP.saveUpgradePaths(model.upgrades, gappUri, fileChooser.getSelectedFile());
+        } catch(IOException e) {
+          log.error("Error writing upgrade script", e);
+          statusLabel.setIcon(warningIcon);
+          statusLabel.setText("Couldn't save upgrade script, see messages pane for details");
+        }
+      }
+    } else if("LOADSCRIPT".equals(event.getActionCommand())) {
+      fileChooser.setDialogTitle("Select upgrade script to load");
+      int result = fileChooser.showOpenDialog(mainPanel);
+      if(result == JFileChooser.APPROVE_OPTION) {
+        try {
+          UpgradeXGAPP.loadUpgradePaths(model.upgrades, gappUri, fileChooser.getSelectedFile());
+          model.fireTableDataChanged();
+        } catch(IOException e) {
+          log.error("Error reading upgrade script", e);
+          statusLabel.setIcon(warningIcon);
+          statusLabel.setText("Couldn't load upgrade script, see messages pane for details");
+        }
+      }
+    }
   }
 
   protected class UpgradePathTableModel extends AbstractTableModel {
@@ -199,9 +261,13 @@ public class XgappUpgradeSelector {
     public Object getValueAt(int rowIndex, int columnIndex) {
       UpgradeXGAPP.UpgradePath path = upgrades.get(rowIndex);
       if(columnIndex == 0) {
-        if(path.getOldPath().startsWith("$gatehome$plugins/")) {
+        if(path.getOldPath().startsWith("$gate")) {
           // pre-8.5 GATE_HOME/plugins/Something
-          return "Pre-8.5 " + path.getOldPath().substring(18, path.getOldPath().length() - 1) + " (built-in)";
+          int startOffset = 18; // for $gatehome$plugins/Foo/
+          if(path.getOldPath().startsWith("$gateplugins$")) {
+            startOffset = 13;
+          }
+          return "Pre-8.5 " + path.getOldPath().substring(startOffset, path.getOldPath().length() - 1) + " (built-in)";
         } else if(path.getOldPath().startsWith("creole:")) {
           // an existing Maven plugin
           String[] gav = path.getOldPath().substring(9).split(";", 3);
