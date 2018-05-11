@@ -183,8 +183,6 @@ public abstract class Plugin {
   protected transient String name;
 
   protected transient String description;
-  
-  protected transient String version;
 
   /**
    * The list of {@link gate.Gate.ResourceInfo} objects within this plugin
@@ -230,7 +228,7 @@ public abstract class Plugin {
    * Get the version of this plugin.
    */
   public String getVersion() {
-    return version;
+    return "";
   }
 
   public Set<Plugin> getRequiredPlugins() {
@@ -543,7 +541,7 @@ public abstract class Plugin {
 
     private static final long serialVersionUID = -6944695755723023537L;
 
-    private String group, artifact;
+    private String group, artifact, version;
 
     private transient URL artifactURL, metadataArtifactURL;
 
@@ -553,6 +551,11 @@ public abstract class Plugin {
       this.version = version;
 
       name = artifact;// group+":"+artifact+":"+version;
+    }
+    
+    @Override
+    public String getVersion() {
+      return version;
     }
 
     @Override
