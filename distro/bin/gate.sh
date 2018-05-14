@@ -200,7 +200,7 @@ else
 fi
 
 # Check Java version
-if ( "$JAVACMD" "${vmparams[@]}" -version 2>&1 | grep -q 'java version "1\.8' ); then
+if ( "$JAVACMD" "${vmparams[@]}" -version 2>&1 | grep -q 'version "1\.8' ); then
   # Java 8, nothing to add
   :
 else
