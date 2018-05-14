@@ -285,7 +285,7 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
         curNode = nodes.hasMoreElements() ? (PluginTreeNode)nodes.nextElement() : null;
         i++;
       }
-      if(cmp < 0) {
+      if(cmp < 0 || curNode == null) {
         // we haven't found a node whose plugin is == p, so add a new node for p here
         indicesToAdd.add(i);
         nodesToAdd.add(new PluginTreeNode(p, 0));
