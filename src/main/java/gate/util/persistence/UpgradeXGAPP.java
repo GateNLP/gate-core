@@ -11,7 +11,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import javax.swing.*;
 
@@ -201,9 +200,7 @@ public class UpgradeXGAPP {
 
           String urlSuffix = urlString.substring(upgrade.getOldPath().length());
 
-          urlString = upgrade.getNewPath()
-              + (urlSuffix.startsWith("resources/") ? "" : "resources/")
-              + urlSuffix;
+          urlString = upgrade.newPathFor(urlSuffix);
 
           Element rr = new Element(
               "gate.util.persistence.PersistenceManager-RRPersistence");
@@ -347,7 +344,7 @@ public class UpgradeXGAPP {
 
     private UpgradeStrategy upgradeStrategy;
 
-    protected UpgradePath(Element oldEntry, String oldPath, String groupID,
+    public UpgradePath(Element oldEntry, String oldPath, String groupID,
         String artifactID, VersionRangeResult versions, Version current,
         Version selected) {
       this.oldEntry = oldEntry;
@@ -389,6 +386,12 @@ public class UpgradeXGAPP {
     public String getNewPath() {
       return "creole://" + groupID + ";" + artifactID + ";"
           + Objects.toString(selected) + "/";
+    }
+
+    public String newPathFor(String urlSuffix) {
+      return getNewPath()
+              + (urlSuffix.startsWith("resources/") ? "" : "resources/")
+              + urlSuffix;
     }
 
     public String getOldPath() {
