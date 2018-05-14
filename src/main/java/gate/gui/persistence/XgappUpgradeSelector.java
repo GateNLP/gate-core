@@ -39,9 +39,10 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.EnumMap;
-import java.util.EventObject;
+import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class XgappUpgradeSelector implements ActionListener {
 
@@ -173,8 +174,37 @@ public class XgappUpgradeSelector implements ActionListener {
   protected class UpgradePathTableModel extends AbstractTableModel {
     private List<UpgradeXGAPP.UpgradePath> upgrades;
 
+    private int[] namedepths;
+
     UpgradePathTableModel(List<UpgradeXGAPP.UpgradePath> upgrades) {
       this.upgrades = upgrades;
+      this.namedepths = new int[upgrades.size()];
+      Arrays.fill(this.namedepths, 0);
+      refreshDepths();
+    }
+
+    private void refreshDepths() {
+      boolean finished = false;
+      while(!finished) {
+        finished = true;
+        Map<String, List<Integer>> grouped = IntStream.range(0, namedepths.length).boxed()
+                .collect(Collectors.groupingBy((i) -> (String)getValueAt(i, 0)));
+        for(Map.Entry<String, List<Integer>> e : grouped.entrySet()) {
+          if(e.getValue().size() > 1) {
+            // two or more rows have the same name in the first column - increment all their
+            // namedepth values unless they're already as detailed as can be
+            for(Integer i : e.getValue()) {
+              if(namedepths[i] < 2) {
+                namedepths[i]++;
+                finished = false;
+              }
+            }
+          }
+        }
+        // by the time we get to here either (a) all the rows have distinct names or
+        // (b) those that don't are already showing as much detail as we know and we
+        // simply can't disambiguate them fully.
+      }
     }
 
     @Override
@@ -271,10 +301,12 @@ public class XgappUpgradeSelector implements ActionListener {
         } else if(path.getOldPath().startsWith("creole:")) {
           // an existing Maven plugin
           String[] gav = path.getOldPath().substring(9).split(";", 3);
-          if("uk.ac.gate.plugins".equals(gav[0])) {
-            return gav[1];
+          if(namedepths[rowIndex] == 0) {
+            return gav[1]; // just artifact ID
+          } else if(namedepths[rowIndex] == 1) {
+            return gav[1] + ":" + gav[2]; // artifact:version
           } else {
-            return gav[0] + ":" + gav[1];
+            return gav[0] + ":" + gav[1] + ":" + gav[2]; // group:artifact:version
           }
         } else {
           // a path to something that isn't gatehome
@@ -291,9 +323,15 @@ public class XgappUpgradeSelector implements ActionListener {
         return new PluginCoordinates(path.getGroupID(), path.getArtifactID());
       } else if(columnIndex == 2) {
         return path.getUpgradeStrategy();
-      } else {
+      } else if(columnIndex == 3) {
         // column 3
         return path.getSelectedVersion();
+      } else {
+        // if we ask for an unknown column (including a negative number)
+        // return the upgrade path itself.  This is used as a way to
+        // get the UpgradePath for a row by visible row number unpacking
+        // the XJTable sorting mechanism.
+        return path;
       }
     }
   }
@@ -313,7 +351,8 @@ public class XgappUpgradeSelector implements ActionListener {
       JComboBox<Version> combo = (JComboBox<Version>)super.getTableCellEditorComponent(table, value, isSelected, row, column);
       DefaultComboBoxModel<Version> model = (DefaultComboBoxModel<Version>)combo.getModel();
       model.removeAllElements();
-      for(Version v : upgrades.get(row).getVersions()) {
+      UpgradeXGAPP.UpgradePath path = (UpgradeXGAPP.UpgradePath)table.getValueAt(row, -1);
+      for(Version v : path.getVersions()) {
         model.addElement(v);
       }
       combo.setSelectedItem(value); // which must be one of the available ones
