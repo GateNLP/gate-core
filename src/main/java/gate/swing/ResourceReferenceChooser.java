@@ -217,7 +217,7 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
       public void mouseClicked(MouseEvent e) {
         if(e.getClickCount() == 2) {
           TreePath selPath = pluginTree.getPathForLocation(e.getX(), e.getY());
-          if(((DefaultMutableTreeNode)selPath.getLastPathComponent()).isLeaf()) {
+          if(selPath != null && ((DefaultMutableTreeNode)selPath.getLastPathComponent()).isLeaf()) {
             pluginChooser.setValue(JOptionPane.OK_OPTION);
           }
         }
