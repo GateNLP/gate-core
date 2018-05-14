@@ -112,7 +112,7 @@ public class UpgradeXGAPP {
           String[] parts = urlString.split("/");
 
           String oldName = parts[parts.length - 1];
-          String newName = oldName.toLowerCase().replaceAll("[\\s_]+", "-");
+          String newName = mapDirectoryNameToPlugin(oldName);
 
           versions = getPluginVersions("uk.ac.gate.plugins", newName);
 
@@ -153,6 +153,26 @@ public class UpgradeXGAPP {
     }
 
     return upgrades;
+  }
+
+  /**
+   * Attempts to map an old-style name of an 8.4 plugin under the GATE
+   * plugins folder into the corresponding Maven artifact ID under
+   * uk.ac.gate.plugins.  In most cases this is a simple syntactic
+   * transformation but there are a couple of special cases.
+   * @param oldName the old plugin directory name
+   * @return the Maven artifact ID that corresponds to the old plugin
+   * in GATE 8.5 and later.
+   */
+  public static String mapDirectoryNameToPlugin(String oldName) {
+    // special cases first
+    if("Lang_French".equals(oldName)) {
+      return "lang-french-compat";
+    } else if("Lang_German".equals(oldName)) {
+      return "lang-german-compat";
+    } else {
+      return oldName.toLowerCase().replaceAll("[\\s_]+", "-");
+    }
   }
 
   @SuppressWarnings("unchecked")
