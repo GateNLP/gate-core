@@ -164,6 +164,7 @@ public class CreoleRegisterImpl extends HashMap<String, ResourceData>
 
   /** Get the list of CREOLE directory URLs. */
   @Override
+  @Deprecated
   public Set<URL> getDirectories() {
     // just so that any old code that calls this doesn't throw an exception will
     // be removed at some point when we remove all the deprecated methods
