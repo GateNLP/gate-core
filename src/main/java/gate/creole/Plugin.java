@@ -811,11 +811,15 @@ public abstract class Plugin {
         SAXBuilder builder = new SAXBuilder(false);
         Document fullCreole = builder.build(expandedCreoleUrl);
         
-        String creoleMinGate = fullCreole.getRootElement().getAttributeValue("GATE-MIN");
-        if (creoleMinGate == null) {
-          for (org.apache.maven.model.Dependency effectiveDependency : model.getDependencies()) {
-            if (effectiveDependency.getArtifactId().equals("gate-core")) {
-              fullCreole.getRootElement().setAttribute("GATE-MIN",effectiveDependency.getVersion());
+        String creoleMinGate =
+            fullCreole.getRootElement().getAttributeValue("GATE-MIN");
+        if(creoleMinGate == null) {
+          for(org.apache.maven.model.Dependency effectiveDependency : model
+              .getDependencies()) {
+            if(effectiveDependency.getGroupId().equals("uk.ac.gate")
+                && effectiveDependency.getArtifactId().equals("gate-core")) {
+              fullCreole.getRootElement().setAttribute("GATE-MIN",
+                  effectiveDependency.getVersion());
               break;
             }
           }
@@ -952,11 +956,15 @@ public abstract class Plugin {
           && model.getDescription().trim().equals(""))
         description = model.getDescription();
       
-      String creoleMinGate = jdomDoc.getRootElement().getAttributeValue("GATE-MIN");
-      if (creoleMinGate == null) {
-        for (org.apache.maven.model.Dependency effectiveDependency : model.getDependencies()) {
-          if (effectiveDependency.getArtifactId().equals("gate-core")) {
-            jdomDoc.getRootElement().setAttribute("GATE-MIN",effectiveDependency.getVersion());
+      String creoleMinGate =
+          jdomDoc.getRootElement().getAttributeValue("GATE-MIN");
+      if(creoleMinGate == null) {
+        for(org.apache.maven.model.Dependency effectiveDependency : model
+            .getDependencies()) {
+          if(effectiveDependency.getGroupId().equals("uk.ac.gate")
+              && effectiveDependency.getArtifactId().equals("gate-core")) {
+            jdomDoc.getRootElement().setAttribute("GATE-MIN",
+                effectiveDependency.getVersion());
             break;
           }
         }
