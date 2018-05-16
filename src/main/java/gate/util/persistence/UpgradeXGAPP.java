@@ -1,36 +1,29 @@
 package gate.util.persistence;
 
-import static gate.util.maven.Utils.getRepositoryList;
-import static gate.util.maven.Utils.getRepositorySession;
-import static gate.util.maven.Utils.getRepositorySystem;
-
-import java.awt.event.ActionEvent;
-import java.io.*;
-import java.net.URI;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.*;
-
-import javax.swing.*;
-
+import gate.Gate;
+import gate.Main;
+import gate.creole.metadata.AutoInstance;
+import gate.creole.metadata.CreoleResource;
+import gate.gui.MainFrame;
 import gate.gui.persistence.XgappUpgradeSelector;
 import gate.persist.PersistenceException;
+import gate.resources.img.svg.ApplicationIcon;
+import gate.swing.XJFileChooser;
+import gate.util.ExtensionFileFilter;
+import gate.util.maven.SimpleModelResolver;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.building.*;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.resolution.ArtifactRequest;
-import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.eclipse.aether.resolution.ArtifactResult;
-import org.eclipse.aether.resolution.VersionRangeRequest;
-import org.eclipse.aether.resolution.VersionRangeResolutionException;
-import org.eclipse.aether.resolution.VersionRangeResult;
+import org.eclipse.aether.resolution.*;
+import org.eclipse.aether.util.artifact.SubArtifact;
 import org.eclipse.aether.util.version.GenericVersionScheme;
 import org.eclipse.aether.version.InvalidVersionSpecificationException;
 import org.eclipse.aether.version.Version;
@@ -42,13 +35,19 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jdom.xpath.XPath;
 
-import gate.Main;
-import gate.creole.metadata.AutoInstance;
-import gate.creole.metadata.CreoleResource;
-import gate.gui.MainFrame;
-import gate.resources.img.svg.ApplicationIcon;
-import gate.swing.XJFileChooser;
-import gate.util.ExtensionFileFilter;
+import javax.swing.*;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.awt.event.ActionEvent;
+import java.io.*;
+import java.net.URI;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.*;
+
+import static gate.util.maven.Utils.*;
 
 @CreoleResource(tool = true, isPrivate = true, autoinstances = @AutoInstance, name = "Upgrade XGapp", comment = "Upgrades an XGapp to use new style GATE plugins")
 public class UpgradeXGAPP {
@@ -131,7 +130,7 @@ public class UpgradeXGAPP {
 
           versions = getPluginVersions(group, artifact);
 
-          if(versions != null) {
+          if(versions != null && versions.getVersions() != null && !versions.getVersions().isEmpty()) {
             Version currentVersion;
             try {
               currentVersion = versionScheme.parseVersion(version);
@@ -221,6 +220,8 @@ public class UpgradeXGAPP {
 
   }
 
+  private static XMLInputFactory inputFactory = XMLInputFactory.newFactory();
+
   public static VersionRangeResult getPluginVersions(String group,
       String artifact) {
     try {
@@ -249,6 +250,7 @@ public class UpgradeXGAPP {
 
         Version version = it.next();
         try {
+          URL creoleUrl = null;
           ArtifactResult artifactResult = null;
           // try creole.jar first
           try {
@@ -260,13 +262,15 @@ public class UpgradeXGAPP {
             artifactResult =
                     repoSystem.resolveArtifact(repoSession, artifactRequest);
 
-            URL creoleUrl = new URL("jar:"
+            URL tryCreoleUrl = new URL("jar:"
                     + artifactResult.getArtifact().getFile().toURI().toURL()
                     + "!/META-INF/gate/creole.xml");
 
-            try(InputStream creoleStream = creoleUrl.openStream()) {
+            try(InputStream creoleStream = tryCreoleUrl.openStream()) {
               // no op
             }
+            // if we get to here we know we have a valid creole.xml
+            creoleUrl = tryCreoleUrl;
           } catch(ArtifactResolutionException e) {
             // no -creole.jar, try the normal jar
             artifactObj =
@@ -281,14 +285,68 @@ public class UpgradeXGAPP {
             URL artifactURL = new URL("jar:"
                     + artifactResult.getArtifact().getFile().toURI().toURL() + "!/");
 
-            // check it has a creole.xml at the root
-            URL directoryXmlFileUrl = new URL(artifactURL, "creole.xml");
+            // look for the expanded creole.xml first
+            URL tryCreoleUrl = new URL("jar:"
+                    + artifactResult.getArtifact().getFile().toURI().toURL()
+                    + "!/META-INF/gate/creole.xml");
 
-            try (InputStream creoleStream = directoryXmlFileUrl.openStream()) {
-              // no op
+            try(InputStream creoleStream = tryCreoleUrl.openStream()) {
+              creoleUrl = tryCreoleUrl;
+            } catch(IOException ex) {
+              // expanded creole not found, try the regular top-level one
+              URL directoryXmlFileUrl = new URL(artifactURL, "creole.xml");
+
+              try(InputStream creoleStream = directoryXmlFileUrl.openStream()) {
+                creoleUrl = directoryXmlFileUrl;
+              }
             }
           }
-        } catch(ArtifactResolutionException | IOException e) {
+
+          // look for a GATE-MIN attribute on the root of the creole.xml
+          String minGateVersion = null;
+          try(InputStream creoleStream = creoleUrl.openStream()) {
+            XMLStreamReader xsr = inputFactory.createXMLStreamReader(creoleStream);
+            try {
+              // skip to root element
+              xsr.nextTag();
+              minGateVersion = xsr.getAttributeValue("", "GATE-MIN");
+            } finally {
+              xsr.close();
+            }
+          }
+          if(minGateVersion == null) {
+            // need to look at the POM :-(
+            artifactObj = new SubArtifact(artifactObj, "", "pom");
+
+            ArtifactRequest artifactRequest =
+                    new ArtifactRequest(artifactObj, repos, null);
+            artifactResult = repoSystem.resolveArtifact(repoSession, artifactRequest);
+
+            ModelBuildingRequest req = new DefaultModelBuildingRequest();
+            req.setProcessPlugins(false);
+            req.setPomFile(artifactResult.getArtifact().getFile());
+            req.setModelResolver(new SimpleModelResolver(repoSystem, repoSession,
+                    repos));
+            req.setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MINIMAL);
+
+            ModelBuilder modelBuilder =
+                    new DefaultModelBuilderFactory().newInstance();
+            Model model = modelBuilder.build(req).getEffectiveModel();
+
+            for (org.apache.maven.model.Dependency effectiveDependency : model.getDependencies()) {
+              if(effectiveDependency.getGroupId().equals("uk.ac.gate") &&
+                      effectiveDependency.getArtifactId().equals("gate-core")) {
+                minGateVersion = effectiveDependency.getVersion();
+              }
+            }
+          }
+          if(minGateVersion != null) {
+            Version pluginMinGate = versionScheme.parseVersion(minGateVersion);
+            if(Gate.VERSION.compareTo(pluginMinGate) < 0) {
+              it.remove();
+            }
+          }
+        } catch(ArtifactResolutionException | IOException | XMLStreamException | ModelBuildingException | InvalidVersionSpecificationException e) {
           e.printStackTrace();
           it.remove();
         }
