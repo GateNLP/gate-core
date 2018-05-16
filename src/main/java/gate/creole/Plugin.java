@@ -805,11 +805,23 @@ public abstract class Plugin {
         if(model.getDescription() != null
             && !model.getDescription().trim().equals(""))
           description = model.getDescription();
-
+        
         // get the creole.xml out of the jar and add jar elements for this
         // jar (marked for scanning) and the dependencies
         SAXBuilder builder = new SAXBuilder(false);
-        return builder.build(expandedCreoleUrl);
+        Document fullCreole = builder.build(expandedCreoleUrl);
+        
+        String creoleMinGate = fullCreole.getRootElement().getAttributeValue("GATE-MIN");
+        if (creoleMinGate == null) {
+          for (org.apache.maven.model.Dependency effectiveDependency : model.getDependencies()) {
+            if (effectiveDependency.getArtifactId().equals("gate-core")) {
+              fullCreole.getRootElement().setAttribute("GATE-MIN",effectiveDependency.getVersion());
+              break;
+            }
+          }
+        }
+        
+        return fullCreole;
 
       } catch(IOException | ArtifactResolutionException e) {
         e.printStackTrace();
