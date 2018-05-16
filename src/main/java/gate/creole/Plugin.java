@@ -75,6 +75,9 @@ import org.eclipse.aether.transfer.TransferCancelledException;
 import org.eclipse.aether.transfer.TransferEvent;
 import org.eclipse.aether.transfer.TransferListener;
 import org.eclipse.aether.util.artifact.SubArtifact;
+import org.eclipse.aether.util.version.GenericVersionScheme;
+import org.eclipse.aether.version.InvalidVersionSpecificationException;
+import org.eclipse.aether.version.Version;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -83,6 +86,7 @@ import org.jdom.input.SAXBuilder;
 
 import gate.Gate;
 import gate.Gate.ResourceInfo;
+import gate.Main;
 import gate.Resource;
 import gate.Utils;
 import gate.creole.metadata.CreoleResource;
@@ -167,7 +171,21 @@ public abstract class Plugin {
   }
 
   protected static final Logger log = Logger.getLogger(Plugin.class);
+  
+  private static GenericVersionScheme versionScheme =
+      new GenericVersionScheme();
 
+  private static Version gateVersion;
+  
+  static {
+    try {
+      gateVersion = versionScheme.parseVersion(Main.version);
+    } catch(InvalidVersionSpecificationException e) {
+      // TODO Auto-generated catch block
+      log.error("Unable to parse GATE version number");
+    }
+  }
+  
   /**
    * Is the plugin valid (i.e. is the location reachable and the creole.xml file
    * parsable).
@@ -183,6 +201,8 @@ public abstract class Plugin {
   protected transient String name;
 
   protected transient String description;
+  
+  protected transient String minGateVersion;
 
   /**
    * The list of {@link gate.Gate.ResourceInfo} objects within this plugin
@@ -229,6 +249,10 @@ public abstract class Plugin {
    */
   public String getVersion() {
     return "";
+  }
+  
+  public String getMinimumGateVersion() {
+    return minGateVersion;
   }
 
   public Set<Plugin> getRequiredPlugins() {
@@ -277,9 +301,25 @@ public abstract class Plugin {
   }
 
   public boolean isValid() {
-    // we need to ensire parseCreole() has been called before we can know if the
+    // we need to ensure parseCreole() has been called before we can know if the
     // valid flag is .... valid
     getResourceInfoList();
+    
+    //Main.version
+    if (gateVersion == null || minGateVersion == null || minGateVersion.isEmpty()) {
+      log.debug("unable to check min GATE version");
+      return valid;
+    }
+    
+    try {
+      Version pluginVersion = versionScheme.parseVersion(minGateVersion);
+      
+      valid = valid && gateVersion.compareTo(pluginVersion) >= 0;
+    } catch(InvalidVersionSpecificationException e) {
+      // TODO Auto-generated catch block
+      log.warn("unable to parse min GATE version: "+minGateVersion);
+    }
+    
     return valid;
   }
 
@@ -324,6 +364,8 @@ public abstract class Plugin {
 
     try {
       org.jdom.Document creoleDoc = getMetadataXML();
+      
+      minGateVersion = creoleDoc.getRootElement().getAttributeValue("GATE-MIN","");
 
       final Map<String, ResourceInfo> resInfos =
           new LinkedHashMap<String, ResourceInfo>();
@@ -897,6 +939,16 @@ public abstract class Plugin {
       if(model.getDescription() != null
           && model.getDescription().trim().equals(""))
         description = model.getDescription();
+      
+      String creoleMinGate = jdomDoc.getRootElement().getAttributeValue("GATE-MIN");
+      if (creoleMinGate == null) {
+        for (org.apache.maven.model.Dependency effectiveDependency : model.getDependencies()) {
+          if (effectiveDependency.getArtifactId().equals("gate-core")) {
+            jdomDoc.getRootElement().setAttribute("GATE-MIN",effectiveDependency.getVersion());
+            break;
+          }
+        }
+      }
 
       /*
        * System.out.println(model.getOrganization().getName()); for
