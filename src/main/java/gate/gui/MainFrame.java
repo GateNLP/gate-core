@@ -19,6 +19,7 @@ import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -4856,110 +4857,66 @@ public class MainFrame extends JFrame implements ProgressListener,
 
   public void showHelpFrame(String urlString, String resourceName) {
     final URL url;
-    if (resourceName == null) { resourceName = "unknown"; }
-    if (urlString != null
-    && !urlString.startsWith("http://")
-    && !urlString.startsWith("https://")
-    && !urlString.startsWith("file://")) {
+    if(resourceName == null) {
+      resourceName = "unknown";
+    }
+    if(urlString != null && !urlString.startsWith("http://")
+        && !urlString.startsWith("https://")
+        && !urlString.startsWith("file://")) {
       urlString = "http://gate.ac.uk/userguide/" + urlString;
     }
     try {
-      url = new URL(urlString);
-    } catch (MalformedURLException e) {
+
+      URL baseUrl = new URL(urlString);
+
+      if(baseUrl.toString().startsWith("http://gate.ac.uk/userguide/")) {
+        StringBuilder actualURL = new StringBuilder(baseUrl.toString());
+        // add gateVersion=... to the end of the URL
+        int insertPoint = actualURL.length();
+        if(baseUrl.getRef() != null) {
+          // adjust for a #something on the end
+          insertPoint -= baseUrl.getRef().length() + 1;
+        }
+        if(baseUrl.getQuery() == null) {
+          actualURL.insert(insertPoint, '?');
+        } else {
+          actualURL.insert(insertPoint, "&");
+        }
+        actualURL.insert(insertPoint + 1, "gateVersion=" + gate.Main.version);
+
+        url = new URL(actualURL.toString());
+      } else {
+        url = baseUrl;
+      }
+    } catch(MalformedURLException e) {
       JOptionPane.showMessageDialog(MainFrame.this,
-        (urlString == null) ?
-        "There is no help page for this resource !\n\n" +
-        "Find the developer of the resource:\n" +
-        resourceName + "\n" + "and force him/her to put one."
-        :
-        "The URL of the page for " + resourceName + " is invalid.\n"
-        + urlString,
-        "GATE", JOptionPane.INFORMATION_MESSAGE);
+          (urlString == null)
+              ? "There is no help page for this resource !\n\n"
+                  + "Find the developer of the resource:\n" + resourceName
+                  + "\n" + "and force him/her to put one."
+              : "The URL of the page for " + resourceName + " is invalid.\n"
+                  + urlString,
+          "GATE", JOptionPane.INFORMATION_MESSAGE);
       return;
     }
     Runnable runnable = new Runnable() {
       @Override
       public void run() {
-        StringBuilder actualURL = new StringBuilder(url.toString());
-        if (url.toString().startsWith("http://gate.ac.uk/userguide/")) {
-          // add gateVersion=... to the end of the URL
-          int insertPoint = actualURL.length();
-          if(url.getRef() != null) {
-            // adjust for a #something on the end
-            insertPoint -= url.getRef().length() + 1;
-          }
-          if(url.getQuery() == null) {
-            actualURL.insert(insertPoint, '?');
-          }
-          else {
-            actualURL.insert(insertPoint, "&");
-          }
-          actualURL.insert(insertPoint + 1, "gateVersion=" + gate.Main.version);
-        }
+        try {
 
-        String commandLine = Gate.getUserConfig().getString(
-          MainFrame.class.getName()+".browsercommandline");
+          Desktop.getDesktop().browse(url.toURI());
 
-        if(commandLine == null || commandLine.equals("")
-        || commandLine.equals("Set dynamically when you display help.")) {
-          // try to find the default browser
-          Process process = null;
-          try {
-            // Windows
-            commandLine = "rundll32 url.dll,FileProtocolHandler "
-              + actualURL.toString();
-            try { process = Runtime.getRuntime().exec(commandLine);
-            } catch (IOException ioe2) {/* skip to next try catch */}
-            if (process == null || process.waitFor() != 0) {
-            // Linux
-            commandLine = "xdg-open " + actualURL.toString();
-            try { process = Runtime.getRuntime().exec(commandLine);
-            } catch (IOException ioe3) {/* skip to next try catch */}
-            if (process == null || process.waitFor() != 0) {
-            // Linux KDE
-            commandLine = "kfmclient exec " + actualURL.toString();
-            try { process = Runtime.getRuntime().exec(commandLine);
-            } catch (IOException ioe4) {/* skip to next try catch */}
-            if (process == null || process.waitFor() != 0) {
-            // Linux Gnome
-            commandLine = "gnome-open " + actualURL.toString();
-            try { process = Runtime.getRuntime().exec(commandLine);
-            } catch (IOException ioe5) {/* skip to next try catch */}
-            if (process == null || process.waitFor() != 0) {
-            // Mac
-            commandLine = "open " + actualURL.toString();
-            try { process = Runtime.getRuntime().exec(commandLine);
-            } catch (IOException ioe1) {/* skip to next try catch */}
-            if (process == null || process.waitFor() != 0) {
-            String message = "Unable to determine the default browser.\n"
-              + "To use a custom command line go to the Options menu then Configuration.";
-            log.info(message);
-            }}}}}
-          } catch(SecurityException se) {
-            JOptionPane.showMessageDialog(instance,
-              se.getMessage(), "Help Error", JOptionPane.ERROR_MESSAGE);
-            log.error("Help browser Error", se);
-          } catch (InterruptedException ie) {
-            JOptionPane.showMessageDialog(instance,
-              ie.getMessage(), "Help Error", JOptionPane.ERROR_MESSAGE);
-            log.error("Help browser Error", ie);
-          }
-
-        } else {
-          // external browser
-          commandLine = commandLine.replaceFirst("%file", actualURL.toString());
-          try {
-            Runtime.getRuntime().exec(commandLine);
-          }
-          catch(Exception error) {
-            String message = "Unable to call the custom browser command.\n" +
-              "(" +  commandLine + ")\n\n" +
-              "Please go to the Options menu then Configuration.";
-            log.error(message, error);
-          }
-
+        } catch(SecurityException se) {
+          JOptionPane.showMessageDialog(instance, se.getMessage(), "Help Error",
+              JOptionPane.ERROR_MESSAGE);
+          log.error("Help browser Error", se);
+        } catch(URISyntaxException | IOException ie) {
+          JOptionPane.showMessageDialog(instance, ie.getMessage(), "Help Error",
+              JOptionPane.ERROR_MESSAGE);
+          log.error("Help browser Error", ie);
         }
       }
+
     };
     Thread thread = new Thread(runnable, "showHelpFrame");
     thread.start();

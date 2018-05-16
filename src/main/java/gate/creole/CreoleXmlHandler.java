@@ -16,6 +16,26 @@
 
 package gate.creole;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.Stack;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+
+import org.apache.commons.lang3.text.StrSubstitutor;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
+
 import gate.CreoleRegister;
 import gate.Factory;
 import gate.FeatureMap;
@@ -26,23 +46,6 @@ import gate.util.GateSaxException;
 import gate.util.Out;
 import gate.util.Strings;
 import gate.xml.SimpleErrorHandler;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.Stack;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
 
 /** This is a SAX handler for processing <CODE>creole.xml</CODE> files.
   * It would have been better to write it using DOM or JDOM but....
@@ -480,7 +483,15 @@ public class CreoleXmlHandler extends DefaultHandler {
     //////////////////////////////////////////////////////////////////
     } else if(elementName.toUpperCase().equals("HELPURL")) {
       checkStack("endElement", "HELPURL");
-      resourceData.setHelpURL(contentStack.pop());
+      String urlString = contentStack.pop();
+      
+      Map<String,String> valuesMap = new HashMap<String,String>();
+      valuesMap.put("pluginVersion", plugin.getVersion());
+      valuesMap.put("gateVersion", gate.Gate.VERSION_STRING);
+      StrSubstitutor sub = new StrSubstitutor(valuesMap);
+      urlString = sub.replace(urlString);
+      
+      resourceData.setHelpURL(urlString);
     // End HELPURL processing
     //////////////////////////////////////////////////////////////////
     } else if(elementName.toUpperCase().equals("INTERFACE")) {

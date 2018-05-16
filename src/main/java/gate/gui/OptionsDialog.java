@@ -14,12 +14,6 @@
  */
 package gate.gui;
 
-import gate.Gate;
-import gate.GateConstants;
-import gate.swing.JFontChooser;
-import gate.util.GateRuntimeException;
-import gate.util.OptionsMap;
-
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
@@ -47,12 +41,17 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
+
+import gate.Gate;
+import gate.GateConstants;
+import gate.swing.JFontChooser;
+import gate.util.GateRuntimeException;
+import gate.util.OptionsMap;
 
 /**
  * The options dialog for Gate.
@@ -186,25 +185,7 @@ public class OptionsDialog extends JDialog {
       .DOCUMENT_ADD_SPACE_ON_UNPACK_FEATURE_NAME) )
       addSpaceOnMarkupUnpackChk.setSelected(false);
 
-    browserComboBox = new JComboBox<String>(new String[] {
-      "Default browser", "Custom"});
-    browserComboBox.setPrototypeDisplayValue("Default browser");
-    browserComboBox.setToolTipText(
-      "Use Custom only if Default doesn't work.");
-    browserCommandLineTextField = new JTextField(15);
-    String commandLine =
-      userConfig.getString(MainFrame.class.getName()+".browsercommandline");
-    if(commandLine == null || commandLine.trim().length() == 0
-    || commandLine.equals("Set dynamically when you display help.")) {
-      // option not configured or empty or default browser
-      browserComboBox.setSelectedItem("Default browser");
-      browserCommandLineTextField.setEnabled(false);
-    }
-    else {
-      browserComboBox.setSelectedItem("Custom");
-    }
-    browserCommandLineTextField.setText((commandLine == null)?"":commandLine);
-
+    
     treeSelectViewChk = new JCheckBox("Tree select view",
       userConfig.getBoolean(MainFrame.class.getName()+".treeselectview"));
     treeSelectViewChk.setToolTipText(
@@ -248,18 +229,6 @@ public class OptionsDialog extends JDialog {
     advancedBox.add(hBox);
 
     advancedBox.add(Box.createVerticalStrut(5));
-
-    hBox = Box.createHorizontalBox();
-    hBox.setBorder(BorderFactory.createTitledBorder(" Help browser "));
-    hBox.add(Box.createHorizontalStrut(5));
-      vBox = Box.createVerticalBox();
-      vBox.add(browserComboBox);
-      vBox.add(Box.createVerticalStrut(5));
-      vBox.add(browserCommandLineTextField);
-      vBox.add(Box.createVerticalStrut(5));
-    hBox.add(vBox);
-    hBox.add(Box.createHorizontalStrut(5));
-    advancedBox.add(hBox);
 
     hBox = Box.createHorizontalBox();
     hBox.setBorder(BorderFactory.createTitledBorder(
@@ -355,23 +324,6 @@ public class OptionsDialog extends JDialog {
     });
 
     textBtn.setSelected(true);
-
-    browserComboBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if(browserComboBox.getSelectedItem() == null) {
-          return;
-        }
-        String item = (String)browserComboBox.getSelectedItem();
-        browserCommandLineTextField.setEnabled(item.equals("Custom"));
-        if(item.equals("Default browser")) {
-          browserCommandLineTextField.setText(
-            "Set dynamically when you display help.");
-        } else if(item.equals("Custom")) {
-          browserCommandLineTextField.setText("firefox %file");
-        }
-      }
-    });
 
     // define keystrokes action bindings at the level of the main window
     InputMap inputMap = ((JComponent)this.getContentPane())
@@ -500,8 +452,6 @@ public class OptionsDialog extends JDialog {
         saveSessionChk.isSelected());
       userConfig.put(GateConstants.DOCUMENT_ADD_SPACE_ON_UNPACK_FEATURE_NAME,
         addSpaceOnMarkupUnpackChk.isSelected());
-      userConfig.put(MainFrame.class.getName()+".browsercommandline",
-        browserCommandLineTextField.getText());
       userConfig.put(MainFrame.class.getName()+".treeselectview",
         treeSelectViewChk.isSelected());
       userConfig.put(MainFrame.class.getName()+".viewselecttree",
@@ -671,16 +621,6 @@ public class OptionsDialog extends JDialog {
    * The combobox for the look and feel selection
    */
   protected JComboBox<LNFData> lnfCombo;
-
-  /**
-   * List of browsers. Update the browserCommandLineTextField.
-   */
-  protected JComboBox<String> browserComboBox;
-
-  /**
-   * Browser command line.
-   */
-  protected JTextField browserCommandLineTextField;
 
   protected JCheckBox treeSelectViewChk;
 
