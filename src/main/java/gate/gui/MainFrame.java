@@ -693,7 +693,7 @@ public class MainFrame extends JFrame implements ProgressListener,
     
     // Out has been redirected to the logArea
 
-    Out.prln("GATE " + Main.version + " build " + Main.build + " started at "
+    Out.prln("GATE " + Gate.VERSION_STRING + " build " + Gate.BUILD + " started at "
       + new Date().toString());
     Out.prln("and using Java " + System.getProperty("java.version") + " " +
       System.getProperty("java.vendor") + " on " +
@@ -778,8 +778,8 @@ public class MainFrame extends JFrame implements ProgressListener,
 
     constraints.gridy = 3;
     htmlLbl =
-      new JLabel("<HTML><FONT color=\"blue\">Version <B>" + Main.version
-        + "</B></FONT>" + ", <FONT color=\"red\">build <B>" + Main.build
+      new JLabel("<HTML><FONT color=\"blue\">Version <B>" + Gate.VERSION_STRING
+        + "</B></FONT>" + ", <FONT color=\"red\">build <B>" + Gate.BUILD
         + "</B></FONT>" + "<P><B>JVM version</B>: "
         + System.getProperty("java.version") + " from "
         + System.getProperty("java.vendor") + "</HTML>");

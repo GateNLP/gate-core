@@ -188,7 +188,7 @@ public class Main {
         
         // run the GUI
         frame.setTitleChangable(true);
-        frame.setTitle(name + " " + version + " build " + build);
+        frame.setTitle(name + " " + Gate.VERSION_STRING + " build " + Gate.BUILD);
         
         // Set title from Java properties
         String title =
@@ -331,54 +331,9 @@ public class Main {
 
   }
 
-
-
-  // find out the version and build numbers
-  static {
-    
-    // we can't have the possibility of assigning to a final variable twice so
-    // we put the details into a temp variable and then once we are happy assign
-    // it to the static final variable
-    String temp;
-    
-    BufferedReader reader = null;
-    
-    // find out the version number    
-    try {
-      InputStream ver = Files.getGateResourceAsStream("version.txt");
-      if (ver==null) {
-        throw new IOException();
-      }
-      reader = new BomStrippingInputStreamReader(ver, "UTF-8");
-      temp = reader.readLine();
-    } catch(IOException ioe) {
-      temp = "VERSION UNKNOWN";
-    } finally {
-      IOUtils.closeQuietly(reader);
-    }
-    
-    version = temp;
-
-    // find out the build number
-    try{
-      InputStream build = Files.getGateResourceAsStream("build.txt");
-      if (build==null) {
-        throw new IOException();
-      }
-      reader = new BomStrippingInputStreamReader(build, "UTF-8");
-      temp = reader.readLine();
-    } catch(IOException ioe) {
-      temp = "0000";
-    } finally {
-      IOUtils.closeQuietly(reader);
-    }
-    
-    build = temp;
-  } // static initializer finding build and version
-
   public static final String name = "GATE Developer";
-  public static final String version;
-  public static final String build;
+  public static final String version = Gate.VERSION_STRING;
+  public static final String build = Gate.BUILD;
   
   private static final Logger log = Logger.getLogger(Main.class);
 

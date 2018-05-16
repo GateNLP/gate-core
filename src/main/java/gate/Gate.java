@@ -16,12 +16,7 @@
 
 package gate;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -36,6 +31,8 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import gate.util.*;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import gate.config.ConfigDataProcessor;
@@ -44,13 +41,9 @@ import gate.creole.Plugin;
 import gate.creole.ResourceData;
 import gate.event.CreoleListener;
 import gate.gui.creole.manager.PluginUpdateManager;
-import gate.util.Benchmark;
-import gate.util.Files;
-import gate.util.GateClassLoader;
-import gate.util.GateException;
-import gate.util.GateRuntimeException;
-import gate.util.OptionsMap;
-import gate.util.Strings;
+import org.eclipse.aether.util.version.GenericVersionScheme;
+import org.eclipse.aether.version.InvalidVersionSpecificationException;
+import org.eclipse.aether.version.Version;
 
 /**
  * The class is responsible for initialising the GATE libraries, and providing
@@ -90,6 +83,75 @@ public class Gate implements GateConstants {
    */
   protected static final String ENABLE_BENCHMARKING_FEATURE_NAME =
     "gate.enable.benchmark";
+
+
+  /**
+   * The version of GATE that is currently running, as a string.
+   */
+  public static final String VERSION_STRING;
+
+  /**
+   * The build number of the running GATE (i.e. the Git revision
+   * from which it was compiled).
+   */
+  public static final String BUILD;
+
+  /**
+   * The version of GATE that is currently running.
+   */
+  public static final Version VERSION;
+
+  // find out the version and build numbers
+  static {
+
+    // we can't have the possibility of assigning to a final variable twice so
+    // we put the details into a temp variable and then once we are happy assign
+    // it to the static final variable
+    String temp;
+
+    BufferedReader reader = null;
+
+    // find out the version number
+    try {
+      InputStream ver = Files.getGateResourceAsStream("version.txt");
+      if (ver==null) {
+        throw new IOException();
+      }
+      reader = new BomStrippingInputStreamReader(ver, "UTF-8");
+      temp = reader.readLine();
+    } catch(IOException ioe) {
+      temp = "VERSION UNKNOWN";
+    } finally {
+      IOUtils.closeQuietly(reader);
+    }
+
+    VERSION_STRING = temp;
+
+    // find out the build number
+    try{
+      InputStream build = Files.getGateResourceAsStream("build.txt");
+      if (build==null) {
+        throw new IOException();
+      }
+      reader = new BomStrippingInputStreamReader(build, "UTF-8");
+      temp = reader.readLine();
+    } catch(IOException ioe) {
+      temp = "0000";
+    } finally {
+      IOUtils.closeQuietly(reader);
+    }
+
+    BUILD = temp;
+
+    Version tmpGateVersion = null;
+    try {
+      tmpGateVersion = new GenericVersionScheme().parseVersion(VERSION_STRING);
+    } catch(InvalidVersionSpecificationException e) {
+      // TODO Auto-generated catch block
+      log.error("Unable to parse GATE version number");
+    }
+    VERSION = tmpGateVersion;
+  }
 
   /** Is true if GATE is to be run in a sandbox **/
   private static boolean sandboxed = true;
