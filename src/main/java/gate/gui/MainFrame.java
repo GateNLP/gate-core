@@ -496,17 +496,12 @@ public class MainFrame extends JFrame implements ProgressListener,
     // from outside the getInstance() method, but if we don't do this
     // then the GUI never appears. We probably should figure out why.
     instance = this;
-    
-    new Thread() {
-      @Override
-      public void run() {
-        // kick this off here so that it does any resolving of creole metadata
-        // jars now rather than the first time you try and open the plugin
-        // manager, which is still a bit slow 
-        PluginUpdateManager.loadDefaultPlugins();
-      }
-    }.start();
-    
+
+    // kick this off here so that it does any resolving of creole metadata
+    // jars now rather than the first time you try and open the plugin
+    // manager, which is still a bit slow
+    PluginUpdateManager.loadDefaultPlugins();
+
     // set the WM class
     try {
       Toolkit xToolkit = Toolkit.getDefaultToolkit();

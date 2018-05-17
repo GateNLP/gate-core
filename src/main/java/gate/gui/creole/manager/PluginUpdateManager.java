@@ -19,32 +19,20 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import gate.Main;
 import gate.creole.Plugin;
 import gate.gui.MainFrame;
 import gate.resources.img.svg.AvailableIcon;
+import org.apache.log4j.Logger;
 
 /**
  * The CREOLE plugin manager
@@ -53,6 +41,8 @@ import gate.resources.img.svg.AvailableIcon;
  */
 @SuppressWarnings("serial")
 public class PluginUpdateManager extends JDialog {
+
+  private static final Logger log = Logger.getLogger(PluginUpdateManager.class);
 
   private AvailablePlugins installed = new AvailablePlugins();
 
@@ -267,7 +257,26 @@ public class PluginUpdateManager extends JDialog {
       MainFrame.getGuiRoots().add(this);
       // if the window is about to be made visible then do some quick setup
       tabs.setSelectedIndex(0);
-      installed.reInit();
+      if(defaultPluginsWorker != null && !defaultPluginsWorker.isDone()) {
+        showProgressPanel(true);
+        progressPanel.messageChanged("Downloading default plugins list");
+        defaultPluginsWorker.addPropertyChangeListener((evt) -> {
+          if("progress".equals(evt.getPropertyName())) {
+            // progress property changes are notified on the EDT
+            progressPanel.downloadProgressed("Default plugins", 100, (Integer)evt.getNewValue());
+          } else if("state".equals(evt.getPropertyName())) {
+            if(evt.getNewValue() == SwingWorker.StateValue.DONE) {
+              // state property changes are notified on the background thread, not the EDT
+              SwingUtilities.invokeLater(() -> {
+                showProgressPanel(false);
+                installed.reInit();
+              });
+            }
+          }
+        });
+      } else {
+        installed.reInit();
+      }
     }
 
     // now actually show/hide the window
@@ -277,39 +286,58 @@ public class PluginUpdateManager extends JDialog {
   }
 
   private static Set<Plugin> defaultPlugins = null;
-  
+
+  private static SwingWorker<Void, Void> defaultPluginsWorker = null;
+
   public static void loadDefaultPlugins() {
     if(defaultPlugins != null) return;
 
-    defaultPlugins = new HashSet<Plugin>();
+    defaultPlugins = new HashSet<>();
 
-    MainFrame.getInstance().downloadWithCache(String.format(DEFAULT_PLUGINS_URL_PATTERN, Main.version)).ifPresent((is) -> {
-      try(BufferedReader in = new BufferedReader(
-              new InputStreamReader(is, "UTF-8"))) {
-        for(String line = in.readLine(); line != null; line = in.readLine()) {
-
-          try {
-            String[] parts = line.split("\t", 3);
-
-            // if we don't have three parts then skip this line
-            if(parts.length != 3) continue;
-
-            Plugin.Maven plugin = new Plugin.Maven(parts[0], parts[1], parts[2]);
-
-            // this triggers the resolve of the creole metadata jar so we have
-            // all the details to fill the table -- but it slows us down!
-            plugin.getMetadataXML();
-
-            defaultPlugins.add(plugin);
-          } catch(Exception e) {
-            e.printStackTrace();
+    defaultPluginsWorker = new SwingWorker<Void, Void>() {
+      @Override
+      protected Void doInBackground() {
+        MainFrame.getInstance().downloadWithCache(String.format(DEFAULT_PLUGINS_URL_PATTERN, Main.version)).ifPresent((is) -> {
+          List<String> pluginsToLoad = new ArrayList<>();
+          try(BufferedReader in = new BufferedReader(
+                  new InputStreamReader(is, "UTF-8"))) {
+            for(String line = in.readLine(); line != null; line = in.readLine()) {
+              pluginsToLoad.add(line);
+            }
+          } catch(IOException e) {
+            log.warn("Unable to load list of default plugins", e);
+            return;
           }
-        }
-      } catch(IOException ioe) {
-        System.err.println("Unable to completely load list of default plugins");
-        ioe.printStackTrace();
+
+          int loaded = 0;
+          for(String pluginLine : pluginsToLoad) {
+            try {
+              String[] parts = pluginLine.split("\t", 3);
+
+              // if we don't have three parts then skip this line
+              if(parts.length != 3) continue;
+
+              Plugin.Maven plugin = new Plugin.Maven(parts[0], parts[1], parts[2]);
+
+              // this triggers the resolve of the creole metadata jar so we have
+              // all the details to fill the table -- but it slows us down!
+              plugin.getMetadataXML();
+
+              defaultPlugins.add(plugin);
+            } catch(Exception e) {
+              e.printStackTrace();
+            } finally {
+              loaded++;
+              setProgress((100*loaded) / pluginsToLoad.size());
+            }
+          }
+        });
+
+        return null;
       }
-    });
+    };
+
+    defaultPluginsWorker.execute();
   }
 
   /**
