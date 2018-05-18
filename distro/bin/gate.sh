@@ -199,15 +199,6 @@ else
   exit 1
 fi
 
-# Check Java version
-if ( "$JAVACMD" "${vmparams[@]}" -version 2>&1 | grep -q 'version "1\.8' ); then
-  # Java 8, nothing to add
-  :
-else
-  # We need to add an extra module on Java 9 or later
-  vmparams=( "${vmparams[@]}" "--add-modules" "java.activation" )
-fi
-
 echo "Running GATE using Java at $JAVACMD"
 echo "$JAVACMD" "${vmparams[@]}" -jar "$GATE_HOME/bin/gateLauncher.jar" "${gateparams[@]}" 
 "$JAVACMD" "${vmparams[@]}" -jar "$GATE_HOME/bin/gateLauncher.jar" "${gateparams[@]}"
