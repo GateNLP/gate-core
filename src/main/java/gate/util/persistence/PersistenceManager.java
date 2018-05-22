@@ -34,17 +34,12 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -343,71 +338,62 @@ public class PersistenceManager {
       }
 
       String relPath = null;
-                  
-      if(pathMarker.equals(relativePathMarker)) {
-        // In theory we should just relativize here using the original paths, without
-        // following any symbolic links. We do not want to follow symbolic links because 
-        // somebody may want to use a symbolic link to a completely different location
-        // to include some resources into the project directory that contains the 
-        // pipeline (and the link to the resource).
-        // However, if the project directory itself is within a linked location, then 
-        // GATE will sometimes use the linked and sometimes the non-linked path 
-        // (for some reason it uses the non-linked path in the plugin manager but it uses
-        // the linked path when the application file is choosen). This means that 
-        // in those cases, there would be a large number of unwanted ../../../../some/dir/to/get/back
-        // If we solve this by using the canonical paths, it will do the wrong thing for 
-        // links to resources. So we choose to make a compromise: if we can create a relative
-        // path that does not generate any ../ at the beginning of the relative part, then
-        // we use that, otherwise we use the real paths 
-        
-        relPath = getRelativeFilePathString(outDir, urlFile);
-        logger.debug("First relative path string attempt got "+relPath);
-        if(relPath.startsWith("../")) {
-          // if we want to actually use the real path, we have to be careful which is the 
-          // real parent of the out file: if outFile is a symbolic link then it is 
-          // outDirOfReal otherwise it is outDirReal
-          logger.debug("upslength is "+upsLength(relPath));
-          String tmpPath = relPath;
-          if(java.nio.file.Files.isSymbolicLink(outFile.toPath())) {
-            tmpPath = getRelativeFilePathString(outDirOfReal, urlFileReal);
-            logger.debug("trying outDirOfReal "+tmpPath);
-            logger.debug("upslength is "+upsLength(tmpPath));
-          } else {
-            tmpPath = getRelativeFilePathString(outDirReal, urlFileReal);                                  
-            logger.debug("trying outDirReal "+tmpPath);
-            logger.debug("upslength is "+upsLength(tmpPath));
+
+      try {
+        if(pathMarker.equals(relativePathMarker)) {
+          // In theory we should just relativize here using the original paths, without
+          // following any symbolic links. We do not want to follow symbolic links because
+          // somebody may want to use a symbolic link to a completely different location
+          // to include some resources into the project directory that contains the
+          // pipeline (and the link to the resource).
+          // However, if the project directory itself is within a linked location, then
+          // GATE will sometimes use the linked and sometimes the non-linked path
+          // (for some reason it uses the non-linked path in the plugin manager but it uses
+          // the linked path when the application file is choosen). This means that
+          // in those cases, there would be a large number of unwanted ../../../../some/dir/to/get/back
+          // If we solve this by using the canonical paths, it will do the wrong thing for
+          // links to resources. So we choose to make a compromise: if we can create a relative
+          // path that does not generate any ../ at the beginning of the relative part, then
+          // we use that, otherwise we use the real paths
+
+          relPath = getRelativeFilePathString(outDir, urlFile);
+          logger.debug("First relative path string attempt got " + relPath);
+          if(relPath.startsWith("../")) {
+            // if we want to actually use the real path, we have to be careful which is the
+            // real parent of the out file: if outFile is a symbolic link then it is
+            // outDirOfReal otherwise it is outDirReal
+            logger.debug("upslength is " + upsLength(relPath));
+            String tmpPath = relPath;
+            if(java.nio.file.Files.isSymbolicLink(outFile.toPath())) {
+              tmpPath = getRelativeFilePathString(outDirOfReal, urlFileReal);
+              logger.debug("trying outDirOfReal " + tmpPath);
+              logger.debug("upslength is " + upsLength(tmpPath));
+            } else {
+              tmpPath = getRelativeFilePathString(outDirReal, urlFileReal);
+              logger.debug("trying outDirReal " + tmpPath);
+              logger.debug("upslength is " + upsLength(tmpPath));
+            }
+            if(upsLength(tmpPath) < upsLength(relPath)) {
+              relPath = tmpPath;
+            }
+            logger.debug("Using tmpPath " + relPath);
           }
-          if(upsLength(tmpPath) < upsLength(relPath)) {
-            relPath = tmpPath;
-          }
-          logger.debug("Using tmpPath "+relPath);
+          // if we still get something that starts with ../ then our only remaining option is
+          // to find if a parent
+        } else if(pathMarker.equals(gatehomePathMarker)) {
+          relPath = getRelativeFilePathString(gateHomePathReal, urlFileReal);
+        } else if(pathMarker.equals(resourceshomePathMarker)) {
+          relPath = getRelativeFilePathString(resourceshomeDirReal, urlFileReal);
+        } else {
+          // this should really never happen!
+          throw new GateRuntimeException("Unexpected error when persisting URL " + urlFile);
         }
-        // if we still get something that starts with ../ then our only remaining option is
-        // to find if a parent 
-      } else if(pathMarker.equals(gatehomePathMarker)) {
-        relPath = getRelativeFilePathString(gateHomePathReal, urlFileReal);
-      } else if(pathMarker.equals(resourceshomePathMarker)) {
-        relPath = getRelativeFilePathString(resourceshomeDirReal, urlFileReal);
-      } else {
-        // this should really never happen!
-        throw new GateRuntimeException("Unexpected error when persisting URL "+urlFile);
+      } catch(IllegalArgumentException e) {
+        logger.warn("Could not convert " + urlFile + " to a relative path - storing as absolute", e);
+        return urlFile.toURI().toString();
       }
 
-      Path rel = Paths.get(relPath);
-      String uriPath = "";
-      boolean first = true;
-      for(Path component : rel) {
-        if(!first) uriPath += "/";
-        uriPath += component.toString();
-        first = false;
-      }
-      if(urlFile.isDirectory()) {
-        // trailing slash
-        uriPath += "/";
-      }
-      // construct the final properly encoded relative URI
-      URI finalRelUri = new URI(null, null, uriPath, null);
-      return pathMarker + finalRelUri.getRawPath();
+      return pathMarker + relPath;
     }
     
     @Override
@@ -650,7 +636,11 @@ public class PersistenceManager {
       } catch (IOException ex) {
         // ignore and use original
       }
-      return dirPath.relativize(filePath).toString();
+
+      // turn both into URIs and try to relativise one against the other
+      URI dirUri = dirPath.toUri();
+      URI fileUri = filePath.toUri();
+      return getRelativeUri(dirUri, fileUri);
     }
 
     private static int upsLength(String path) {
@@ -661,8 +651,38 @@ public class PersistenceManager {
         return 0;
       }
     }
-    
-    
+
+    public static String getRelativeUri(URI context, URI target) {
+      if(!Objects.equals(context.getHost(), target.getHost())) {
+        // this typically only happens on Windows when one path is a UNC path
+        // (\\server\share\something) and the other is not, or both are UNCs
+        // on different servers
+        throw new IllegalArgumentException("Can't create relative path between " + context
+                + " and " + target + " as they are on different hosts.");
+      }
+
+      String contextPath = context.getRawPath();
+      String targetPath = target.getRawPath();
+      String[] targetComponents = targetPath.split("/", -1);
+      String[] contextComponents = contextPath.split("/", -1);
+
+      // find the length of the common prefix (which may be zero)
+      int commonPathElements = 0;
+      while(commonPathElements < targetComponents.length
+              && commonPathElements < contextComponents.length
+              && Objects.equals(targetComponents[commonPathElements],
+              contextComponents[commonPathElements])) {
+        commonPathElements++;
+      }
+
+      // construct the relative path by stripping the common prefix from both
+      // paths, then concatenating enough ".." to get from the context to the
+      // common prefix point, then the target path from there
+      return Stream.concat(IntStream.range(commonPathElements, contextComponents.length - 1).mapToObj((i) -> ".."),
+              IntStream.range(commonPathElements, targetComponents.length).mapToObj((i) -> targetComponents[i]))
+              .collect(Collectors.joining("/"));
+    }
+
     /**
      * This string will be used to start the serialisation of URL that
      * represent relative paths.
@@ -962,91 +982,10 @@ public class PersistenceManager {
    *         result in the target URL.
    */
   public static String getRelativePath(URL context, URL target) {
-    if(context.getProtocol().equals("file")
-            && target.getProtocol().equals("file")) {
-      File contextFile = Files.fileFromURL(context);
-      File targetFile = Files.fileFromURL(target);
-
-      // if the original context URL ends with a slash (i.e. denotes
-      // a directory), then we pretend we're taking a path relative to
-      // some file in that directory.  This is because the relative
-      // path from context file:/home/foo/bar to file:/home/foo/bar/baz
-      // is bar/baz, whereas the path from file:/home/foo/bar/ - with
-      // the trailing slash - is just baz.
-      if(context.toExternalForm().endsWith("/")) {
-        contextFile = new File(contextFile, "__dummy__");
-      }
-
-      List<File> targetPathComponents = new ArrayList<File>();
-      File aFile = targetFile.getParentFile();
-      while(aFile != null) {
-        targetPathComponents.add(0, aFile);
-        aFile = aFile.getParentFile();
-      }
-      List<File> contextPathComponents = new ArrayList<File>();
-      aFile = contextFile.getParentFile();
-      while(aFile != null) {
-        contextPathComponents.add(0, aFile);
-        aFile = aFile.getParentFile();
-      }
-      // the two lists can have 0..n common elements (0 when the files
-      // are
-      // on separate roots
-      int commonPathElements = 0;
-      while(commonPathElements < targetPathComponents.size()
-              && commonPathElements < contextPathComponents.size()
-              && targetPathComponents.get(commonPathElements).equals(
-                      contextPathComponents.get(commonPathElements)))
-        commonPathElements++;
-      // construct the string for the relative URL
-      String relativePath = "";
-      for(int i = commonPathElements; i < contextPathComponents.size(); i++) {
-        if(relativePath.length() == 0)
-          relativePath += "..";
-        else relativePath += "/..";
-      }
-      for(int i = commonPathElements; i < targetPathComponents.size(); i++) {
-        String aDirName = targetPathComponents.get(i).getName();
-        if(aDirName.length() == 0) {
-          aDirName = targetPathComponents.get(i).getAbsolutePath();
-          if(aDirName.endsWith(File.separator)) {
-            aDirName = aDirName.substring(0, aDirName.length()
-                    - File.separator.length());
-          }
-        }
-        // Out.prln("Adding \"" + aDirName + "\" name for " +
-        // targetPathComponents.get(i));
-        if(relativePath.length() == 0) {
-          relativePath += aDirName;
-        }
-        else {
-          relativePath += "/" + aDirName;
-        }
-      }
-      // we have the directory; add the file name
-      if(relativePath.length() == 0) {
-        relativePath += targetFile.getName();
-      }
-      else {
-        relativePath += "/" + targetFile.getName();
-      }
-
-      if(target.toExternalForm().endsWith("/")) {
-        // original target ended with a slash, so relative path should do too
-        relativePath += "/";
-      }
-      try {
-        URI relativeURI = new URI(null, null, relativePath, null, null);
-        return relativeURI.getRawPath();
-      }
-      catch(URISyntaxException use) {
-        throw new GateRuntimeException("Failed to generate relative path " +
-            "between context: " + context + " and target: " + target, use);
-      }
-    }
-    else {
-      throw new GateRuntimeException("Both the target and the context URLs "
-              + "need to be \"file:\" URLs!");
+    try {
+      return URLHolder.getRelativeUri(context.toURI(), target.toURI());
+    } catch(URISyntaxException e) {
+      throw new GateRuntimeException("Unable to construct relative path between " + context + " and " + target);
     }
   }
 
