@@ -14,18 +14,10 @@
 
 package gate.gui;
 
-import gate.Controller;
-import gate.Gate;
-import gate.GateConstants;
-import gate.Resource;
-import gate.creole.AbstractVisualResource;
-import gate.creole.ResourceInstantiationException;
-import gate.creole.metadata.CreoleResource;
-import gate.creole.metadata.GuiType;
-
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.io.StringReader;
+import java.net.URI;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
@@ -47,6 +39,16 @@ import org.xhtmlrenderer.swing.FSMouseListener;
 import org.xhtmlrenderer.swing.LinkListener;
 import org.xhtmlrenderer.util.Configuration;
 import org.xml.sax.InputSource;
+
+import gate.Controller;
+import gate.Gate;
+import gate.GateConstants;
+import gate.Resource;
+import gate.creole.AbstractVisualResource;
+import gate.creole.ResourceInstantiationException;
+import gate.creole.ResourceReference;
+import gate.creole.metadata.CreoleResource;
+import gate.creole.metadata.GuiType;
 
 /**
  * This viewer displays metadata associated with a GATE Controller. The location
@@ -119,7 +121,16 @@ public class ControllerMetadataViewer extends AbstractVisualResource {
       throw new IllegalArgumentException("no gate.app.MetadataURL feature");
 
     try {
-      URL metadata = (URL)controller.getFeatures().get("gate.app.MetadataURL");
+      Object ref = controller.getFeatures().get("gate.app.MetadataURL");
+      
+      URL metadata;
+      
+      if (ref instanceof ResourceReference) {
+        metadata = ((ResourceReference)ref).toURL();
+      }
+      else
+        metadata = (URL)ref;
+      
       URL longDesc = new URL(metadata, "long-desc.html");
       URL iconDesc = new URL(metadata, "icon.png");
 

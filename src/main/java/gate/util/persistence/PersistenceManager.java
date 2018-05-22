@@ -218,8 +218,11 @@ public class PersistenceManager {
     public Object createObject()
         throws PersistenceException, ResourceInstantiationException {
 
-      return URLHolder.unpackPersistentRepresentation(uriString);
-
+      try {
+        return new ResourceReference(URLHolder.unpackPersistentRepresentation(uriString));
+      } catch(URISyntaxException e) {
+        throw new PersistenceException(e);
+      }
     }    
   }
 
