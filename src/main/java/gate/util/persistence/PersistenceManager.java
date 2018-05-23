@@ -32,9 +32,17 @@ import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -212,13 +220,13 @@ public class PersistenceManager {
     @Override
     public Object createObject()
         throws PersistenceException, ResourceInstantiationException {
-
       try {
-        return new ResourceReference(URLHolder.unpackPersistentRepresentation(uriString));
+        return new ResourceReference(URLHolder.unpackPersistentRepresentation(
+            currentPersistenceURL().toURI(), uriString));
       } catch(URISyntaxException e) {
         throw new PersistenceException(e);
       }
-    }    
+    }
   }
 
   /**
@@ -447,17 +455,10 @@ public class PersistenceManager {
     @Override
     public Object createObject() throws PersistenceException {
       try {
-        return unpackPersistentRepresentation(urlString).toURL();
-      } catch(MalformedURLException e) {
-        throw new PersistenceException(e);
-      }
-    }
-
-    public static URI unpackPersistentRepresentation(String persistent) throws PersistenceException {
-      try {
-        return unpackPersistentRepresentation(currentPersistenceURL().toURI(), persistent);
-      } catch(URISyntaxException mue) {
-        throw new PersistenceException(mue);
+        return unpackPersistentRepresentation(
+            currentPersistenceURL().toURL().toURI(), urlString).toURL();
+      } catch(URISyntaxException | IOException e1) {
+        throw new PersistenceException(e1);
       }
     }
 
@@ -1160,6 +1161,17 @@ public class PersistenceManager {
 
   public static Object loadObjectFromUrl(URL url) throws PersistenceException,
           IOException, ResourceInstantiationException {
+    try {
+      return loadObjectFromUri(url.toURI());
+    } catch(URISyntaxException e) {
+      throw new PersistenceException(e);
+    }
+  }
+  
+  public static Object loadObjectFromUri(URI uri) throws PersistenceException,
+  IOException, ResourceInstantiationException, URISyntaxException {
+    
+    ResourceReference resourceReference = new ResourceReference(uri);
     
     if(!Gate.isInitialised())
       throw new ResourceInstantiationException(
@@ -1171,7 +1183,7 @@ public class PersistenceManager {
             .getListeners().get("gate.event.StatusListener");
     if(pListener != null) pListener.progressChanged(0);
 
-    startLoadingFrom(url);
+    startLoadingFrom(resourceReference);
     //the actual stream obtained from the URL. We keep a reference to this
     //so we can ensure it gets closed.
     InputStream rawStream = null;
@@ -1181,7 +1193,7 @@ public class PersistenceManager {
       // xml
       // format. Otherwise we will assume that it contains native
       // serializations.
-      boolean xmlStream = isXmlApplicationFile(url);
+      boolean xmlStream = isXmlApplicationFile(resourceReference.toURL());
       ObjectInputStream ois = null;
       HierarchicalStreamReader reader = null;
       XStream xstream = null;
@@ -1191,12 +1203,12 @@ public class PersistenceManager {
       if(xmlStream) {
         // we don't want to strip the BOM on XML.
         Reader inputReader = new InputStreamReader(
-                rawStream = url.openStream());
+                rawStream = resourceReference.openStream());
         try {
           XMLInputFactory inputFactory = XMLInputFactory.newInstance();
           inputFactory.setProperty(XMLInputFactory.IS_COALESCING, true);
           XMLStreamReader xsr = inputFactory.createXMLStreamReader(
-              url.toExternalForm(), inputReader);
+              resourceReference.toURL().toExternalForm(), inputReader);
           reader = new StaxReader(new QNameMap(), xsr);
         }
         catch(XMLStreamException xse) {
@@ -1220,7 +1232,7 @@ public class PersistenceManager {
         // use GateAwareObjectInputStream to load classes through the
         // GATE ClassLoader if they can't be loaded through the one
         // ObjectInputStream would normally use
-        ois = new GateAwareObjectInputStream(url.openStream());
+        ois = new GateAwareObjectInputStream(resourceReference.openStream());
 
       }
       Object res = null;
@@ -1292,8 +1304,8 @@ public class PersistenceManager {
   /**
    * Set up the thread-local state for the current loading run.
    */
-  private static void startLoadingFrom(URL url) {
-    persistenceURL.get().addFirst(url);
+  private static void startLoadingFrom(ResourceReference rr) {
+    persistenceURL.get().addFirst(rr);
     existingTransientValues.get().addFirst(new HashMap<ObjectHolder,Object>());
   }
 
@@ -1308,11 +1320,11 @@ public class PersistenceManager {
   /**
    * Get the URL currently being loaded by this thread.
    */
-  public static URL currentPersistenceURL() {
+  public static ResourceReference currentPersistenceURL() {
     return persistenceURL.get().getFirst();
   }
   
-  public static List<URL> currentPersistenceURLStack() {
+  public static List<ResourceReference> currentPersistenceURLStack() {
 	  return Collections.unmodifiableList(persistenceURL.get());
   }
 
@@ -1432,7 +1444,7 @@ public class PersistenceManager {
    * reading from a URL. Will only be non-null during restoring
    * operations.
    */
-  static ThreadLocal<LinkedList<URL>> persistenceURL;
+  static ThreadLocal<LinkedList<ResourceReference>> persistenceURL;
 
   private static final class BooleanFlag {
     BooleanFlag(boolean initial) {
@@ -1517,7 +1529,7 @@ public class PersistenceManager {
     existingPersistentReplacements = new ThreadLocalStack<Map<ObjectHolder,Persistence>>();
     existingTransientValues = new ThreadLocalStack<Map<ObjectHolder,Object>>();
     persistenceFile = new ThreadLocalStack<File>();
-    persistenceURL = new ThreadLocalStack<URL>();
+    persistenceURL = new ThreadLocalStack<ResourceReference>();
     useGateHome = new ThreadLocalStack<Boolean>();
     warnAboutGateHome = new ThreadLocalStack<Boolean>();
     haveWarnedAboutGateHome = new ThreadLocalStack<BooleanFlag>();

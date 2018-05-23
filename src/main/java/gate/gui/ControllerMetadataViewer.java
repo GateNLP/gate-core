@@ -128,6 +128,9 @@ public class ControllerMetadataViewer extends AbstractVisualResource {
       if (ref instanceof ResourceReference) {
         metadata = ((ResourceReference)ref).toURL();
       }
+      else if (ref instanceof String) {
+        metadata = (new ResourceReference(new URI((String)ref))).toURL();
+      }
       else
         metadata = (URL)ref;
       

@@ -693,15 +693,15 @@ public abstract class Plugin {
 
       WorkspaceReader workspace = null;
 
-      List<URL> persistenceURLStack =
+      List<ResourceReference> persistenceURLStack =
           PersistenceManager.currentPersistenceURLStack();
 
       List<File> workspaces = new ArrayList<File>();
 
       if(persistenceURLStack != null && !persistenceURLStack.isEmpty()) {
-        for(URL url : persistenceURLStack) {
+        for(ResourceReference rr : persistenceURLStack) {
           try {
-            File file = gate.util.Files.fileFromURL(url);
+            File file = gate.util.Files.fileFromURL(rr.toURL());
             File cache = new File(file.getParentFile(), "maven-cache.gate");
             if(cache.exists() && cache.isDirectory()) {
               workspaces.add(cache);
@@ -807,15 +807,15 @@ public abstract class Plugin {
 
       WorkspaceReader workspace = null;
 
-      List<URL> persistenceURLStack =
+      List<ResourceReference> persistenceURLStack =
           PersistenceManager.currentPersistenceURLStack();
 
       List<File> workspaces = new ArrayList<File>();
 
       if(persistenceURLStack != null && !persistenceURLStack.isEmpty()) {
-        for(URL url : persistenceURLStack) {
+        for(ResourceReference rr : persistenceURLStack) {
           try {
-            File file = gate.util.Files.fileFromURL(url);
+            File file = gate.util.Files.fileFromURL(rr.toURL());
             File cache = new File(file.getParentFile(), "maven-cache.gate");
             if(cache.exists() && cache.isDirectory()) {
               workspaces.add(cache);

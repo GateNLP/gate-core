@@ -2905,7 +2905,7 @@ public class MainFrame extends JFrame implements ProgressListener,
             
             // load LingPipe as an application from a gapp file
             Resource controller =
-                (Resource)PersistenceManager.loadObjectFromUrl(pipelineURL.toURL());
+                (Resource)PersistenceManager.loadObjectFromUri(pipelineURL.toURI());
 
             if(!icon.equals(controller.getFeatures().get("gate.gui.icon"))) {
               
@@ -3686,7 +3686,7 @@ public class MainFrame extends JFrame implements ProgressListener,
           Runnable runnable = new Runnable() { @Override
           public void run() {
           try {
-            Object resource = PersistenceManager.loadObjectFromUrl(rr.toURL());
+            Object resource = PersistenceManager.loadObjectFromUri(rr.toURI());
             if(gappUri.startsWith("file:") && resource instanceof Resource) {
               File file = new File(rr.toURI());
               Map<String, String> locations = fileChooser.getLocations();
