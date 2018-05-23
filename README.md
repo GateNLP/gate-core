@@ -67,7 +67,7 @@ SNAPSHOT versions of GATE or some plugin, or on some plugin that depends on libr
 </settings>
 ```
 
-## Setting up a classpath for your script
+## Setting up a classpath for a script or program
 
 The `./distro` directory inside the cloned source code repository contains a file 
 `gate.classpath` after running `mvn compile` which contains the paths to all the JARs in the Maven cache 
