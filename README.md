@@ -67,3 +67,10 @@ SNAPSHOT versions of GATE or some plugin, or on some plugin that depends on libr
 </settings>
 ```
 
+## Setting up a classpath for your script
+
+The `./distro` directory inside the cloned source code repository contains a file 
+`gate.classpath` after running `mvn compile` which contains the paths to all the JARs in the Maven cache 
+that should be put on the classpath when using gate-core from a Java application that embeds GATE. 
+
+If GATE was installed using a pre-built distribution, then the distribution directory contains a `./lib` directory with all the JAR files that should be included in the class path.
