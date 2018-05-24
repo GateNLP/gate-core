@@ -45,8 +45,8 @@
 	<mailingLists>
 		<mailingList>
 			<name>GATE Users</name>
-			<post>gate-users@lists.sourceforge.net</post>
-			<archive>http://news.gmane.org/gmane.comp.ai.gate.general</archive>
+			<post>gate-users@groups.io</post>
+			<archive>https://groups.io/g/gate-users</archive>
 		</mailingList>
 	</mailingLists>
 
