@@ -160,6 +160,8 @@ public abstract class Plugin {
 
   protected transient String description;
   
+  protected transient String version;
+  
   protected transient String minGateVersion;
 
   /**
@@ -206,7 +208,7 @@ public abstract class Plugin {
    * Get the version of this plugin.
    */
   public String getVersion() {
-    return "";
+    return version == null ? "" : version;
   }
   
   public String getMinimumGateVersion() {
@@ -324,6 +326,9 @@ public abstract class Plugin {
       org.jdom.Document creoleDoc = getMetadataXML();
       
       minGateVersion = creoleDoc.getRootElement().getAttributeValue("GATE-MIN","");
+      version = creoleDoc.getRootElement().getAttributeValue("VERSION","");
+      description = creoleDoc.getRootElement().getAttributeValue("DESCRIPTION");
+      name = creoleDoc.getRootElement().getAttributeValue("NAME");
 
       final Map<String, ResourceInfo> resInfos =
           new LinkedHashMap<String, ResourceInfo>();
@@ -552,11 +557,6 @@ public abstract class Plugin {
 
       name = artifact;// group+":"+artifact+":"+version;
     }
-    
-    @Override
-    public String getVersion() {
-      return version;
-    }
 
     @Override
     public String getName() {
@@ -565,6 +565,10 @@ public abstract class Plugin {
           getMetadataXML();
         } catch(Exception e) {
           // ignore this for now
+        }
+        
+        if (name == null) {
+          name = artifact;
         }
       }
 
@@ -739,51 +743,22 @@ public abstract class Plugin {
               + " does not exist so this artifact is not a GATE plugin");
         }
 
-        artifactObj = new SubArtifact(artifactObj, "", "pom");
-
-        artifactRequest.setArtifact(artifactObj);
-        artifactResult =
-            repoSystem.resolveArtifact(repoSession, artifactRequest);
-
-        ModelBuildingRequest req = new DefaultModelBuildingRequest();
-        req.setProcessPlugins(false);
-        req.setPomFile(artifactResult.getArtifact().getFile());
-        req.setModelResolver(new SimpleModelResolver(repoSystem, repoSession,
-            repos));
-        req.setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MINIMAL);
-
-        ModelBuilder modelBuilder =
-            new DefaultModelBuilderFactory().newInstance();
-        Model model = modelBuilder.build(req).getEffectiveModel();
-
-        if(model.getName() != null && !model.getName().trim().equals(""))
-          name = model.getName();
-        if(name == null) name = artifact;
-
-        if(model.getDescription() != null
-            && !model.getDescription().trim().equals(""))
-          description = model.getDescription();
-        
         // get the creole.xml out of the jar and add jar elements for this
         // jar (marked for scanning) and the dependencies
         SAXBuilder builder = new SAXBuilder(false);
-        Document fullCreole = builder.build(expandedCreoleUrl);
+        Document creoleDoc = builder.build(expandedCreoleUrl);
         
-        String creoleMinGate =
-            fullCreole.getRootElement().getAttributeValue("GATE-MIN");
-        if(creoleMinGate == null) {
-          for(org.apache.maven.model.Dependency effectiveDependency : model
-              .getDependencies()) {
-            if(effectiveDependency.getGroupId().equals("uk.ac.gate")
-                && effectiveDependency.getArtifactId().equals("gate-core")) {
-              fullCreole.getRootElement().setAttribute("GATE-MIN",
-                  effectiveDependency.getVersion());
-              break;
-            }
-          }
+        if(creoleDoc.getRootElement().getAttributeValue("NAME") == null
+            || creoleDoc.getRootElement()
+                .getAttributeValue("VERSION") == null) {
+          // if the root element doesn't specifiy a name and version then either
+          // this is an old plugin from early in 8.5 or a file produced in
+          // some other way than DumpCreoleToXML. Either way it's not valid so
+          // fall back to using the full creole.xml expansion in getCreoleXML()
+          return getCreoleXML();
         }
         
-        return fullCreole;
+        return creoleDoc;
 
       } catch(IOException | ArtifactResolutionException e) {
         e.printStackTrace();
@@ -906,13 +881,16 @@ public abstract class Plugin {
           new DefaultModelBuilderFactory().newInstance();
       Model model = modelBuilder.build(req).getEffectiveModel();
 
-      if(model.getName() != null && !model.getName().trim().equals(""))
-        name = model.getName();
-      if(name == null) name = artifact;
-
       if(model.getDescription() != null
           && model.getDescription().trim().equals(""))
-        description = model.getDescription();
+        jdomDoc.getRootElement().setAttribute("DESCRIPTION", model.getDescription());
+      
+      jdomDoc.getRootElement().setAttribute("VERSION", version);
+      
+      if(model.getName() != null && !model.getName().trim().equals(""))
+        jdomDoc.getRootElement().setAttribute("NAME",model.getName());
+      else
+        jdomDoc.getRootElement().setAttribute("NAME",model.getArtifactId());
       
       String creoleMinGate =
           jdomDoc.getRootElement().getAttributeValue("GATE-MIN");
