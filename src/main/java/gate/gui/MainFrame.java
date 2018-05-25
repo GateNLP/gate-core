@@ -2175,7 +2175,6 @@ public class MainFrame extends JFrame implements ProgressListener,
       }
     } catch(MalformedURLException e) {
       // this should be impossible!
-
       e.printStackTrace();
     }
   }
@@ -4260,83 +4259,101 @@ public class MainFrame extends JFrame implements ProgressListener,
         public void menuDeselected(MenuEvent e) {
           // clear the status
           statusChanged("");
-          
-          // clear the menu to release resource data and so that populating the
-          // menu happens quicker next time as it doesn't need to clear it first
-          removeAll();
         }
         
         @Override
         public void menuSelected(MenuEvent e) {
-          // find out the available types of LRs and repopulate the menu
-          CreoleRegister reg = Gate.getCreoleRegister();
-          List<String> resTypes;
-          switch(type){
-            case LR:
-              resTypes = reg.getPublicLrTypes();
-              break;
-            case PR:
-              resTypes = new ArrayList<String>( reg.getPublicPrTypes() );
-              //GATE default controllers are now also PRs, but we don't want
-              //them here
-              resTypes.removeAll(reg.getPublicControllerTypes());
-              break;
-            case APP:
-              resTypes = reg.getPublicControllerTypes();
-              break;
-            default:
-              throw new GateRuntimeException("Unknown LiveMenu type: " + type);
-          }
-
-          if(resTypes != null) {
-            if (!resTypes.isEmpty()) {
-              HashMap<String, ResourceData> resourcesByName
-                = new HashMap<String, ResourceData>();
-              Iterator<String> resIter = resTypes.iterator();
-              while(resIter.hasNext()) {
-                ResourceData rData = reg.get(resIter.next());
-                resourcesByName.put(rData.getName(), rData);
-              }
-              List<String> resNames =
-                new ArrayList<String>(resourcesByName.keySet());
-              Collections.sort(resNames);
-              resIter = resNames.iterator();
-              while(resIter.hasNext()) {
-                ResourceData rData = resourcesByName.get(resIter.next());
-                add(new XJMenuItem(new NewResourceAction(rData), MainFrame.this));
-              }
-            } else if (type == PR) {
-              // empty PR menu -> add an action to load ANNIE plugin
-              add(new AbstractAction("Add ANNIE Resources to this Menu") {
-                { putValue(SHORT_DESCRIPTION, "Load the ANNIE plugin."); }
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                try {
-                  Plugin anniePlugin = new Plugin.Maven("uk.ac.gate.plugins", "annie", Main.version);
-                  Gate.getCreoleRegister().registerPlugin(anniePlugin);             
-                } catch(Exception ex) {
-                  log.error("Unable to load ANNIE plugin.", ex);
-                }
-              }});
-            }
-          }
-
-          // fire the status listener events
-          switch(type){
-            case LR:
-              statusChanged("Data used for annotating");
-              break;
-            case PR:
-              statusChanged("Processes that annotate data");
-              break;
-            case APP:
-              statusChanged("Run processes on data");
-              break;
-            default:
-              statusChanged("Unknown resource: " + type);
-          }
+          statusChanged("");
         }
       });
+
+      Gate.getCreoleRegister().addPluginListener(new PluginListener() {
+        @Override
+        public void pluginLoaded(URL url) {
+          SwingUtilities.invokeLater(LiveMenu.this::rebuildMenu);
+        }
+
+        @Override
+        public void pluginUnloaded(URL url) {
+          SwingUtilities.invokeLater(LiveMenu.this::rebuildMenu);
+        }
+      });
+
+      // build menu once to start with
+      rebuildMenu();
+    }
+
+    private void rebuildMenu() {
+      // clear the menu and start over
+      removeAll();
+
+      // find out the available types of LRs and repopulate the menu
+      CreoleRegister reg = Gate.getCreoleRegister();
+      List<String> resTypes;
+      switch(type){
+        case LR:
+          resTypes = reg.getPublicLrTypes();
+          break;
+        case PR:
+          resTypes = new ArrayList<String>( reg.getPublicPrTypes() );
+          //GATE default controllers are now also PRs, but we don't want
+          //them here
+          resTypes.removeAll(reg.getPublicControllerTypes());
+          break;
+        case APP:
+          resTypes = reg.getPublicControllerTypes();
+          break;
+        default:
+          throw new GateRuntimeException("Unknown LiveMenu type: " + type);
+      }
+
+      if(resTypes != null) {
+        if (!resTypes.isEmpty()) {
+          HashMap<String, ResourceData> resourcesByName
+                  = new HashMap<String, ResourceData>();
+          Iterator<String> resIter = resTypes.iterator();
+          while(resIter.hasNext()) {
+            ResourceData rData = reg.get(resIter.next());
+            resourcesByName.put(rData.getName(), rData);
+          }
+          List<String> resNames =
+                  new ArrayList<String>(resourcesByName.keySet());
+          Collections.sort(resNames);
+          resIter = resNames.iterator();
+          while(resIter.hasNext()) {
+            ResourceData rData = resourcesByName.get(resIter.next());
+            add(new XJMenuItem(new NewResourceAction(rData), MainFrame.this));
+          }
+        } else if (type == PR) {
+          // empty PR menu -> add an action to load ANNIE plugin
+          add(new AbstractAction("Add ANNIE Resources to this Menu") {
+            { putValue(SHORT_DESCRIPTION, "Load the ANNIE plugin."); }
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              try {
+                Plugin anniePlugin = new Plugin.Maven("uk.ac.gate.plugins", "annie", Main.version);
+                Gate.getCreoleRegister().registerPlugin(anniePlugin);
+              } catch(Exception ex) {
+                log.error("Unable to load ANNIE plugin.", ex);
+              }
+            }});
+        }
+      }
+
+      // fire the status listener events
+      switch(type){
+        case LR:
+          statusChanged("Data used for annotating");
+          break;
+        case PR:
+          statusChanged("Processes that annotate data");
+          break;
+        case APP:
+          statusChanged("Run processes on data");
+          break;
+        default:
+          statusChanged("Unknown resource: " + type);
+      }
     }
 
     protected int type;
@@ -5283,19 +5300,23 @@ public class MainFrame extends JFrame implements ProgressListener,
 
     private static final long serialVersionUID = -4841440121026127302L;
 
+    private XJMenuItem annie;
+
+    private XJMenuItem openNLP;
+
     public ReadyMadeMenu() {
       super("Ready Made Applications");
       setIcon(new ReadyMadeIcon(24, 24));
 
       try {
-        final XJMenuItem annie = new XJMenuItem(
+        annie = new XJMenuItem(
             new LoadApplicationAction("ANNIE", "annie-application",
                 new ResourceReference(
                     new URI("creole://uk.ac.gate.plugins;annie;" + gate.Main.version + "/resources/"
                         + ANNIEConstants.DEFAULT_FILE))),
             MainFrame.this);
         
-        final XJMenuItem openNLP = new XJMenuItem(
+        openNLP = new XJMenuItem(
             new LoadApplicationAction("OpenNLP (English)", "application",
                 new ResourceReference(
                     new URI("creole://uk.ac.gate.plugins;opennlp;" + gate.Main.version + "/resources/opennlp.gapp"))),
@@ -5306,39 +5327,10 @@ public class MainFrame extends JFrame implements ProgressListener,
           @Override
           public void menuSelected(MenuEvent arg0) {
             statusChanged("");
-
-            removeAll();
-
-            XJMenu menu = new XJMenu("ANNIE");
-            menu.add(annie);
-            add(menu);
-
-            /*
-             * menu = new XJMenu("LingPipe"); menu.add(lingPipe); add(menu);
-             **/ 
-            menu = new XJMenu("OpenNLP");
-            menu.add(openNLP);
-            add(menu);
-             
-
-            Set<String> toolTypes =
-                Gate.getCreoleRegister().getApplicationTypes();
-            for(String type : toolTypes) {
-              List<Resource> instances =
-                  Gate.getCreoleRegister().get(type).getInstantiations();
-              for(Resource res : instances) {
-                if(res instanceof PackagedController) {
-                  addAppToMenu((PackagedController)res);
-                }
-              }
-            }
-
-            ReadyMadeMenu.this.revalidate();
           }
 
           @Override
           public void menuDeselected(MenuEvent e) {
-            removeAll();
             statusChanged("");
           }
 
@@ -5350,6 +5342,72 @@ public class MainFrame extends JFrame implements ProgressListener,
       } catch(URISyntaxException e) {
         throw new RuntimeException(e);
       }
+
+      // rebuild the menu when resources are added or removed
+      Gate.getCreoleRegister().addCreoleListener(new CreoleListener() {
+        @Override
+        public void resourceLoaded(CreoleEvent e) {
+          if(e.getSource() instanceof PackagedController) {
+            SwingUtilities.invokeLater(ReadyMadeMenu.this::rebuildMenu);
+          }
+        }
+
+        @Override
+        public void resourceUnloaded(CreoleEvent e) {
+          if(e.getSource() instanceof PackagedController) {
+            SwingUtilities.invokeLater(ReadyMadeMenu.this::rebuildMenu);
+          }
+        }
+
+        @Override
+        public void datastoreOpened(CreoleEvent e) {
+        }
+
+        @Override
+        public void datastoreCreated(CreoleEvent e) {
+        }
+
+        @Override
+        public void datastoreClosed(CreoleEvent e) {
+        }
+
+        @Override
+        public void resourceRenamed(Resource resource, String oldName, String newName) {
+        }
+      });
+
+      rebuildMenu();
+    }
+
+    private void rebuildMenu() {
+
+      removeAll();
+
+      XJMenu menu = new XJMenu("ANNIE");
+      menu.add(annie);
+      add(menu);
+
+      /*
+       * menu = new XJMenu("LingPipe"); menu.add(lingPipe); add(menu);
+       **/
+      menu = new XJMenu("OpenNLP");
+      menu.add(openNLP);
+      add(menu);
+
+
+      Set<String> toolTypes =
+              Gate.getCreoleRegister().getApplicationTypes();
+      for(String type : toolTypes) {
+        List<Resource> instances =
+                Gate.getCreoleRegister().get(type).getInstantiations();
+        for(Resource res : instances) {
+          if(res instanceof PackagedController) {
+            addAppToMenu((PackagedController)res);
+          }
+        }
+      }
+
+      ReadyMadeMenu.this.revalidate();
     }
     
     private String getPluginName(URL url) {
