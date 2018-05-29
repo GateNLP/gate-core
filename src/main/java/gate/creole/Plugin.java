@@ -253,11 +253,18 @@ public abstract class Plugin {
   }
 
   public URL getBaseURL() {
+    if(baseURL == null) {
+      try {
+        getCreoleXML();
+      } catch(Exception e) {
+        throw new RuntimeException("Unable to determine base URL",e);
+      }
+    }
     return baseURL;
   }
 
   public URI getBaseURI() throws URISyntaxException {
-    return baseURL.toURI();
+    return getBaseURL().toURI();
   }
 
   public boolean isValid() {
