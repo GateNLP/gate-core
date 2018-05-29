@@ -22,6 +22,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,6 +40,7 @@ import gate.creole.metadata.Sharable;
 import gate.util.AbstractFeatureBearer;
 import gate.util.GateClassLoader;
 import gate.util.GateException;
+import gate.util.GateRuntimeException;
 
 /** Models an individual CREOLE resource metadata, plus configuration data,
   * plus the instantiations of the resource current within the system.
@@ -242,7 +244,12 @@ public class ResourceData extends AbstractFeatureBearer
   } // getResourceClass
   
   public ClassLoader getResourceClassLoader() {
-    return Gate.getClassLoader().getDisposableClassLoader(xmlFileUrl.toExternalForm());
+    try {
+      return Gate.getClassLoader().getDisposableClassLoader(plugin.getBaseURI().toString());
+    } catch(URISyntaxException e) {
+      // should never be able to happen
+      throw new GateRuntimeException("Can't get plugin base URI", e);
+    }
   }
 
   /** The jar file name of the resource */
@@ -276,6 +283,17 @@ public class ResourceData extends AbstractFeatureBearer
 
   /** Get the URL to the creole.xml file that defines this resource */
   public URL getXmlFileUrl() { return xmlFileUrl; }
+
+  /** The plugin defining this resource type */
+  protected Plugin plugin;
+
+  public Plugin getPlugin() {
+    return plugin;
+  }
+
+  public void setPlugin(Plugin plugin) {
+    this.plugin = plugin;
+  }
 
   /** The comment string */
   protected String comment;

@@ -188,6 +188,7 @@ public class CreoleXmlHandler extends DefaultHandler {
     // create a new ResourceData when it's a RESOURCE element
     if(elementName.toUpperCase().equals("RESOURCE")) {
       resourceData = new ResourceData();
+      resourceData.setPlugin(plugin);
       resourceData.setFeatures(Factory.newFeatureMap());
       currentAutoinstances = new ArrayList<FeatureMap>();
     }// End if RESOURCE

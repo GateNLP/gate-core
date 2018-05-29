@@ -165,7 +165,6 @@ import gate.resources.img.svg.GATEVersionIcon;
 import gate.resources.img.svg.ReadyMadeIcon;
 import gate.util.Benchmark;
 import gate.util.CorpusBenchmarkTool;
-import gate.util.ExtensionFileFilter;
 import gate.util.Files;
 import gate.util.GateClassLoader;
 import gate.util.GateException;
@@ -2151,14 +2150,14 @@ public class MainFrame extends JFrame implements ProgressListener,
   }
   
   @Override
-  public void pluginLoaded(URL url) {
+  public void pluginLoaded(Plugin plugin) {
     // currently we don't care about this event
   }
 
   @Override
-  public void pluginUnloaded(URL url) {
+  public void pluginUnloaded(Plugin plugin) {
     try {
-      String classloaderID = (new URL(url, "creole.xml")).toExternalForm();
+      String classloaderID = plugin.getBaseURI().toString();
 
       Iterator<String> it = iconByName.keySet().iterator();
       while(it.hasNext()) {
@@ -2173,7 +2172,7 @@ public class MainFrame extends JFrame implements ProgressListener,
           }
         }
       }
-    } catch(MalformedURLException e) {
+    } catch(URISyntaxException e) {
       // this should be impossible!
       e.printStackTrace();
     }
@@ -4269,12 +4268,12 @@ public class MainFrame extends JFrame implements ProgressListener,
 
       Gate.getCreoleRegister().addPluginListener(new PluginListener() {
         @Override
-        public void pluginLoaded(URL url) {
+        public void pluginLoaded(Plugin plugin) {
           SwingUtilities.invokeLater(LiveMenu.this::rebuildMenu);
         }
 
         @Override
-        public void pluginUnloaded(URL url) {
+        public void pluginUnloaded(Plugin plugin) {
           SwingUtilities.invokeLater(LiveMenu.this::rebuildMenu);
         }
       });

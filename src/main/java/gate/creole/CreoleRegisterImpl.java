@@ -37,6 +37,7 @@ import gate.util.Out;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -275,7 +276,7 @@ public class CreoleRegisterImpl extends HashMap<String, ResourceData>
           new CreoleAnnotationHandler(plugin);
 
       GateClassLoader gcl = Gate.getClassLoader()
-          .getDisposableClassLoader(creoleFileUrl.toExternalForm());
+          .getDisposableClassLoader(plugin.getBaseURI().toString());
 
       // Add any JARs from the creole.xml to the GATE ClassLoader
       annotationHandler.addJarsToClassLoader(gcl, jdomDoc);
@@ -286,7 +287,7 @@ public class CreoleRegisterImpl extends HashMap<String, ResourceData>
 
       processFullCreoleXmlTree(plugin, jdomDoc,
           annotationHandler);
-    } catch(IOException e) {
+    } catch(URISyntaxException | IOException e) {
       throw (new GateException(e));
     } catch(JDOMException je) {
       if(DEBUG) je.printStackTrace(Err.getPrintWriter());
@@ -459,7 +460,7 @@ public class CreoleRegisterImpl extends HashMap<String, ResourceData>
 
       try {
         Gate.getClassLoader().forgetClassLoader(
-            new URL(plugin.getBaseURL(), "creole.xml").toExternalForm(),
+            plugin.getBaseURI().toString(),
             plugin);
       } catch(Exception e) {
         e.printStackTrace();
@@ -1071,13 +1072,13 @@ public class CreoleRegisterImpl extends HashMap<String, ResourceData>
 
   protected void firePluginLoaded(Plugin plugin) {
     for(PluginListener listener : pluginListeners) {
-      listener.pluginLoaded(plugin.getBaseURL());
+      listener.pluginLoaded(plugin);
     }
   }
 
   protected void firePluginUnloaded(Plugin plugin) {
     for(PluginListener listener : pluginListeners) {
-      listener.pluginUnloaded(plugin.getBaseURL());
+      listener.pluginUnloaded(plugin);
     }
   }
 

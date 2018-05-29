@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
@@ -541,12 +540,12 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
                   .thenComparing(Maven::getVersion);
 
   @Override
-  public void pluginLoaded(URL url) {
+  public void pluginLoaded(Plugin plugin) {
     SwingUtilities.invokeLater(this::refreshTreeForPlugins);
   }
 
   @Override
-  public void pluginUnloaded(URL url) {
+  public void pluginUnloaded(Plugin plugin) {
     SwingUtilities.invokeLater(this::refreshTreeForPlugins);
   }
 

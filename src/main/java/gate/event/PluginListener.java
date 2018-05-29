@@ -1,10 +1,10 @@
 package gate.event;
 
-import java.net.URL;
+import gate.creole.Plugin;
 
 public interface PluginListener {
 
-  public void pluginLoaded(URL url);
+  public void pluginLoaded(Plugin plugin);
     
-  public void pluginUnloaded(URL url);
+  public void pluginUnloaded(Plugin plugin);
 }
