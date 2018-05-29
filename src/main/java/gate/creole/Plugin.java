@@ -617,10 +617,10 @@ public abstract class Plugin {
       if(!hasResources())
         throw new UnsupportedOperationException(
             "this plugin doesn't have any resources you can copy as you would know had you called hasResources first :P");
-
+      
       Path target = Paths.get(dir.toURI());
       try (FileSystem zipFs =
-          FileSystems.newFileSystem(artifactURL.toURI(), new HashMap<>());) {
+          FileSystems.newFileSystem(getArtifactURL().toURI(), new HashMap<>());) {
 
         Path pathInZip = zipFs.getPath("/resources");
 
@@ -641,6 +641,9 @@ public abstract class Plugin {
             return FileVisitResult.CONTINUE;
           }
         });
+      } catch(Exception e) {
+        // TODO Auto-generated catch block
+        throw new IOException(e);
       }
     }
 
@@ -739,7 +742,7 @@ public abstract class Plugin {
         try (InputStream creoleStream = expandedCreoleUrl.openStream()) {
           // no op just to check the file exists
         } catch(IOException ioe) {
-          throw new IOException(getBaseURL().toExternalForm()
+          throw new IOException(expandedCreoleUrl.toExternalForm()
               + " does not exist so this artifact is not a GATE plugin");
         }
 
@@ -829,7 +832,7 @@ public abstract class Plugin {
       try {
         creoleStream = directoryXmlFileUrl.openStream();
       } catch(IOException ioe) {
-        throw new IOException(getBaseURL().toExternalForm()
+        throw new IOException(directoryXmlFileUrl.toExternalForm()
             + " does not exist so this artifact is not a GATE plugin");
       }
 
