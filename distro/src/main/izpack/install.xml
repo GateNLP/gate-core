@@ -74,6 +74,14 @@
             </listener>
   	</listeners>	
       	
+
+    <!-- conditions -->
+    <conditions>
+        <condition id="notMac" type="not">
+            <condition type="ref" refid="izpack.macinstall" />
+        </condition>
+    </conditions>
+
     <!-- 
         The panels section.
         We indicate here which panels we want to use. The order will be respected.
@@ -84,7 +92,7 @@
         <panel classname="TargetPanel"/>
         <panel classname="PacksPanel"/>
         <panel classname="InstallPanel"/>
-        <panel classname="ShortcutPanel"/>        
+        <panel classname="ShortcutPanel" condition="notMac"/>
         <panel classname="FinishPanel"/>
     </panels>
     
