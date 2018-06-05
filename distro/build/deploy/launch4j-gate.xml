@@ -3,7 +3,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>bin/gateLauncher.jar</jar>
-  <errTitle></errTitle>
+  <errTitle>GATE Developer</errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
   <priority>normal</priority>
@@ -13,7 +13,7 @@
   <stayAlive>false</stayAlive>
   <icon>gate-icon.ico</icon>
   <jre>
-    <minVersion>1.6.0</minVersion>
+    <minVersion>1.8.0</minVersion>
     <!-- prefer JDK but accept JRE if newer -->
     <jdkPreference>preferJdk</jdkPreference>
     <initialHeapSize>0</initialHeapSize>
@@ -25,9 +25,9 @@
     <timeout>60</timeout>
   </splash>
   <messages>
-    <startupErr>An error occurred while starting the installer.</startupErr>
+    <startupErr>An error occurred while starting GATE Developer.</startupErr>
     <bundledJreErr>This application was configured to use a bundled Java Runtime Environment but the runtime is missing or corrupted.</bundledJreErr>
     <jreVersionErr>GATE requires a Java Runtime Environment, and works best with a JDK.  Click OK to download one - minimum version</jreVersionErr>
-    <launcherErr>The registry refers to a nonexistent Java Runtime Environment installation or the runtime is corrupted.  Please ensure you have a valid installation of Java 6.0 or later.</launcherErr>
+    <launcherErr>The registry refers to a nonexistent Java Runtime Environment installation or the runtime is corrupted.  Please ensure you have a valid installation of Java 8 or later.</launcherErr>
   </messages>
 </launch4jConfig>
