@@ -507,7 +507,7 @@
 					<shortRevisionLength>7</shortRevisionLength>
 				</configuration>
 			</plugin>
-			<!-- This should work once 3.1.0 is releases but until then...
+			<!-- regenerate the gate.classpath file in the distro folder -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-invoker-plugin</artifactId>
@@ -526,7 +526,6 @@
 					<goals>compile</goals>
 				</configuration>
 			</plugin>
-			-->
 		</plugins>
 
 		<resources>
