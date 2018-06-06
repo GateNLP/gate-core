@@ -1170,7 +1170,7 @@ public class MainFrame extends JFrame implements ProgressListener,
         showHelpFrame("http://gate.ac.uk/demos/developer-videos/", "movies");
       }
     }, this));
-    helpMenu.add(new XJMenuItem(new HelpMailingListAction(), this));
+    //helpMenu.add(new XJMenuItem(new HelpMailingListAction(), this));
     helpMenu.addSeparator();
     JCheckBoxMenuItem toggleToolTipsCheckBoxMenuItem =
       new JCheckBoxMenuItem(new ToggleToolTipsAction());
