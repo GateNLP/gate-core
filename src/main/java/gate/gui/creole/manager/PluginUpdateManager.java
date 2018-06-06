@@ -19,20 +19,35 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+
+import org.apache.log4j.Logger;
 
 import gate.Main;
 import gate.creole.Plugin;
 import gate.gui.MainFrame;
-import gate.resources.img.svg.AvailableIcon;
-import org.apache.log4j.Logger;
 
 /**
  * The CREOLE plugin manager
@@ -50,7 +65,7 @@ public class PluginUpdateManager extends JDialog {
 
   private JPanel panel = new JPanel(new BorderLayout());
 
-  private JTabbedPane tabs = new JTabbedPane();
+  //private JTabbedPane tabs = new JTabbedPane();
 
   /**
    * Location of the default plugins list online - this is a
@@ -156,10 +171,11 @@ public class PluginUpdateManager extends JDialog {
 
     // set up the panel that displays the main GUI elements
     panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    panel.add(tabs, BorderLayout.CENTER);
+    //panel.add(tabs, BorderLayout.CENTER);
 
     // initialize all the different tabs
-    tabs.addTab("Installed Plugins", new AvailableIcon(MainFrame.ICON_DIMENSION), installed);
+    //tabs.addTab("Installed Plugins", new AvailableIcon(MainFrame.ICON_DIMENSION), installed);
+    panel.add(installed, BorderLayout.CENTER);
 
     // setup the row of buttons at the bottom of the screen...
     JPanel pnlButtons = new JPanel();
@@ -256,7 +272,7 @@ public class PluginUpdateManager extends JDialog {
     if(visible) {
       MainFrame.getGuiRoots().add(this);
       // if the window is about to be made visible then do some quick setup
-      tabs.setSelectedIndex(0);
+      //tabs.setSelectedIndex(0);
       if(defaultPluginsWorker != null && !defaultPluginsWorker.isDone()) {
         showProgressPanel(true);
         progressPanel.messageChanged("Downloading default plugins list");
