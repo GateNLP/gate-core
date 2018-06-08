@@ -1233,7 +1233,7 @@ public class MainFrame extends JFrame implements ProgressListener,
       JButton annieMenu =
           new JButton(new LoadApplicationAction("ANNIE", "annie-application",
               new ResourceReference(new URI(
-                  "creole://uk.ac.gate.plugins;annie;" + gate.Main.version + "/resources/"
+                  "creole://uk.ac.gate.plugins;annie;8.5/resources/"
                       + ANNIEConstants.DEFAULT_FILE))));
       annieMenu.setText("");
       annieMenu.setToolTipText("Load ANNIE");
@@ -4330,7 +4330,7 @@ public class MainFrame extends JFrame implements ProgressListener,
             @Override
             public void actionPerformed(ActionEvent e) {
               try {
-                Plugin anniePlugin = new Plugin.Maven("uk.ac.gate.plugins", "annie", Main.version);
+                Plugin anniePlugin = new Plugin.Maven("uk.ac.gate.plugins", "annie", "8.5");
                 Gate.getCreoleRegister().registerPlugin(anniePlugin);
               } catch(Exception ex) {
                 log.error("Unable to load ANNIE plugin.", ex);
@@ -5311,14 +5311,14 @@ public class MainFrame extends JFrame implements ProgressListener,
         annie = new XJMenuItem(
             new LoadApplicationAction("ANNIE", "annie-application",
                 new ResourceReference(
-                    new URI("creole://uk.ac.gate.plugins;annie;" + gate.Main.version + "/resources/"
+                    new URI("creole://uk.ac.gate.plugins;annie;8.5/resources/"
                         + ANNIEConstants.DEFAULT_FILE))),
             MainFrame.this);
         
         openNLP = new XJMenuItem(
             new LoadApplicationAction("OpenNLP (English)", "application",
                 new ResourceReference(
-                    new URI("creole://uk.ac.gate.plugins;opennlp;" + gate.Main.version + "/resources/opennlp.gapp"))),
+                    new URI("creole://uk.ac.gate.plugins;opennlp;8.5/resources/opennlp.gapp"))),
             MainFrame.this);
 
         addMenuListener(new MenuListener() {
