@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>uk.ac.gate</groupId>
   <artifactId>gate-developer</artifactId>
-  <version>8.6-SNAPSHOT</version>
+  <version>8.5.1</version>
   <packaging>pom</packaging>
   <url>http://gate.ac.uk/</url>
 
@@ -153,7 +153,7 @@
     <dependency>
       <groupId>uk.ac.gate</groupId>
       <artifactId>gate-core</artifactId>
-      <version>8.6-SNAPSHOT</version>
+      <version>8.5.1</version>
     </dependency>
 
     <!-- Slightly nasty trick to get the javadocs -->
@@ -161,7 +161,7 @@
     <dependency>
       <groupId>uk.ac.gate</groupId>
       <artifactId>gate-core</artifactId>
-      <version>8.6-SNAPSHOT</version>
+      <version>8.5.1</version>
       <classifier>javadoc</classifier>
       <scope>test</scope>
     </dependency>

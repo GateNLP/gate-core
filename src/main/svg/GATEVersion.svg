@@ -14,7 +14,7 @@
    height="60"
    id="svg1303"
    sodipodi:version="0.32"
-   inkscape:version="0.48.2 r9819"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="GATEVersion.svg"
    inkscape:export-filename="/home/valyt/vcs/gate-top/externals/gate/build/deploy/gate-icon.png"
    inkscape:export-xdpi="192"
@@ -135,15 +135,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="8.6989842"
-     inkscape:cx="34.947322"
-     inkscape:cy="24.888821"
+     inkscape:cx="53.857576"
+     inkscape:cy="-11.897083"
      inkscape:document-units="pt"
      inkscape:current-layer="layer1"
      id="namedview1307"
-     inkscape:window-width="1480"
-     inkscape:window-height="835"
-     inkscape:window-x="461"
-     inkscape:window-y="213"
+     inkscape:window-width="1280"
+     inkscape:window-height="756"
+     inkscape:window-x="169"
+     inkscape:window-y="0"
      fill="#ff9933"
      showgrid="false"
      inkscape:window-maximized="0"
@@ -198,24 +198,24 @@
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:none"
        id="rect3003"
-       width="25.646969"
-       height="14.104341"
-       x="151.00754"
+       width="40.24638"
+       height="14.104355"
+       x="136.40813"
        y="250.36763"
        ry="0" />
     <text
        xml:space="preserve"
-       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;text-align:justify;line-height:125%;letter-spacing:-1.5px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#008000;fill-opacity:1;stroke:#008000;stroke-opacity:1;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans Bold Semi-Condensed"
-       x="151.08493"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:16px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold Semi-Condensed';text-align:justify;letter-spacing:-1.5px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#008000;fill-opacity:1;stroke:#008000;stroke-opacity:1"
+       x="137.08493"
        y="263.25183"
        id="text3773"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3821"
-         x="151.08493"
+         x="137.08493"
          y="263.25183"
-         style="-inkscape-font-specification:DejaVu Sans Bold;font-family:DejaVu Sans;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal;font-size:16px;text-anchor:start;text-align:justify;writing-mode:lr;line-height:125%;letter-spacing:-1.5px">8.6</tspan></text>
-    <g
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';text-align:justify;letter-spacing:-1.5px;writing-mode:lr-tb;text-anchor:start">8.5.1</tspan></text>
+    <!--<g
        id="g3889">
       <rect
          ry="0"
@@ -237,6 +237,6 @@
            id="tspan3844"
            sodipodi:role="line"
            style="-inkscape-font-specification:DejaVu Sans Bold;font-family:DejaVu Sans;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal;font-size:6px;text-anchor:start;text-align:justify;writing-mode:lr;line-height:125%;letter-spacing:-0.5px">SNAPSHOT</tspan></text>
-    </g>
+    </g>-->
   </g>
 </svg>
