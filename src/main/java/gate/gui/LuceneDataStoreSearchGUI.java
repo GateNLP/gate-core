@@ -14,40 +14,6 @@
 
 package gate.gui;
 
-import gate.Corpus;
-import gate.DataStore;
-import gate.Document;
-import gate.Factory;
-import gate.FeatureMap;
-import gate.Gate;
-import gate.Resource;
-import gate.corpora.SerialCorpusImpl;
-import gate.creole.AbstractVisualResource;
-import gate.creole.annic.Constants;
-import gate.creole.annic.Hit;
-import gate.creole.annic.Pattern;
-import gate.creole.annic.PatternAnnotation;
-import gate.creole.annic.SearchException;
-import gate.creole.annic.Searcher;
-import gate.creole.annic.lucene.QueryParser;
-import gate.creole.metadata.CreoleResource;
-import gate.creole.metadata.GuiType;
-import gate.event.DatastoreEvent;
-import gate.event.DatastoreListener;
-import gate.gui.docview.AnnotationSetsView;
-import gate.gui.docview.AnnotationStack;
-import gate.gui.docview.AnnotationStack.StackMouseListener;
-import gate.gui.docview.TextualDocumentView;
-import gate.persist.LuceneDataStoreImpl;
-import gate.persist.PersistenceException;
-import gate.persist.SerialDataStore;
-import gate.swing.BlockingGlassPane;
-import gate.swing.XJFileChooser;
-import gate.swing.XJTable;
-import gate.util.ExtensionFileFilter;
-import gate.util.GateRuntimeException;
-import gate.util.Strings;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -55,6 +21,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -98,7 +65,6 @@ import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -147,6 +113,43 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.BadLocationException;
+
+import gate.Corpus;
+import gate.DataStore;
+import gate.Document;
+import gate.Factory;
+import gate.FeatureMap;
+import gate.Gate;
+import gate.Resource;
+import gate.corpora.SerialCorpusImpl;
+import gate.creole.AbstractVisualResource;
+import gate.creole.annic.Constants;
+import gate.creole.annic.Hit;
+import gate.creole.annic.Pattern;
+import gate.creole.annic.PatternAnnotation;
+import gate.creole.annic.SearchException;
+import gate.creole.annic.Searcher;
+import gate.creole.annic.lucene.QueryParser;
+import gate.creole.metadata.CreoleResource;
+import gate.creole.metadata.GuiType;
+import gate.event.DatastoreEvent;
+import gate.event.DatastoreListener;
+import gate.gui.docview.AnnotationSetsView;
+import gate.gui.docview.AnnotationStack;
+import gate.gui.docview.AnnotationStack.StackMouseListener;
+import gate.gui.docview.TextualDocumentView;
+import gate.persist.LuceneDataStoreImpl;
+import gate.persist.PersistenceException;
+import gate.persist.SerialDataStore;
+import gate.resources.img.svg.GATEIcon;
+import gate.resources.img.svg.GATEVersionIcon;
+import gate.resources.img.svg.WindowNewIcon;
+import gate.swing.BlockingGlassPane;
+import gate.swing.XJFileChooser;
+import gate.swing.XJTable;
+import gate.util.ExtensionFileFilter;
+import gate.util.GateRuntimeException;
+import gate.util.Strings;
 
 /**
  * GUI allowing to write a query with a JAPE derived syntax for querying
@@ -386,8 +389,14 @@ public class LuceneDataStoreSearchGUI extends AbstractVisualResource implements
 
     configureStackViewFrame =
             new ConfigureStackViewFrame("Stack view configuration");
-    configureStackViewFrame.setIconImage(((ImageIcon)MainFrame
-            .getIcon("WindowNew")).getImage());
+    configureStackViewFrame.setIconImages(
+        Arrays.asList(new Image[]{new WindowNewIcon(256, 256).getImage(),
+            new WindowNewIcon(128, 128).getImage(),
+            new WindowNewIcon(64, 64).getImage(),
+            new WindowNewIcon(48, 48).getImage(),
+            new WindowNewIcon(32, 32).getImage(),
+            new WindowNewIcon(22, 22).getImage(),
+            new WindowNewIcon(16, 16).getImage()}));
     configureStackViewFrame
             .setLocationRelativeTo(LuceneDataStoreSearchGUI.this);
     configureStackViewFrame.getRootPane()
