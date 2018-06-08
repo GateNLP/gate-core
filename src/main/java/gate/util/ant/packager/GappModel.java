@@ -143,11 +143,23 @@ public class GappModel {
                                 + "or starts-with(., '$resourceshome$') "
                                 + "or starts-with(., '$gatehome$')]"
                                 + " | "
+                                + "/gate.util.persistence.GateApplication/application"
+                                + "//gate.util.persistence.PersistenceManager-RRPersistence"
+                                + "/uriString[starts-with(., '$relpath$') "
+                                + "or starts-with(., '$resourceshome$') "
+                                + "or starts-with(., '$gatehome$')]"
+                                + " | "
                                 // specific Persistence object fields of type URLHolder
                                 // (e.g. datastore location)
                                 + "/gate.util.persistence.GateApplication/application"
                                 + "//*[@class='gate.util.persistence.PersistenceManager$URLHolder']"
                                 + "/urlString[starts-with(., '$relpath$') "
+                                + "or starts-with(., '$resourceshome$') "
+                                + "or starts-with(., '$gatehome$')]"
+                                + " | "
+                                + "/gate.util.persistence.GateApplication/application"
+                                + "//*[@class='gate.util.persistence.PersistenceManager$RRPersistence']"
+                                + "/uriString[starts-with(., '$relpath$') "
                                 + "or starts-with(., '$resourceshome$') "
                                 + "or starts-with(., '$gatehome$')]");
         relativePluginPathElementsXPath =
