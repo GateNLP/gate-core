@@ -71,6 +71,22 @@ public class TextualDocumentFormat extends DocumentFormat
   public void unpackMarkup(Document doc) throws DocumentFormatException{
     if (doc == null || doc.getContent() == null) return;
     setNewLineProperty(doc);
+    
+    // for some reason old stlye Mac documents with CR line endings don't
+    // display properly in GATE so once we know we have a CR line terminated
+    // file, we replace all the \r with \n to make sure it displays correctly.
+    //
+    // Documentation for JTextArea suggests we don't need to do this as it
+    // handles new lines properly, but that's only true when using the read
+    // methods not when using setText() which is how we get the document content
+    // in to the GUI
+    if("CR"
+        .equals(doc.getFeatures().get(GateConstants.DOCUMENT_NEW_LINE_TYPE))) {
+      String content = doc.getContent().toString();
+      content = content.replace('\r', '\n');
+      doc.setContent(new DocumentContentImpl(content));
+    }
+    
     // Create paragraph annotations in the specified annotation set
     int endOffset = doc.getContent().toString().length();
     int startOffset = 0;
