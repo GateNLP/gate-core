@@ -308,8 +308,6 @@ public class PluginUpdateManager extends JDialog {
   public static void loadDefaultPlugins() {
     if(defaultPlugins != null) return;
 
-    defaultPlugins = new HashSet<>();
-
     defaultPluginsWorker = new SwingWorker<Void, Void>() {
       @Override
       protected Void doInBackground() {
@@ -325,6 +323,8 @@ public class PluginUpdateManager extends JDialog {
             return;
           }
 
+          Set<Plugin> loadedSoFar = new HashSet<Plugin>();
+          
           int loaded = 0;
           for(String pluginLine : pluginsToLoad) {
             try {
@@ -339,7 +339,7 @@ public class PluginUpdateManager extends JDialog {
               // all the details to fill the table -- but it slows us down!
               plugin.getMetadataXML();
 
-              defaultPlugins.add(plugin);
+              loadedSoFar.add(plugin);
             } catch(Exception e) {
               e.printStackTrace();
             } finally {
@@ -347,6 +347,8 @@ public class PluginUpdateManager extends JDialog {
               setProgress((100*loaded) / pluginsToLoad.size());
             }
           }
+          
+          defaultPlugins = loadedSoFar;
         });
 
         return null;
