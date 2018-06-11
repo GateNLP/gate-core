@@ -54,8 +54,12 @@ public class UpgradeXGAPP {
 
   private static final Logger log = Logger.getLogger(UpgradeXGAPP.class);
 
+  /**
+   * XML outputter that uses LF (to match xstream) rather than the default
+   * CRLF of pretty format.
+   */
   private static XMLOutputter outputter =
-      new XMLOutputter(Format.getPrettyFormat());
+      new XMLOutputter(Format.getPrettyFormat().setLineSeparator("\n"));
 
   private static GenericVersionScheme versionScheme =
       new GenericVersionScheme();
@@ -201,6 +205,7 @@ public class UpgradeXGAPP {
 
           urlString = upgrade.newPathFor(urlSuffix);
 
+          // construct a new RRPersistence with the mapped path
           Element rr = new Element(
               "gate.util.persistence.PersistenceManager-RRPersistence");
           Element uriString = new Element("uriString");
@@ -208,10 +213,14 @@ public class UpgradeXGAPP {
 
           rr.addContent(uriString);
 
-          Element parent = element.getParentElement().getParentElement();
-          parent.removeContent(element.getParentElement());
+          // replace the original URLHolder or RRPersistence with the new one
+          // at the same point in the tree
+          Element parent = element.getParentElement();
+          Element grandparent = parent.getParentElement();
 
-          parent.addContent(rr);
+          int index = grandparent.indexOf(parent);
+          grandparent.removeContent(parent);
+          grandparent.addContent(index, rr);
 
           break;
         }
