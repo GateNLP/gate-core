@@ -334,6 +334,7 @@ public class UpgradeXGAPP {
             ModelBuildingRequest req = new DefaultModelBuildingRequest();
             req.setProcessPlugins(false);
             req.setPomFile(artifactResult.getArtifact().getFile());
+            req.setSystemProperties(System.getProperties());
             req.setModelResolver(new SimpleModelResolver(repoSystem, repoSession,
                     repos));
             req.setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MINIMAL);
