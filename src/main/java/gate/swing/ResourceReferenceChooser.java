@@ -708,7 +708,9 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
       super.updateUI();
       Icon defaultIcon = getDefaultClosedIcon();
       // create plugin icon at the same size as the default closed folder icon from the L&F
-      pluginIcon = new GATEIcon(defaultIcon.getIconWidth(), defaultIcon.getIconHeight());
+      pluginIcon =
+          new GATEIcon(defaultIcon == null ? 16 : defaultIcon.getIconWidth(),
+              defaultIcon == null ? 16 : defaultIcon.getIconHeight());
     }
   }
 
