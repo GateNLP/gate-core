@@ -1929,9 +1929,9 @@ public class MainFrame extends JFrame implements ProgressListener,
     final Resource res = e.getResource();
     if(Gate.getHiddenAttribute(res.getFeatures())
       || res instanceof VisualResource) return;
-    //SwingUtilities.invokeLater(new Runnable() {
-    //  @Override
-    //  public void run() {
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
         
         NameBearerHandle handle = null;
         
@@ -1953,8 +1953,8 @@ public class MainFrame extends JFrame implements ProgressListener,
 
         if (handle != null) handle.addProgressListener(MainFrame.this);
         if (handle != null) handle.addStatusListener(MainFrame.this);
-     // }
-    //});
+      }
+    });
 
     // JPopupMenu popup = handle.getPopup();
     //
