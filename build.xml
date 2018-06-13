@@ -51,4 +51,22 @@
       <arg value="${svg.dir}" />
     </java>
   </target>
+
+  <target name="icon">
+    <java fork="true" classname="org.apache.batik.apps.rasterizer.Main" failonerror="true">
+      <classpath>
+        <fileset dir="${svg.lib}">
+          <include name="**/*.jar" />
+        </fileset>
+      </classpath>
+      <arg value="-d" />
+      <arg file="distro/build/deploy/gate-icon.png" />
+      <arg value="-w" />
+      <arg value="128" />
+      <arg value="-h" />
+      <arg value="128" />
+      <arg value="-scriptSecurityOff" />
+      <arg file="src/main/svg/GATEVersion.svg" />
+    </java>
+  </target>
 </project>
