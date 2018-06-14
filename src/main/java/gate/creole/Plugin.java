@@ -561,6 +561,12 @@ public abstract class Plugin {
       this.group = group;
       this.artifact = artifact;
       this.version = version;
+      
+      // set the super class version as well at this point. It will get
+      // overwritten later by the same value pulled from the creole.xml but this
+      // ensures that when we check to see if the plugin is already known we
+      // have a version string to use
+      super.version = this.version;
 
       name = artifact;// group+":"+artifact+":"+version;
     }
@@ -604,8 +610,14 @@ public abstract class Plugin {
       if(this == obj) return true;
       if(obj == null) return false;
 
-      if(getClass() != obj.getClass()) return false;
-      Maven other = (Maven)obj;
+      // Usualy an equals method checks for class equality, but we want to allow
+      // subclasses of the Maven plugin to be considered equal if they use the
+      // same maven coordinates to locate the plugin, so we simply check that
+      // the object being passed in can be assigned to Plugin.Maven 
+      if(!(obj instanceof Plugin.Maven)) return false;
+      
+      Plugin.Maven other = (Plugin.Maven)obj;
+      
       if(artifact == null) {
         if(other.artifact != null) return false;
       } else if(!artifact.equals(other.artifact)) return false;
