@@ -216,36 +216,37 @@ public class SerialController extends AbstractController implements
       log.error("Could not set listeners for " + currentPR.getClass().getName()
         + "\n" + e.toString() + "\n...nothing to lose any sleep over.");
     }
-
-    benchmarkFeatures.put(Benchmark.PR_NAME_FEATURE, currentPR.getName());
-
-    long startTime = System.currentTimeMillis();
-    // run the thing
-    Benchmark.executeWithBenchmarking(currentPR,
-            Benchmark.createBenchmarkId(Benchmark.PR_PREFIX + currentPR.getName(),
-                    getBenchmarkId()), this, benchmarkFeatures);
-
-    benchmarkFeatures.remove(Benchmark.PR_NAME_FEATURE);
-
-    // calculate the time taken by the PR
-    long timeTakenByThePR = System.currentTimeMillis() - startTime;
-    Long time = prTimeMap.get(currentPR.getName());
-    if(time == null) {
-      time = 0L;
-    }
-    time = time.longValue() + timeTakenByThePR;
-    prTimeMap.put(currentPR.getName(), time);
-
-
-    // remove the listeners
     try {
-      AbstractResource.removeResourceListeners(currentPR, listeners);
-    }
-    catch(Exception e) {
-      // the listeners removing failed; nothing important
-      log.error("Could not clear listeners for "
-        + currentPR.getClass().getName() + "\n" + e.toString()
-        + "\n...nothing to lose any sleep over.");
+
+      benchmarkFeatures.put(Benchmark.PR_NAME_FEATURE, currentPR.getName());
+
+      long startTime = System.currentTimeMillis();
+      // run the thing
+      Benchmark.executeWithBenchmarking(currentPR,
+              Benchmark.createBenchmarkId(Benchmark.PR_PREFIX + currentPR.getName(),
+                      getBenchmarkId()), this, benchmarkFeatures);
+
+      benchmarkFeatures.remove(Benchmark.PR_NAME_FEATURE);
+
+      // calculate the time taken by the PR
+      long timeTakenByThePR = System.currentTimeMillis() - startTime;
+      Long time = prTimeMap.get(currentPR.getName());
+      if(time == null) {
+        time = 0L;
+      }
+      time = time.longValue() + timeTakenByThePR;
+      prTimeMap.put(currentPR.getName(), time);
+
+    } finally {
+      // remove the listeners
+      try {
+        AbstractResource.removeResourceListeners(currentPR, listeners);
+      } catch(Exception e) {
+        // the listeners removing failed; nothing important
+        log.error("Could not clear listeners for "
+                + currentPR.getClass().getName() + "\n" + e.toString()
+                + "\n...nothing to lose any sleep over.");
+      }
     }
   }// protected void runComponent(int componentIndex)
 

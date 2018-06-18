@@ -414,29 +414,32 @@ public abstract class Factory {
       }
     }
 
-    // if the features of the resource have not been explicitly set,
-    // set them to the features of the resource data
-    if(res.getFeatures() == null || res.getFeatures().isEmpty()) {
-      FeatureMap fm = newFeatureMap();
-      fm.putAll(resData.getFeatures());
-      res.setFeatures(fm);
-    }
-    // add the features specified by the user
-    if(features != null) res.getFeatures().putAll(features);
+    try {
+      // if the features of the resource have not been explicitly set,
+      // set them to the features of the resource data
+      if(res.getFeatures() == null || res.getFeatures().isEmpty()) {
+        FeatureMap fm = newFeatureMap();
+        fm.putAll(resData.getFeatures());
+        res.setFeatures(fm);
+      }
+      // add the features specified by the user
+      if(features != null) res.getFeatures().putAll(features);
 
-    // initialise the resource
-    if(DEBUG) Out.prln("Initialising resource " + res.toString());
-    res = res.init();
+      // initialise the resource
+      if(DEBUG) Out.prln("Initialising resource " + res.toString());
+      res = res.init();
 
-    // remove the listeners if any
-    if(!listeners.isEmpty()) {
-      try {
-        if(DEBUG) Out.prln("Removing the listeners for  " + res.toString());
-        AbstractResource.removeResourceListeners(res, listeners);
-      } catch(Exception e) {
-        if(DEBUG)
-          Out.prln("Failed to remove the listeners for " + res.toString());
-        throw new ResourceInstantiationException("Parameterisation failure" + e);
+    } finally {
+      // remove the listeners if any
+      if(!listeners.isEmpty()) {
+        try {
+          if(DEBUG) Out.prln("Removing the listeners for  " + res.toString());
+          AbstractResource.removeResourceListeners(res, listeners);
+        } catch(Exception e) {
+          if(DEBUG)
+            Out.prln("Failed to remove the listeners for " + res.toString());
+          throw new ResourceInstantiationException("Parameterisation failure" + e);
+        }
       }
     }
     // record the instantiation on the resource data's stack

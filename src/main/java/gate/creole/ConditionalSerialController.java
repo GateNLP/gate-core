@@ -162,38 +162,39 @@ public class ConditionalSerialController extends SerialController
                "\n" + e.toString() + "\n...nothing to lose any sleep over.");
     }
 
+    try {
+      //run the thing
+      if(strategiesList.get(componentIndex).shouldRun()) {
+        benchmarkFeatures.put(Benchmark.PR_NAME_FEATURE, currentPR.getName());
 
-    //run the thing
-    if(strategiesList.get(componentIndex).shouldRun()){
-      benchmarkFeatures.put(Benchmark.PR_NAME_FEATURE, currentPR.getName());
+        long startTime = System.currentTimeMillis();
+        // run the thing
+        Benchmark.executeWithBenchmarking(currentPR,
+                Benchmark.createBenchmarkId(Benchmark.PR_PREFIX + currentPR.getName(),
+                        getBenchmarkId()), this, benchmarkFeatures);
 
-      long startTime = System.currentTimeMillis();
-      // run the thing
-      Benchmark.executeWithBenchmarking(currentPR,
-              Benchmark.createBenchmarkId(Benchmark.PR_PREFIX + currentPR.getName(),
-                      getBenchmarkId()), this, benchmarkFeatures);
+        benchmarkFeatures.remove(Benchmark.PR_NAME_FEATURE);
 
-      benchmarkFeatures.remove(Benchmark.PR_NAME_FEATURE);
-      
-      // calculate the time taken by the PR
-      long timeTakenByThePR = System.currentTimeMillis() - startTime;
-      Long time = prTimeMap.get(currentPR.getName());
-      if(time == null) {
-        time = 0L;
+        // calculate the time taken by the PR
+        long timeTakenByThePR = System.currentTimeMillis() - startTime;
+        Long time = prTimeMap.get(currentPR.getName());
+        if(time == null) {
+          time = 0L;
+        }
+        time += timeTakenByThePR;
+        prTimeMap.put(currentPR.getName(), time);
       }
-      time += timeTakenByThePR;
-      prTimeMap.put(currentPR.getName(), time);
-    }
 
-
-    //remove the listeners
-    try{
-      AbstractResource.removeResourceListeners(currentPR, listeners);
-    }catch(Exception e){
-      // the listeners removing failed; nothing important
-      Err.prln("Could not clear listeners for " +
-               currentPR.getClass().getName() +
-               "\n" + e.toString() + "\n...nothing to lose any sleep over.");
+    } finally {
+      //remove the listeners
+      try {
+        AbstractResource.removeResourceListeners(currentPR, listeners);
+      } catch(Exception e) {
+        // the listeners removing failed; nothing important
+        Err.prln("Could not clear listeners for " +
+                currentPR.getClass().getName() +
+                "\n" + e.toString() + "\n...nothing to lose any sleep over.");
+      }
     }
   }//protected void runComponent(int componentIndex)
 

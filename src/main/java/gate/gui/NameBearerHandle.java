@@ -1151,15 +1151,17 @@ public class NameBearerHandle implements Handle, StatusListener,
             catch(Exception e) {
               e.printStackTrace(Err.getPrintWriter());
             }
-            // show the progress indicator
-            fireProgressChanged(0);
-            // the actual reinitialisation
-            res.reInit();
             try {
-              AbstractResource.removeResourceListeners(res, listeners);
-            }
-            catch(Exception e) {
-              e.printStackTrace(Err.getPrintWriter());
+              // show the progress indicator
+              fireProgressChanged(0);
+              // the actual reinitialisation
+              res.reInit();
+            } finally {
+              try {
+                AbstractResource.removeResourceListeners(res, listeners);
+              } catch(Exception e) {
+                e.printStackTrace(Err.getPrintWriter());
+              }
             }
             long endTime = System.currentTimeMillis();
             fireStatusChanged(target.getName()
