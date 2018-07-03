@@ -11,6 +11,7 @@ import gate.resources.img.svg.ApplicationIcon;
 import gate.swing.XJFileChooser;
 import gate.util.ExtensionFileFilter;
 import gate.util.maven.SimpleModelResolver;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -30,6 +31,7 @@ import org.eclipse.aether.version.Version;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.jdom.Text;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
@@ -55,11 +57,9 @@ public class UpgradeXGAPP {
   private static final Logger log = Logger.getLogger(UpgradeXGAPP.class);
 
   /**
-   * XML outputter that uses LF (to match xstream) rather than the default
-   * CRLF of pretty format.
+   * XML outputter.
    */
-  private static XMLOutputter outputter =
-      new XMLOutputter(Format.getPrettyFormat().setLineSeparator("\n"));
+  private static XMLOutputter outputter = new XMLOutputter();
 
   private static GenericVersionScheme versionScheme =
       new GenericVersionScheme();
@@ -187,8 +187,9 @@ public class UpgradeXGAPP {
     for(UpgradePath upgrade : upgrades) {
       if(upgrade.getUpgradeStrategy().upgradePlugin) {
         int pluginIndex = pluginList.indexOf(upgrade.getOldElement());
-
-        pluginList.setContent(pluginIndex, upgrade.getNewElement());
+        Element newElement = upgrade.getNewElement();
+        prettyPrint(newElement, 3);
+        pluginList.setContent(pluginIndex, newElement);
       }
     }
 
@@ -212,6 +213,7 @@ public class UpgradeXGAPP {
           uriString.setText(urlString);
 
           rr.addContent(uriString);
+          prettyPrint(rr, countAncestors(element) - 1);
 
           // replace the original URLHolder or RRPersistence with the new one
           // at the same point in the tree
@@ -227,6 +229,54 @@ public class UpgradeXGAPP {
       }
     }
 
+  }
+
+  /**
+   * Count the number of ancestor elements of the given element in the
+   * tree (i.e. the "depth" of this element in the tree).  The element
+   * must be attached to a document for this to be accurate.
+   * @param e the element
+   * @return the number of ancestor elements, including the root element
+   * (but not the document root node, which is not an element).
+   */
+  private static int countAncestors(Element e) {
+    int ancestors = 0;
+    while((e = e.getParentElement()) != null) {
+      ancestors++;
+    }
+    return ancestors;
+  }
+
+  /**
+   * If this element has any child <em>elements</em>, add whitespace
+   * text nodes inside this element to indent its children to the
+   * appropriate level, and then do the same recursively for the children.
+   * This doesn't work for elements with mixed content - content must be
+   * either other elements or text, not both.
+   * @param e the element to pretty print
+   * @param numAncestors the number of ancestor elements this element
+   *                     will have once it is inserted into the tree
+   *                     (i.e. the "depth" of this element).
+   */
+  @SuppressWarnings("unchecked")
+  private static void prettyPrint(Element e, int numAncestors) {
+    if(!e.getChildren().isEmpty()) {
+      int numChildren = e.getContentSize();
+      // add indent before the closing tag
+      e.addContent(numChildren, new Text("\n" + StringUtils.repeat(" ", 2*numAncestors)));
+      // add a bit more indent before each child - we have to work backwards
+      // as the act of adding text nodes changes the content indexes for
+      // subsequent children
+      String indentStr = "\n" + StringUtils.repeat(" ", 2*(numAncestors+1));
+      for(int i = numChildren - 1; i >= 0; i--) {
+        e.addContent(i, new Text(indentStr));
+      }
+
+      // now recursively prettify the children
+      for(Element child : (List<Element>)e.getChildren()) {
+        prettyPrint(child, numAncestors + 1);
+      }
+    }
   }
 
   private static XMLInputFactory inputFactory = XMLInputFactory.newFactory();
