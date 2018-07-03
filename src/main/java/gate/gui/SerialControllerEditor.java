@@ -15,42 +15,6 @@
 
 package gate.gui;
 
-import gate.Controller;
-import gate.Corpus;
-import gate.CorpusController;
-import gate.Gate;
-import gate.LanguageResource;
-import gate.ProcessingResource;
-import gate.Resource;
-import gate.creole.AbstractVisualResource;
-import gate.creole.AnalyserRunningStrategy;
-import gate.creole.ConditionalController;
-import gate.creole.ConditionalSerialAnalyserController;
-import gate.creole.ExecutionException;
-import gate.creole.ExecutionInterruptedException;
-import gate.creole.Parameter;
-import gate.creole.ResourceData;
-import gate.creole.ResourceInstantiationException;
-import gate.creole.RunningStrategy;
-import gate.creole.RunningStrategy.UnconditionalRunningStrategy;
-import gate.creole.SerialAnalyserController;
-import gate.creole.SerialController;
-import gate.creole.metadata.CreoleResource;
-import gate.creole.metadata.GuiType;
-import gate.event.ControllerEvent;
-import gate.event.ControllerListener;
-import gate.event.CreoleEvent;
-import gate.event.CreoleListener;
-import gate.event.ProgressListener;
-import gate.event.StatusListener;
-import gate.swing.XJPopupMenu;
-import gate.swing.XJTable;
-import gate.util.Benchmark;
-import gate.util.Err;
-import gate.util.GateException;
-import gate.util.GateRuntimeException;
-import gate.util.NameComparator;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -112,6 +76,43 @@ import javax.swing.event.PopupMenuListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import gate.Controller;
+import gate.Corpus;
+import gate.CorpusController;
+import gate.Gate;
+import gate.LanguageResource;
+import gate.ProcessingResource;
+import gate.Resource;
+import gate.VisualResource;
+import gate.creole.AbstractVisualResource;
+import gate.creole.AnalyserRunningStrategy;
+import gate.creole.ConditionalController;
+import gate.creole.ConditionalSerialAnalyserController;
+import gate.creole.ExecutionException;
+import gate.creole.ExecutionInterruptedException;
+import gate.creole.Parameter;
+import gate.creole.ResourceData;
+import gate.creole.ResourceInstantiationException;
+import gate.creole.RunningStrategy;
+import gate.creole.RunningStrategy.UnconditionalRunningStrategy;
+import gate.creole.SerialAnalyserController;
+import gate.creole.SerialController;
+import gate.creole.metadata.CreoleResource;
+import gate.creole.metadata.GuiType;
+import gate.event.ControllerEvent;
+import gate.event.ControllerListener;
+import gate.event.CreoleEvent;
+import gate.event.CreoleListener;
+import gate.event.ProgressListener;
+import gate.event.StatusListener;
+import gate.swing.XJPopupMenu;
+import gate.swing.XJTable;
+import gate.util.Benchmark;
+import gate.util.Err;
+import gate.util.GateException;
+import gate.util.GateRuntimeException;
+import gate.util.NameComparator;
+
 @SuppressWarnings("serial")
 @CreoleResource(name = "Serial Application Editor", guiType = GuiType.LARGE,
     resourceDisplayed = "gate.creole.SerialController", mainViewer = true)
@@ -121,6 +122,23 @@ public class SerialControllerEditor extends AbstractVisualResource
 
   public SerialControllerEditor() {
 
+  }
+
+  /**
+   * Forces all open controller editors to refresh the list of selected PRs.
+   * This should be called before any other code attempts to update a runtime
+   * parameter to ensure that the PR being edited isn't selected so that changes
+   * in it's parameters are correctly stored and not overwritten by subsequent
+   * GUI actions
+   */
+  public static void clearAllSelections() {
+    List<VisualResource> controllerEditors = Gate.getCreoleRegister()
+        .getVrInstances("gate.gui.SerialControllerEditor");
+    if(controllerEditors != null) {
+      for(Resource editor : controllerEditors) {
+        ((SerialControllerEditor)editor).refreshPRLists();
+      }
+    }
   }
 
   @Override
