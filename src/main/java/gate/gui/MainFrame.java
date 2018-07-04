@@ -2891,6 +2891,10 @@ public class MainFrame extends JFrame implements ProgressListener,
         @Override
         public void run() {
           lockGUI(name + " is being loaded...");
+          ProgressListener pListener = (ProgressListener)Gate.getListeners()
+              .get("gate.event.ProgressListener");
+          if(pListener != null) pListener.progressChanged(0);
+          
           try {
             long startTime = System.currentTimeMillis();
             
