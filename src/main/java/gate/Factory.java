@@ -207,7 +207,7 @@ public abstract class Factory {
       }
 
       msg.append("Go to the menu File->Manage CREOLE plugins or use the method\n");
-      msg.append("Gate.getCreoleRegister().registerDirectories(pluginDirectoryURL).");
+      msg.append("Gate.getCreoleRegister().registerPlugin(plugin).");
 
       throw new ResourceInstantiationException(msg.toString());
     }
