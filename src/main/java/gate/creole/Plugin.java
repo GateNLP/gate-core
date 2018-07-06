@@ -287,7 +287,7 @@ public abstract class Plugin {
       if(!validGateVersion) {
         Utils.logOnce(log, Level.WARN,
             getName()
-            + " is not compatible with this version of GATE, requires "
+            + " is not compatible with this version of GATE, requires at least GATE"
             + pluginVersion.toString());
       }
       
