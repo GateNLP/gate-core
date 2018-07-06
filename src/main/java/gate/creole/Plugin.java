@@ -274,17 +274,28 @@ public abstract class Plugin {
     
     //Main.version
     if (Gate.VERSION == null || minGateVersion == null || minGateVersion.isEmpty()) {
-      log.debug("unable to check min GATE version");
+      Utils.logOnce(log, Level.DEBUG,
+          "unable to check minimum GATE version, plugins may not load or might produce errors");
       return valid;
     }
     
     try {
       Version pluginVersion = versionScheme.parseVersion(minGateVersion);
       
-      valid = valid && Gate.VERSION.compareTo(pluginVersion) >= 0;
+      boolean validGateVersion = Gate.VERSION.compareTo(pluginVersion) >= 0;
+      
+      if(!validGateVersion) {
+        Utils.logOnce(log, Level.WARN,
+            getName()
+            + " is not compatible with this version of GATE, requires "
+            + pluginVersion.toString());
+      }
+      
+      valid = valid && validGateVersion; 
     } catch(InvalidVersionSpecificationException e) {
-      // TODO Auto-generated catch block
-      log.warn("unable to parse min GATE version: "+minGateVersion);
+      Utils.logOnce(log, Level.DEBUG,
+          "unable to parse minimum GATE version, plugin, " + getName()
+              + ", may not load or might produce errors");
     }
     
     return valid;
