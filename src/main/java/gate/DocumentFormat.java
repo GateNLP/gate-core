@@ -604,7 +604,7 @@ extends AbstractLanguageResource {
    * Utility method to get a {@link MimeType} given the type string.
    */
   public static MimeType getMimeTypeForString(String typeString) {
-    return mimeString2mimeTypeMap.get(typeString);
+    return mimeString2mimeTypeMap.get(typeString.split(";",2)[0].trim());
   }
 
   /**

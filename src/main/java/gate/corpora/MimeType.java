@@ -16,8 +16,12 @@
 
 package gate.corpora;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.activation.MimeTypeParameterList;
+import javax.activation.MimeTypeParseException;
 
 /**
  * A very basic implementation for a MIME Type.
@@ -32,6 +36,24 @@ public class MimeType {
     this.type = type;
     this.subtype = subType;
     parameters = new HashMap<String,String>();
+  }
+  
+  public MimeType(String raw) throws MimeTypeParseException {
+    javax.activation.MimeType parsed = new javax.activation.MimeType(raw);
+    
+    this.type = parsed.getPrimaryType();
+    this.subtype = parsed.getSubType();
+    
+    parameters = new HashMap<String,String>();
+    
+    MimeTypeParameterList params = parsed.getParameters();
+    
+    Enumeration<String> paramNames = params.getNames();
+    while (paramNames.hasMoreElements()) {
+      String name = paramNames.nextElement();
+      System.out.println(name+"/"+params.get(name));
+      parameters.put(name, params.get(name));
+    }
   }
 
   /**
