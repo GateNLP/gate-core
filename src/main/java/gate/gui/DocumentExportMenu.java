@@ -174,7 +174,7 @@ public class DocumentExportMenu extends XJMenu implements CreoleListener {
     }
 
     if(params == null || params.isEmpty()) {
-      XJFileChooser fileChooser = MainFrame.getFileChooser();
+      JFileChooser fileChooser = new JFileChooser();
       fileChooser.resetChoosableFileFilters();
       fileChooser.setFileFilter(de.getFileFilter());
       fileChooser.setMultiSelectionEnabled(false);
@@ -186,7 +186,7 @@ public class DocumentExportMenu extends XJMenu implements CreoleListener {
       if(selectedFile != null) {
         fileChooser.ensureFileIsVisible(selectedFile);
         fileChooser.setSelectedFile(selectedFile);
-      }
+      }      
 
       if(fileChooser.showSaveDialog(MainFrame.getInstance()) != JFileChooser.APPROVE_OPTION)
         return null;
