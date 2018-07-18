@@ -140,8 +140,15 @@ public class SimpleMavenCache implements WorkspaceReader, Serializable {
 			// than the resolved one (e.g. if we requested a -SNAPSHOT version
 			// but got a timestamped one)
 			File file = getArtifactFile(ar.getRequest().getArtifact());
-
+			
 			FileUtils.copyFile(ar.getArtifact().getFile(), file);
+			
+      // did we resolve the jar from a repo we didn't already know about? If so
+      // then this is a repo specified in a pom so we need to add this to the
+      // list of repos we consult when trying to find the pom itself
+			boolean repoAddedFromPom = !repos.contains(ar.getRepository());
+      if(repoAddedFromPom && ar.getRepository() instanceof RemoteRepository)
+        repos.add((RemoteRepository)ar.getRepository());
 			
 			// get the POM corresponding to the specific resolved JAR
 			Artifact pomArtifact = new SubArtifact(ar.getArtifact(),"", "pom");
@@ -155,9 +162,15 @@ public class SimpleMavenCache implements WorkspaceReader, Serializable {
       
       // but copy it to a file named for the original requested version number
       file = getArtifactFile(new SubArtifact(ar.getRequest().getArtifact(), "", "pom"));
-      FileUtils.copyFile(artifactResult.getArtifact().getFile(), file);        
+      FileUtils.copyFile(artifactResult.getArtifact().getFile(), file);
       
       cacheParents(artifactResult.getArtifact().getFile(), repoSystem, repoSession, repos);
+      
+      // if we added a repo from a pom to the list we consult then remove it
+      // before moving on to the next artifact to ensure we always pull the pom
+      // from the same place as the jar
+      if (repoAddedFromPom)
+        repos.remove(ar.getRepository());
 		}
 	}
 	
