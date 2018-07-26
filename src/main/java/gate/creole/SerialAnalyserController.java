@@ -223,6 +223,27 @@ public class SerialAnalyserController extends SerialController
             super.executeImpl();
             if(DEBUG) Out.prln("done.");
           }
+          catch (Throwable throwable) {
+            log.error("An error occurred processing document '" + doc.getName()
+                + "'. This was document " + (i + 1) + " of " + corpus.size()
+                + " in the '" + corpus.getName()
+                + "' corpus. See the log for details");
+            
+            if (throwable instanceof Error) {
+              throw (Error)throwable;
+            }
+            else if (throwable instanceof RuntimeException) {
+              throw (RuntimeException)throwable;
+            }
+            else if (throwable instanceof ExecutionException) {
+              throw (ExecutionException)throwable;
+            }
+            else {
+              // we have a checked exception that isn't one executeImpl can
+              // throw. This shouldn't be possible, but just in case...
+              throw new UndeclaredThrowableException(throwable);
+            }
+          }
           finally {
             // make sure we unset the doc and corpus even if we got an exception
             for(int j = 0; j < prList.size(); j++) {
@@ -264,6 +285,25 @@ public class SerialAnalyserController extends SerialController
 
         super.executeImpl();
         if(DEBUG) Out.prln("done.");
+      }
+      catch (Throwable throwable) {
+        log.error("An error occurred processing document " + document.getName()
+            + ". See the log for details");
+        
+        if (throwable instanceof Error) {
+          throw (Error)throwable;
+        }
+        else if (throwable instanceof RuntimeException) {
+          throw (RuntimeException)throwable;
+        }
+        else if (throwable instanceof ExecutionException) {
+          throw (ExecutionException)throwable;
+        }
+        else {
+          // we have a checked exception that isn't one executeImpl can
+          // throw. This shouldn't be possible, but just in case...
+          throw new UndeclaredThrowableException(throwable);
+        }
       }
       finally {
         // make sure we unset the doc and corpus even if we got an exception
