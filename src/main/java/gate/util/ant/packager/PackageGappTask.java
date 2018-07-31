@@ -710,6 +710,15 @@ public class PackageGappTask extends Task {
                 + "print warnings at runtime");
           }
         }
+        
+        // remove all the files generated via the maven resolve process that
+        // aren't needed when the cache is used to load an app
+        try {
+          smc.compact();
+        } catch(IOException e) {
+          log("    An error occured while compacting the maven cache. "
+              + " The cache may be larger than necessary but should still work as expected.");
+        }
       }
     }
     

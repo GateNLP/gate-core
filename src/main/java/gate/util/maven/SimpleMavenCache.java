@@ -1,244 +1,199 @@
 package gate.util.maven;
 
-import static gate.util.maven.Utils.getRepositoryList;
-import static gate.util.maven.Utils.getRepositorySession;
-import static gate.util.maven.Utils.getRepositorySystem;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.Parent;
-import org.apache.maven.model.building.DefaultModelBuilderFactory;
-import org.apache.maven.model.building.DefaultModelBuildingRequest;
-import org.apache.maven.model.building.ModelBuilder;
 import org.apache.maven.model.building.ModelBuildingException;
-import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingException;
+import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.DependencyCollectionException;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.repository.WorkspaceRepository;
-import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.resolution.DependencyResolutionException;
-import org.eclipse.aether.resolution.DependencyResult;
-import org.eclipse.aether.util.artifact.SubArtifact;
 
 public class SimpleMavenCache implements WorkspaceReader, Serializable {
 
-	private static final long serialVersionUID = 8612094868614282978L;
+  private static final long serialVersionUID = 8612094868614282978L;
 
-	private File head;
+  private File head;
 
-	private SimpleMavenCache tail;
+  private SimpleMavenCache tail;
 
-	private transient WorkspaceRepository repo;
+  private transient WorkspaceRepository repo;
 
-	public SimpleMavenCache(File... dir) {
-		
-		if (dir == null || dir.length == 0) {
-			throw new NullPointerException("At least one workspace directory must be specified");
-		}
-		
-		head = dir[0];
+  public SimpleMavenCache(File... dir) {
 
-		if (dir.length > 1) {
-			tail = new SimpleMavenCache(Arrays.copyOfRange(dir, 1, dir.length));
-		}
-	}
+    if(dir == null || dir.length == 0) { throw new NullPointerException(
+        "At least one workspace directory must be specified"); }
 
-	private File getArtifactFile(Artifact artifact) {
-		File file = head;
+    head = dir[0];
 
-		for (String part : artifact.getGroupId().split("\\.")) {
-			file = new File(file, part);
-		}
-
-		file = new File(file, artifact.getArtifactId());
-
-		file = new File(file, artifact.getVersion());
-
-		if("".equals(artifact.getClassifier())) {
-			file = new File(file, artifact.getArtifactId() + "-" + artifact.getVersion() + "." + artifact.getExtension());
-		} else {
-			file = new File(file, artifact.getArtifactId() + "-" + artifact.getVersion() + "-" + artifact.getClassifier() + "." + artifact.getExtension());
-		}
-
-		return file;
-	}
-
-	@Override
-	public File findArtifact(Artifact artifact) {
-		File file = getArtifactFile(artifact);
-
-		if (file.exists())
-			return file;
-
-		if (tail == null)
-			return null;
-
-		return tail.findArtifact(artifact);
-	}
-
-	@Override
-	public List<String> findVersions(Artifact artifact) {
-		List<String> versions = new ArrayList<String>();
-
-		if (tail != null) {
-			versions.addAll(tail.findVersions(artifact));
-		}
-
-		File file = getArtifactFile(artifact).getParentFile().getParentFile();
-
-		if (!file.exists() || !file.isDirectory())
-			return versions;
-
-		for (File version : file.listFiles()) {
-			if (version.isDirectory())
-				versions.add(version.getName());
-		}
-
-		return versions;
-	}
-
-	public void cacheArtifact(Artifact artifact) throws IOException, SettingsBuildingException,
-			DependencyCollectionException, DependencyResolutionException, ArtifactResolutionException, ModelBuildingException {
-
-	  List<RemoteRepository> repos = getRepositoryList();
-	  
-		Dependency dependency = new Dependency(artifact, "runtime");
-
-		RepositorySystem repoSystem = getRepositorySystem();
-		RepositorySystemSession repoSession = getRepositorySession(repoSystem, null);
-
-		CollectRequest collectRequest = new CollectRequest(dependency, repos);
-
-		DependencyNode node = repoSystem.collectDependencies(repoSession, collectRequest).getRoot();
-
-		DependencyRequest dependencyRequest = new DependencyRequest();
-		dependencyRequest.setRoot(node);
-
-		DependencyResult result = repoSystem.resolveDependencies(repoSession, dependencyRequest);
-		
-		for (ArtifactResult ar : result.getArtifactResults()) {
-			// generate output file name from the *requested* artifact rather
-			// than the resolved one (e.g. if we requested a -SNAPSHOT version
-			// but got a timestamped one)
-			File file = getArtifactFile(ar.getRequest().getArtifact());
-			
-			FileUtils.copyFile(ar.getArtifact().getFile(), file);
-			
-      // did we resolve the jar from a repo we didn't already know about? If so
-      // then this is a repo specified in a pom so we need to add this to the
-      // list of repos we consult when trying to find the pom itself
-			boolean repoAddedFromPom = !repos.contains(ar.getRepository());
-      if(repoAddedFromPom && ar.getRepository() instanceof RemoteRepository)
-        repos.add((RemoteRepository)ar.getRepository());
-			
-			// get the POM corresponding to the specific resolved JAR
-			Artifact pomArtifact = new SubArtifact(ar.getArtifact(),"", "pom");
-			
-			ArtifactRequest artifactRequest =
-          new ArtifactRequest(pomArtifact, repos, null);
-			
-      ArtifactResult artifactResult =
-          repoSystem.resolveArtifact(repoSession,
-                  artifactRequest);
-      
-      // but copy it to a file named for the original requested version number
-      file = getArtifactFile(new SubArtifact(ar.getRequest().getArtifact(), "", "pom"));
-      FileUtils.copyFile(artifactResult.getArtifact().getFile(), file);
-      
-      cacheParents(artifactResult.getArtifact().getFile(), repoSystem, repoSession, repos);
-      
-      // if we added a repo from a pom to the list we consult then remove it
-      // before moving on to the next artifact to ensure we always pull the pom
-      // from the same place as the jar
-      if (repoAddedFromPom)
-        repos.remove(ar.getRepository());
-		}
-	}
-	
-  private void cacheParents(File pom, RepositorySystem repoSystem,
-      RepositorySystemSession repoSession, List<RemoteRepository> repos)
-      throws ModelBuildingException, IOException, ArtifactResolutionException {
-    
-    ModelBuildingRequest req = new DefaultModelBuildingRequest();
-    req.setProcessPlugins(false);
-    req.setPomFile(pom);
-    req.setSystemProperties(System.getProperties());
-    req.setModelResolver(
-        new SimpleModelResolver(repoSystem, repoSession, repos));
-    req.setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MINIMAL);
-
-    ModelBuilder modelBuilder = new DefaultModelBuilderFactory().newInstance();
-    Model model = modelBuilder.build(req).getEffectiveModel();
-
-    Parent parent = model.getParent();
-
-    if(parent == null) return;
-
-    Artifact pomArtifact = new DefaultArtifact(parent.getGroupId(),
-        parent.getArtifactId(), "pom", parent.getVersion());
-
-    ArtifactRequest artifactRequest =
-        new ArtifactRequest(pomArtifact, repos, null);
-
-    ArtifactResult artifactResult =
-        repoSystem.resolveArtifact(repoSession, artifactRequest);
-
-    // but copy it to a file named for the original requested version number
-    File file = getArtifactFile(artifactRequest.getArtifact());
-    FileUtils.copyFile(artifactResult.getArtifact().getFile(), file);
-
-    cacheParents(artifactResult.getArtifact().getFile(), repoSystem,
-        repoSession, repos);
+    if(dir.length > 1) {
+      tail = new SimpleMavenCache(Arrays.copyOfRange(dir, 1, dir.length));
+    }
   }
 
+  private File getArtifactFile(Artifact artifact) {
+    File file = head;
 
-	@Override
-	public WorkspaceRepository getRepository() {
-		if (repo == null) {
-			repo = new WorkspaceRepository();
-		}
-		return repo;
-	}
+    for(String part : artifact.getGroupId().split("\\.")) {
+      file = new File(file, part);
+    }
 
-	public static void main(String args[]) throws Exception {
+    file = new File(file, artifact.getArtifactId());
 
-		for (RemoteRepository repo : Utils.getRepositoryList()) {
-			System.out.println(repo);
-		}
+    file = new File(file, artifact.getVersion());
 
-		Artifact artifactObj = new DefaultArtifact("uk.ac.gate.plugins", "annie", "jar", "8.5-SNAPSHOT");
-		//artifactObj = artifactObj.setFile(
-		//		new File("/home/mark/.m2/repository/uk/ac/gate/plugins/annie/8.5-SNAPSHOT/annie-8.5-SNAPSHOT.jar"));
+    if("".equals(artifact.getClassifier())) {
+      file = new File(file, artifact.getArtifactId() + "-"
+          + artifact.getVersion() + "." + artifact.getExtension());
+    } else {
+      file =
+          new File(file, artifact.getArtifactId() + "-" + artifact.getVersion()
+              + "-" + artifact.getClassifier() + "." + artifact.getExtension());
+    }
 
-		SimpleMavenCache reader = new SimpleMavenCache(new File("repo"));
-		System.out.println(reader.findArtifact(artifactObj));
-		System.out.println(reader.findVersions(artifactObj));
-		reader.cacheArtifact(artifactObj);
-		System.out.println(reader.findArtifact(artifactObj));
-		System.out.println(reader.findVersions(artifactObj));
-		
-		reader = new SimpleMavenCache(new File("repo2"), new File("repo"));
-		System.out.println(reader.findArtifact(artifactObj));
-		System.out.println(reader.findVersions(artifactObj));
-	}
+    return file;
+  }
+
+  @Override
+  public File findArtifact(Artifact artifact) {
+    File file = getArtifactFile(artifact);
+
+    if(file.exists()) return file;
+
+    if(tail == null) return null;
+
+    return tail.findArtifact(artifact);
+  }
+
+  @Override
+  public List<String> findVersions(Artifact artifact) {
+    List<String> versions = new ArrayList<String>();
+
+    if(tail != null) {
+      versions.addAll(tail.findVersions(artifact));
+    }
+
+    File file = getArtifactFile(artifact).getParentFile().getParentFile();
+
+    if(!file.exists() || !file.isDirectory()) return versions;
+
+    for(File version : file.listFiles()) {
+      if(version.isDirectory()) versions.add(version.getName());
+    }
+
+    return versions;
+  }
+
+  public void cacheArtifact(Artifact artifact)
+      throws IOException, SettingsBuildingException,
+      DependencyCollectionException, DependencyResolutionException,
+      ArtifactResolutionException, ModelBuildingException {
+
+    // setup a maven resolution hierarchy that uses the main local repo as
+    // a remote repo and then cache into a new local repo
+    List<RemoteRepository> repos = Utils.getRepositoryList();
+    RepositorySystem repoSystem = Utils.getRepositorySystem();
+    DefaultRepositorySystemSession repoSession =
+        Utils.getRepositorySession(repoSystem, null);
+
+    RemoteRepository localAsRemote =
+        new RemoteRepository.Builder("localAsRemote", "default",
+            repoSession.getLocalRepository().getBasedir().toURI().toString())
+                .build();
+
+    repos.add(0, localAsRemote);
+
+    repoSession.setLocalRepositoryManager(repoSystem.newLocalRepositoryManager(
+        repoSession, new LocalRepository(head.getAbsolutePath())));
+
+    Dependency dependency = new Dependency(artifact, "runtime");
+
+    CollectRequest collectRequest = new CollectRequest(dependency, repos);
+
+    DependencyNode node =
+        repoSystem.collectDependencies(repoSession, collectRequest).getRoot();
+
+    DependencyRequest dependencyRequest = new DependencyRequest();
+    dependencyRequest.setRoot(node);
+
+    repoSystem.resolveDependencies(repoSession, dependencyRequest);
+
+  }
+
+  public void compact() throws IOException {
+    // making the cache using a local repository generates a lot of files
+    // we don't need, including duplicated jars for -SNAPSHOT versions so
+    // we remove any file from the cache where the name doesn't include
+    // the parent folder name within it, which leaves us the main jar, the
+    // pom.xml and the -creole.jar plus some .sha1 files
+    Files.walkFileTree(head.toPath(), new SimpleFileVisitor<Path>() {
+      @Override
+      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+          throws IOException {
+
+        String filename = file.getFileName().toString();
+
+        if((!filename.endsWith(".jar") && !filename.endsWith(".pom")) ||
+            !filename.contains(file.getParent().getFileName().toString())) {
+          java.nio.file.Files.delete(file);
+        }
+
+        return FileVisitResult.CONTINUE;
+      }
+    });
+  }
+
+  @Override
+  public WorkspaceRepository getRepository() {
+    if(repo == null) {
+      repo = new WorkspaceRepository();
+    }
+    return repo;
+  }
+
+  public static void main(String args[]) throws Exception {
+
+    for(RemoteRepository repo : Utils.getRepositoryList()) {
+      System.out.println(repo);
+    }
+
+    Artifact artifactObj = new DefaultArtifact("uk.ac.gate.plugins", "annie",
+        "jar", "8.5-SNAPSHOT");
+    // artifactObj = artifactObj.setFile(
+    // new
+    // File("/home/mark/.m2/repository/uk/ac/gate/plugins/annie/8.5-SNAPSHOT/annie-8.5-SNAPSHOT.jar"));
+
+    SimpleMavenCache reader = new SimpleMavenCache(new File("repo"));
+    System.out.println(reader.findArtifact(artifactObj));
+    System.out.println(reader.findVersions(artifactObj));
+    reader.cacheArtifact(artifactObj);
+    System.out.println(reader.findArtifact(artifactObj));
+    System.out.println(reader.findVersions(artifactObj));
+
+    reader = new SimpleMavenCache(new File("repo2"), new File("repo"));
+    System.out.println(reader.findArtifact(artifactObj));
+    System.out.println(reader.findVersions(artifactObj));
+  }
 
 }
