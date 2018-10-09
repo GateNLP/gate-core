@@ -22,6 +22,7 @@ import gate.Gate;
 import gate.Resource;
 import gate.VisualResource;
 import gate.creole.AbstractResource;
+import gate.creole.Plugin;
 import gate.creole.ResourceData;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.metadata.CreoleResource;
@@ -41,6 +42,7 @@ import java.beans.Introspector;
 import java.text.NumberFormat;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -234,6 +236,44 @@ public class SerialDatastoreViewer extends JScrollPane implements
       while(lrTypesIter.hasNext()) {
         String type = lrTypesIter.next();
         ResourceData rData = cReg.get(type);
+        
+        if (rData == null) {
+          Set<Plugin> plugins = Gate.getPlugins(type);
+
+          StringBuilder msg = new StringBuilder();
+          msg.append("Datastore contains unknown object of type '").append(type).append("'")
+                  .append(".\n\n");
+
+          if(plugins.isEmpty()) {
+            msg.append("You may need first to load the plugin that contains your resource.\n");
+            msg.append("For example, to create a gate.creole.tokeniser.DefaultTokeniser\n");
+            msg.append("you need first to load the ANNIE plugin.\n\n");
+          } else if(plugins.size() == 1) {
+            msg.append(type).append(" can be found in the ")
+                    .append(plugins.iterator().next().getName())
+                    .append(" plugin\n\n");
+          } else {
+            msg.append(type).append(
+                    " can be found in the following plugins\n   ");
+            for(Plugin dInfo : plugins) {
+              msg.append(dInfo.getName()).append(", ");
+            }
+
+            msg.setLength(msg.length() - 2);
+            msg.append("\n\n");
+          }
+
+          msg.append("Go to the menu File->Manage CREOLE plugins or use the method\n");
+          msg.append("Gate.getCreoleRegister().registerPlugin(plugin).");
+          msg.append("\n\n");
+          msg.append("You will need to hide and re-open the datastore viewer, after loading the\n");
+          msg.append("relevant plugin, before you will be able to view resources of this type.");
+          
+          System.err.println(msg);
+          
+          continue;
+        }
+        
         DSType dsType = new DSType(rData.getName(), type);
         DefaultMutableTreeNode node = new DefaultMutableTreeNode(dsType);
                

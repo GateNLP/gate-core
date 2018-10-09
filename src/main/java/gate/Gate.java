@@ -1105,7 +1105,7 @@ public class Gate implements GateConstants {
   public static Set<Plugin> getPlugins(String resourceClassName) {
     Set<Plugin> dirs = new HashSet<Plugin>();
     
-    for (Plugin plugin: knownPlugins) {
+    for (Plugin plugin: getKnownPlugins()) {
       
       
       for (ResourceInfo rInfo : plugin.getResourceInfoList()) {
