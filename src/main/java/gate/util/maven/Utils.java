@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
@@ -25,6 +26,7 @@ import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
 import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.Proxy;
+import org.eclipse.aether.repository.ProxySelector;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
@@ -33,6 +35,7 @@ import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.eclipse.aether.util.repository.DefaultProxySelector;
+import org.eclipse.aether.util.repository.JreProxySelector;
 
 public class Utils {
   
@@ -128,16 +131,24 @@ public class Utils {
     // http://stackoverflow.com/questions/27818659/loading-mavens-settings-xml-for-jcabi-aether-to-use
     Settings effectiveSettings = loadMavenSettings();
     
-    org.apache.maven.settings.Proxy proxy = effectiveSettings.getActiveProxy();
-    DefaultProxySelector selector = null;
-    if(proxy != null) {
-      selector = new DefaultProxySelector();
-      selector.add(
-          new Proxy(proxy.getProtocol(), proxy.getHost(), proxy.getPort(),
-              new AuthenticationBuilder().addUsername(proxy.getUsername())
-                  .addPassword(proxy.getPassword()).build()),
-          proxy.getNonProxyHosts());
+    List<org.apache.maven.settings.Proxy> proxies =
+        effectiveSettings.getProxies().stream().filter((p) -> p.isActive())
+            .collect(Collectors.toList());
+    
+    
+    DefaultProxySelector defaultSelector = null;
+    if(!proxies.isEmpty()) {
+      defaultSelector = new DefaultProxySelector();
+      for (org.apache.maven.settings.Proxy proxy : proxies) {
+        defaultSelector.add(
+            new Proxy(proxy.getProtocol(), proxy.getHost(), proxy.getPort(),
+                new AuthenticationBuilder().addUsername(proxy.getUsername())
+                    .addPassword(proxy.getPassword()).build()),
+            proxy.getNonProxyHosts());
+      }
     }
+    
+    JreProxySelector jreSelector = new JreProxySelector();    
         
     Map<String, Profile> profilesMap = effectiveSettings.getProfilesAsMap();
     for(String profileName : effectiveSettings.getActiveProfiles()) {
@@ -148,19 +159,49 @@ public class Utils {
                 new RemoteRepository.Builder(repo.getId(), "default",
                         repo.getUrl()).build();
         
-        if(selector != null) {
+        Proxy proxy = getProxy(remoteRepo, defaultSelector, jreSelector);
+        
+        if(proxy != null) {
           remoteRepo = new RemoteRepository.Builder(remoteRepo)
-              .setProxy(selector.getProxy(remoteRepo)).build();
+              .setProxy(proxy).build();
         }
         
         repos.add(remoteRepo);
       }
     }
     
+    Proxy proxy = getProxy(central, defaultSelector, jreSelector);
+    
+    if(proxy != null) {
+      central = new RemoteRepository.Builder(central)
+          .setProxy(proxy).build();
+    }
+     
+    proxy = getProxy(gateRepo, defaultSelector, jreSelector);
+    
+    if (proxy != null) {
+      gateRepo = new RemoteRepository.Builder(gateRepo)
+          .setProxy(defaultSelector.getProxy(gateRepo)).build();
+    }
+    
     repos.add(central);    
     repos.add(gateRepo);
     
     return repos;
+  }
+  
+  private static Proxy getProxy(RemoteRepository repo, ProxySelector ... selectors) {
+    Proxy proxy = null;
+    
+    for (ProxySelector selector : selectors) {
+      if (selector != null) {
+        proxy = selector.getProxy(repo);
+      }
+      
+      if (proxy != null) return proxy;
+    }
+    
+    return proxy;
   }
   
   public Artifact getArtifact() {
