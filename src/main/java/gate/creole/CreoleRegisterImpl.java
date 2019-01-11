@@ -198,7 +198,8 @@ public class CreoleRegisterImpl extends HashMap<String, ResourceData>
         if (plugin.isValid()) {
           parseDirectory(plugin, creoleXML, plugin.getBaseURL(),
               new URL(plugin.getBaseURL(), "creole.xml"));
-          log.info("CREOLE plugin loaded: " + plugin.getName());
+          log.info("CREOLE plugin loaded: " + plugin.getName() + " "
+              + plugin.getVersion());
         }
         else {
           throw new GateException("plugin is invalid");
@@ -338,7 +339,8 @@ public class CreoleRegisterImpl extends HashMap<String, ResourceData>
 
       parseDirectory(plugin, plugin.getCreoleXML(), plugin.getBaseURL(),
           new URL(plugin.getBaseURL(), "creole.xml"));
-      log.info("CREOLE plugin loaded: " + plugin.getName());
+      log.info("CREOLE plugin loaded: " + plugin.getName() + " "
+          + plugin.getVersion());
 
     } catch(Exception e) {
       if(DEBUG) log.debug(e);
@@ -357,9 +359,7 @@ public class CreoleRegisterImpl extends HashMap<String, ResourceData>
     if(super.containsKey(key)) {
       ResourceData rData = super.get(key);
       rData.increaseReferenceCount();
-      if(DEBUG)
-        Out.println(
-            key + " is already defined, new reference will be ignored.");
+      log.warn(key + " is already defined, new reference will be ignored.");
 
       // TODO not sure what we should actually return here
       return rData;
@@ -466,7 +466,8 @@ public class CreoleRegisterImpl extends HashMap<String, ResourceData>
         e.printStackTrace();
       }
 
-      log.info("CREOLE plugin unloaded: " + plugin.getName());
+      log.info("CREOLE plugin unloaded: " + plugin.getName() + " "
+          + plugin.getVersion());
       if(prCount > 0)
         log.warn(prCount + " resources were deleted as they relied on the "
             + plugin.getName() + " plugin");
