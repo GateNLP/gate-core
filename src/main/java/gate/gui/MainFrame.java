@@ -52,6 +52,7 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.MalformedURLException;
@@ -3826,11 +3827,15 @@ public class MainFrame extends JFrame implements ProgressListener,
             final Object userObject = ((DefaultMutableTreeNode)
               path.getLastPathComponent()).getUserObject();
             if(userObject instanceof NameBearerHandle) {
-              SwingUtilities.invokeLater(new Runnable() { @Override
-              public void run() {
-                ((NameBearerHandle)userObject).getCloseAction()
-                  .actionPerformed(null);
-              }});
+              try {
+                SwingUtilities.invokeAndWait(new Runnable() { @Override
+                public void run() {
+                  ((NameBearerHandle)userObject).getCloseAction()
+                    .actionPerformed(null);
+                }});
+              } catch(InvocationTargetException | InterruptedException e) {
+                //just ignore this for now
+              }
             }
           }
         }
@@ -3858,11 +3863,15 @@ public class MainFrame extends JFrame implements ProgressListener,
             final Object userObject = ((DefaultMutableTreeNode)
               path.getLastPathComponent()).getUserObject();
             if(userObject instanceof NameBearerHandle) {
-              SwingUtilities.invokeLater(new Runnable() { @Override
-              public void run() {
-                ((NameBearerHandle)userObject).getCloseRecursivelyAction()
-                  .actionPerformed(null);
-              }});
+              try {
+                SwingUtilities.invokeAndWait(new Runnable() { @Override
+                public void run() {
+                  ((NameBearerHandle)userObject).getCloseRecursivelyAction()
+                    .actionPerformed(null);
+                }});
+              } catch(InvocationTargetException | InterruptedException e) {
+                //just ignore this for now
+              }
             }
           }
         }
