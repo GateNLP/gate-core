@@ -35,7 +35,7 @@ public class TestUtils extends TestCase
   @Override
   public void setUp() throws Exception
   {
-    if (Gate.getGateHome() == null) Gate.init();
+    if (!Gate.isInitialised()) Gate.init();
   } // setUp
 
 

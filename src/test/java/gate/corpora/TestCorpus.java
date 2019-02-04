@@ -32,7 +32,8 @@ public class TestCorpus extends TestCase
 
   /** Fixture set up */
   @Override
-  public void setUp() {
+  public void setUp() throws Exception {
+    if (!Gate.isInitialised()) Gate.init();
   } // setUp
 
   /** Corpus creation */
