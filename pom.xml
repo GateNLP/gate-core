@@ -62,6 +62,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<tika.version>1.20</tika.version>
+		<pdfbox.version>2.0.13</pdfbox.version>
+    	<jempbox.version>1.8.16</jempbox.version>
+    	<bouncycastle.version>1.60</bouncycastle.version>
+    	<poi.version>4.0.1</poi.version>
 	</properties>
 
 	<dependencies>
@@ -193,98 +198,127 @@
 		</dependency>
 
 		<!-- the actual Tika pased format parsers -->
+		<!-- this is horribly messy. Tika has now got so big and covers so many 
+			formats that the transitive dependencies are just mad. Specifically it pulls 
+			in UIMA, OpenNLP and CoreNLP by default which messes with our support. So 
+			the solution is to exclude all it's dependencies and then just add back those 
+			for PDF, MS Office and LibreOffice which are the only things we claim to 
+			use Tika for -->
 		<dependency>
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-parsers</artifactId>
-			<version>1.20</version>
+			<version>${tika.version}</version>
 			<scope>compile</scope>
-
+	
 			<exclusions>
-				<!-- we don't currently use the RSS/ATOM aspects of Tika so we don't 
-					need ROME -->
 				<exclusion>
-					<groupId>rome</groupId>
-					<artifactId>rome</artifactId>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
 				</exclusion>
-
-				<!-- we don't currently support netCDF documents so we don't need this -->
-				<exclusion>
-					<groupId>edu.ucar</groupId>
-					<artifactId>netcdf</artifactId>
-				</exclusion>
-
-				<!-- we don't use Tika to parse Java classes so we don't need ASM -->
-				<exclusion>
-					<groupId>asm</groupId>
-					<artifactId>asm</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.ow2.asm</groupId>
-					<artifactId>asm-debug-all</artifactId>
-				</exclusion>
-
-				<!-- we aren't using any of the GUI aspects of tika so we don't need 
-					to be able to do syntax highlighting -->
-				<exclusion>
-					<groupId>com.uwyn</groupId>
-					<artifactId>jhighlight</artifactId>
-				</exclusion>
-
-				<!-- we exclude boilerpipe as it isn't required for Tika given the way 
-					we currently configure it, and it contains a copy of NekoHTML which causes 
-					HTML parsing in GATE to change, and the tests to break -->
-				<exclusion>
-					<groupId>de.l3s.boilerpipe</groupId>
-					<artifactId>boilerpipe</artifactId>
-				</exclusion>
-
-				<!-- we don't handle audio files so we don't need the following -->
-				<exclusion>
-					<groupId>org.gagravarr</groupId>
-					<artifactId>vorbis-java-tika</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.gagravarr</groupId>
-					<artifactId>vorbis-java-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.googlecode.mp4parser</groupId>
-					<artifactId>isoparser</artifactId>
-				</exclusion>
-
-				<!-- no idea what these are used for internally to tika but we don't 
-					seem to need them -->
-				<exclusion>
-					<groupId>com.googlecode.juniversalchardet</groupId>
-					<artifactId>juniversalchardet</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.tukaani</groupId>
-					<artifactId>xz</artifactId>
-				</exclusion>
-
-				<!-- exclude stuff that is part of Java 6 core -->
-				<exclusion>
-					<groupId>org.apache.geronimo.specs</groupId>
-					<artifactId>geronimo-stax-api_1.0_spec</artifactId>
-				</exclusion>
-
-				<!-- we are not handling Matlab files so we don't need this -->
-				<exclusion>
-					<groupId>net.sourceforge.jmatio</groupId>
-					<artifactId>jmatio</artifactId>
-				</exclusion>
-
-				<!-- we are most certainly not supporting the parsing of Outlook PST 
-					files! -->
-				<exclusion>
-					<groupId>com.pff</groupId>
-					<artifactId>java-libpst</artifactId>
-				</exclusion>
-
 			</exclusions>
-
 		</dependency>
+	
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+			<version>${tika.version}</version>
+			<scope>compile</scope>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>${pdfbox.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox-tools</artifactId>
+			<version>${pdfbox.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.pdfbox</groupId>
+					<artifactId>pdfbox-debugger</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>jempbox</artifactId>
+			<version>${jempbox.version}</version>
+		</dependency>
+		<!-- TIKA-370: PDFBox declares the Bouncy Castle dependencies as optional, 
+			but we prefer to have them always to avoid problems with encrypted PDFs. -->
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcmail-jdk15on</artifactId>
+			<version>${bouncycastle.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
+			<version>${bouncycastle.version}</version>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>${poi.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-codec</groupId>
+					<artifactId>commons-codec</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-scratchpad</artifactId>
+			<version>${poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>${poi.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>stax</groupId>
+					<artifactId>stax-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	
+		<dependency>
+			<groupId>com.drewnoakes</groupId>
+			<artifactId>metadata-extractor</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+		<!-- this marks the end of the Tika madness -->
 
 		<!-- We use Woodstox instead of the default Sun StAX implementation as 
 			it seems to behave better. NOTE: I don't know if this is still the case but 
