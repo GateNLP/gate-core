@@ -181,7 +181,7 @@ public class Utils {
     
     if (proxy != null) {
       gateRepo = new RemoteRepository.Builder(gateRepo)
-          .setProxy(defaultSelector.getProxy(gateRepo)).build();
+          .setProxy(proxy).build();
     }
     
     repos.add(central);    
