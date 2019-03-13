@@ -226,10 +226,31 @@ public class Utils {
     
     String repoLocation = System.getProperty("user.home") + File.separator
             + ".m2" + File.separator + "repository/";
+    ChainedProxySelector proxySelector = new ChainedProxySelector();
     try {
       Settings effectiveSettings = loadMavenSettings();
       if(effectiveSettings.getLocalRepository() != null) {
         repoLocation = effectiveSettings.getLocalRepository();
+      }
+
+      // extract any proxies configured in the settings - we need to pass these
+      // on so that any repositories declared in a dependency POM file can be
+      // accessed through the proxy too.
+      List<org.apache.maven.settings.Proxy> proxies =
+          effectiveSettings.getProxies().stream().filter((p) -> p.isActive())
+              .collect(Collectors.toList());
+      
+      if(!proxies.isEmpty()) {
+        DefaultProxySelector defaultSelector = new DefaultProxySelector();
+        for (org.apache.maven.settings.Proxy proxy : proxies) {
+          defaultSelector.add(
+              new Proxy(proxy.getProtocol(), proxy.getHost(), proxy.getPort(),
+                  new AuthenticationBuilder().addUsername(proxy.getUsername())
+                      .addPassword(proxy.getPassword()).build()),
+              proxy.getNonProxyHosts());
+        }
+
+        proxySelector.addSelector(defaultSelector);
       }
     } catch(Exception e) {
       log.warn(
@@ -244,6 +265,12 @@ public class Utils {
     
     //repoSystemSession.setWorkspaceReader(new SimpleMavenCache(new File("repo")));      
     if (workspace != null) repoSystemSession.setWorkspaceReader(workspace);
+
+    // try JRE proxies after any configured in settings
+    proxySelector.addSelector(new JreProxySelector());
+
+    // set proxy selector for any repositories discovered in dependency poms
+    repoSystemSession.setProxySelector(proxySelector);
 
     return repoSystemSession;
   }
