@@ -333,7 +333,7 @@ public class Utils {
 
         proxySelector.addSelector(defaultSelector);
       }
-    } catch(Exception e) {
+    } catch(SettingsBuildingException | SecDispatcherException | RuntimeException e) {
       log.warn(
               "Unable to load Maven settings, using default repository location, and no mirrors, proxy or authentication settings.",
               e);
