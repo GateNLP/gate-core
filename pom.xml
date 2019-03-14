@@ -138,8 +138,21 @@
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-settings-builder</artifactId>
 			<version>3.5.3</version>
-			<scope>compile</scope>
 		</dependency> 
+
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-container-default</artifactId>
+			<version>1.0-alpha-9-stable-1</version>
+
+                        <!-- we only need one simple abstract class from this JAR -->
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
 		<!-- needed to ensure the same version across configurations -->
 		<dependency>

@@ -1,18 +1,14 @@
 package gate.util.maven;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
+import gate.util.GateRuntimeException;
 import org.apache.log4j.Logger;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
-import org.apache.maven.settings.Profile;
-import org.apache.maven.settings.Repository;
-import org.apache.maven.settings.Settings;
+import org.apache.maven.settings.*;
 import org.apache.maven.settings.building.DefaultSettingsBuilder;
 import org.apache.maven.settings.building.DefaultSettingsBuilderFactory;
 import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
@@ -33,9 +29,12 @@ import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
-import org.eclipse.aether.util.repository.AuthenticationBuilder;
-import org.eclipse.aether.util.repository.DefaultProxySelector;
-import org.eclipse.aether.util.repository.JreProxySelector;
+import org.eclipse.aether.util.repository.*;
+import org.sonatype.plexus.components.cipher.DefaultPlexusCipher;
+import org.sonatype.plexus.components.cipher.PlexusCipherException;
+import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
+import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
+import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 
 public class Utils {
   
@@ -59,6 +58,20 @@ public class Utils {
                   System.getProperty("maven.home",
                           envM2Home != null ? envM2Home : ""),
                   "conf/settings.xml");
+
+  /**
+   * Utility used to decrypt encrypted proxy passwords in settings.xml
+   */
+  public static final SecDispatcher PASSWORD_DECRYPTER = new DefaultSecDispatcher() {
+    {
+      _configurationFile = "~/.m2/settings-security.xml";
+      try {
+        _cipher = new DefaultPlexusCipher();
+      } catch (PlexusCipherException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  };
   
   private static List<File> extraCacheDirectories = new CopyOnWriteArrayList<>();
   
@@ -116,21 +129,37 @@ public class Utils {
   
   public static List<RemoteRepository> getRepositoryList() throws SettingsBuildingException {
     
-    List<RemoteRepository> repos = new ArrayList<RemoteRepository>();
-    
-    RemoteRepository central =
-        new RemoteRepository.Builder("central", "default",
-                "http://repo1.maven.org/maven2/").build();
-    
-    // Without this we wouldn't be able to find SNAPSHOT builds of plugins we
-    // haven't built and installed locally ourselves
-    RemoteRepository gateRepo = new RemoteRepository.Builder("gate", "default",
-        "http://repo.gate.ac.uk/content/groups/public/").build();
-
     // Add all repos from settings.xml
     // http://stackoverflow.com/questions/27818659/loading-mavens-settings-xml-for-jcabi-aether-to-use
     Settings effectiveSettings = loadMavenSettings();
-    
+
+    List<RemoteRepository> repos = new ArrayList<RemoteRepository>();
+
+    RemoteRepository central =
+            new RemoteRepository.Builder("central", "default",
+                    "http://repo1.maven.org/maven2/").build();
+
+    // Without this we wouldn't be able to find SNAPSHOT builds of plugins we
+    // haven't built and installed locally ourselves
+    RemoteRepository gateRepo = new RemoteRepository.Builder("gate", "default",
+            "http://repo.gate.ac.uk/content/groups/public/").build();
+
+    DefaultMirrorSelector mirrorSelector = null;
+    List<Mirror> mirrors = effectiveSettings.getMirrors();
+    if(!mirrors.isEmpty()) {
+      mirrorSelector = new DefaultMirrorSelector();
+      for (Mirror mirror : mirrors) mirrorSelector.add(
+              String.valueOf(mirror.getId()), mirror.getUrl(), mirror.getLayout(), false,
+              mirror.getMirrorOf(), mirror.getMirrorOfLayouts());
+
+      // replace central and gate repos with their mirrors, if any
+      RemoteRepository centralMirror = mirrorSelector.getMirror(central);
+      if(centralMirror != null) central = centralMirror;
+
+      RemoteRepository gateMirror = mirrorSelector.getMirror(gateRepo);
+      if(gateMirror != null) gateRepo = gateMirror;
+    }
+
     List<org.apache.maven.settings.Proxy> proxies =
         effectiveSettings.getProxies().stream().filter((p) -> p.isActive())
             .collect(Collectors.toList());
@@ -140,11 +169,15 @@ public class Utils {
     if(!proxies.isEmpty()) {
       defaultSelector = new DefaultProxySelector();
       for (org.apache.maven.settings.Proxy proxy : proxies) {
-        defaultSelector.add(
-            new Proxy(proxy.getProtocol(), proxy.getHost(), proxy.getPort(),
-                new AuthenticationBuilder().addUsername(proxy.getUsername())
-                    .addPassword(proxy.getPassword()).build()),
-            proxy.getNonProxyHosts());
+        try {
+          defaultSelector.add(
+              new Proxy(proxy.getProtocol(), proxy.getHost(), proxy.getPort(),
+                  new AuthenticationBuilder().addUsername(proxy.getUsername())
+                      .addPassword(PASSWORD_DECRYPTER.decrypt(proxy.getPassword())).build()),
+              proxy.getNonProxyHosts());
+        } catch(SecDispatcherException e) {
+          throw new GateRuntimeException("Unable to decrypt password for proxy " + proxy.getProtocol() + "://" + proxy.getHost() + ":" + proxy.getPort());
+        }
       }
     }
     
@@ -158,9 +191,16 @@ public class Utils {
         RemoteRepository remoteRepo =
                 new RemoteRepository.Builder(repo.getId(), "default",
                         repo.getUrl()).build();
-        
+
+        if(mirrorSelector !=  null) {
+          // try and find a mirror for this repo
+          RemoteRepository mirrorRepo = mirrorSelector.getMirror(remoteRepo);
+          if(mirrorRepo != null) {
+            remoteRepo = mirrorRepo;
+          }
+        }
+
         Proxy proxy = getProxy(remoteRepo, defaultSelector, jreSelector);
-        
         if(proxy != null) {
           remoteRepo = new RemoteRepository.Builder(remoteRepo)
               .setProxy(proxy).build();
@@ -186,7 +226,27 @@ public class Utils {
     
     repos.add(central);    
     repos.add(gateRepo);
-    
+
+    // now apply authentication settings to all repositories
+    ListIterator<RemoteRepository> repoIter = repos.listIterator();
+    while(repoIter.hasNext()) {
+      RemoteRepository remoteRepo = repoIter.next();
+      Server server = effectiveSettings.getServer(remoteRepo.getId());
+      if(server != null) {
+        // replace this repo with one that has authentication configured
+        try {
+          repoIter.set(new RemoteRepository.Builder(remoteRepo)
+                  .setAuthentication(new AuthenticationBuilder()
+                          .addUsername(server.getUsername()).addPassword(PASSWORD_DECRYPTER.decrypt(server.getPassword()))
+                          .addPrivateKey(server.getPrivateKey(), PASSWORD_DECRYPTER.decrypt(server.getPassphrase())).build())
+                  .build());
+        } catch(SecDispatcherException e) {
+          throw new GateRuntimeException("Unable to decrypt password/passphrase for server " + server.getId());
+        }
+      }
+
+    }
+
     return repos;
   }
   
@@ -233,6 +293,27 @@ public class Utils {
         repoLocation = effectiveSettings.getLocalRepository();
       }
 
+      List<Mirror> mirrors = effectiveSettings.getMirrors();
+      if(!mirrors.isEmpty()) {
+        DefaultMirrorSelector mirrorSelector = new DefaultMirrorSelector();
+        for (Mirror mirror : mirrors) mirrorSelector.add(
+                String.valueOf(mirror.getId()), mirror.getUrl(), mirror.getLayout(), false,
+                mirror.getMirrorOf(), mirror.getMirrorOfLayouts());
+        repoSystemSession.setMirrorSelector(mirrorSelector);
+      }
+
+      List<Server> servers = effectiveSettings.getServers();
+      if(!servers.isEmpty()) {
+        DefaultAuthenticationSelector selector = new DefaultAuthenticationSelector();
+        for (Server server : servers) {
+          AuthenticationBuilder auth = new AuthenticationBuilder();
+          auth.addUsername(server.getUsername()).addPassword(PASSWORD_DECRYPTER.decrypt(server.getPassword()));
+          auth.addPrivateKey(server.getPrivateKey(), PASSWORD_DECRYPTER.decrypt(server.getPassphrase()));
+          selector.add(server.getId(), auth.build());
+        }
+        repoSystemSession.setAuthenticationSelector(new ConservativeAuthenticationSelector(selector));
+      }
+
       // extract any proxies configured in the settings - we need to pass these
       // on so that any repositories declared in a dependency POM file can be
       // accessed through the proxy too.
@@ -246,7 +327,7 @@ public class Utils {
           defaultSelector.add(
               new Proxy(proxy.getProtocol(), proxy.getHost(), proxy.getPort(),
                   new AuthenticationBuilder().addUsername(proxy.getUsername())
-                      .addPassword(proxy.getPassword()).build()),
+                      .addPassword(PASSWORD_DECRYPTER.decrypt(proxy.getPassword())).build()),
               proxy.getNonProxyHosts());
         }
 
@@ -254,7 +335,7 @@ public class Utils {
       }
     } catch(Exception e) {
       log.warn(
-              "Unable to load Maven settings, using default repository location",
+              "Unable to load Maven settings, using default repository location, and no mirrors, proxy or authentication settings.",
               e);
     }
 
