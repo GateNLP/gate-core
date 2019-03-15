@@ -333,6 +333,9 @@ public class Utils {
 
         proxySelector.addSelector(defaultSelector);
       }
+
+      // pass through the "offline" setting
+      repoSystemSession.setOffline(effectiveSettings.isOffline());
     } catch(SettingsBuildingException | SecDispatcherException | RuntimeException e) {
       log.warn(
               "Unable to load Maven settings, using default repository location, and no mirrors, proxy or authentication settings.",
