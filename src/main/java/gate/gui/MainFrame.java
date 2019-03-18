@@ -2138,12 +2138,10 @@ public class MainFrame extends JFrame implements ProgressListener,
         Handle handle = findHandleForResource(resource);
         if(handle != null && handle.viewsBuilt()){
           //next see if there is a tab for this resource and rename it
-          for(int i = 0; i < mainTabbedPane.getTabCount(); i++) {
-            if(mainTabbedPane.getTitleAt(i).equals(oldName) &&
-               mainTabbedPane.getComponentAt(i) == handle.getLargeView()) {
-              mainTabbedPane.setTitleAt(i, newName);
-              return;
-            }
+          int tabIndex = mainTabbedPane.indexOfComponent(handle.getLargeView());
+          
+          if (tabIndex != -1) {
+            mainTabbedPane.setTitleAt(tabIndex, newName);
           }
         }        
       }
