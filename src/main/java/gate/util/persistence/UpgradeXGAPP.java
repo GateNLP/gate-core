@@ -836,7 +836,7 @@ public class UpgradeXGAPP {
     Document doc = builder.build(gappFile);
     List<UpgradePath> upgrades = suggest(doc);
     if(args.length > 1) {
-      if(args.length > 2 && "-d".equals(args[2])) {
+      if(!(args.length > 2 && "-d".equals(args[2]))) {
         for(UpgradePath path : upgrades) {
           path.setUpgradeStrategy(UpgradePath.UpgradeStrategy.SKIP);
         }
