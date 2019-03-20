@@ -808,12 +808,17 @@ public class UpgradeXGAPP {
     if(args.length == 0) {
       System.err.println("Usage:");
       System.err.println();
-      System.err.println("  java [java_options] gate.util.persistence.UpgradeXGAPP <xgapp> [<script>]");
+      System.err.println("  java [java_options] gate.util.persistence.UpgradeXGAPP <xgapp> [<script> [-d]]");
       System.err.println();
       System.err.println(" <xgapp>  - the xgapp file to upgrade");
       System.err.println(" <script> - (optional) a TSV file specifying any specific actions to take");
       System.err.println("            for certain plugins.  Typically this file would have been created");
       System.err.println("            by saving settings while upgrading an xgapp in the GUI.");
+      System.err.println(" -d       - also apply the default upgrade paths in addition to any specified");
+      System.err.println("            in the script.  The default upgrade paths bring every plugin");
+      System.err.println("            referenced by the app up to the newest version that is compatible");
+      System.err.println("            with this version of GATE.  Normally these defaults are only used");
+      System.err.println("            if a script is not specified.");
       System.err.println();
       System.err.println("The upgraded xgapp will replace the original one, with the original saved");
       System.err.println("with an extra .bak extension.");
@@ -831,6 +836,11 @@ public class UpgradeXGAPP {
     Document doc = builder.build(gappFile);
     List<UpgradePath> upgrades = suggest(doc);
     if(args.length > 1) {
+      if(args.length > 2 && "-d".equals(args[2])) {
+        for(UpgradePath path : upgrades) {
+          path.setUpgradeStrategy(UpgradePath.UpgradeStrategy.SKIP);
+        }
+      }
       System.out.println("Loading upgrade script from " + args[1]);
       loadUpgradePaths(upgrades, gappFile.toURI(), new File(args[1]));
     }
