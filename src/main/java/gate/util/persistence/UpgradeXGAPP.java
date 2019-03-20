@@ -57,9 +57,10 @@ public class UpgradeXGAPP {
   private static final Logger log = Logger.getLogger(UpgradeXGAPP.class);
 
   /**
-   * XML outputter.
+   * XML outputter. Use LF for line endings rather than CRLF (the JDOM default) to match
+   * XStream.
    */
-  private static XMLOutputter outputter = new XMLOutputter();
+  private static XMLOutputter outputter = new XMLOutputter(Format.getRawFormat().setLineSeparator("\n"));
 
   private static GenericVersionScheme versionScheme =
       new GenericVersionScheme();
