@@ -22,10 +22,7 @@ import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.DependencyCollectionException;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
-import org.eclipse.aether.repository.LocalRepository;
-import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.repository.WorkspaceReader;
-import org.eclipse.aether.repository.WorkspaceRepository;
+import org.eclipse.aether.repository.*;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.resolution.DependencyResolutionException;
@@ -117,9 +114,14 @@ public class SimpleMavenCache implements WorkspaceReader, Serializable {
     DefaultRepositorySystemSession repoSession =
         Utils.getRepositorySession(repoSystem, null);
 
+    // treat the usual local repository as if it were a remote, ignoring checksum
+    // failures as the local repo doesn't have checksums as a rule
     RemoteRepository localAsRemote =
         new RemoteRepository.Builder("localAsRemote", "default",
             repoSession.getLocalRepository().getBasedir().toURI().toString())
+                .setPolicy(new RepositoryPolicy(true,
+                        RepositoryPolicy.UPDATE_POLICY_NEVER,
+                        RepositoryPolicy.CHECKSUM_POLICY_IGNORE))
                 .build();
 
     repos.add(0, localAsRemote);
