@@ -16,7 +16,7 @@
   </description>
 
   <properties>
-    <izpack.version>5.1.3-SNAPSHOT</izpack.version>
+    <izpack.version>5.1.3</izpack.version>
     <gate.version>${project.version}</gate.version>
     <tao.pdf>/path/to/tao.pdf</tao.pdf>
   </properties>
@@ -130,22 +130,6 @@
           </plugin>
         </plugins>
       </build>
-
-      <!-- Sonatype OSS snapshot repository, as latest izpack release version
-      is broken on Java 9+.  Once ixpack 5.1.3 comes out we can switch to that
-      and remove this repo. -->
-      <repositories>
-        <repository>
-          <id>oss-snapshots</id>
-          <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </repository>
-      </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>oss-snapshots</id>
-          <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </pluginRepository>
-      </pluginRepositories>
     </profile>
   </profiles>
 
