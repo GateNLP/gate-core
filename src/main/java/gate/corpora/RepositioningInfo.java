@@ -181,7 +181,7 @@ public class RepositioningInfo extends ArrayList<PositionInfo> {
         currPos = currPI.getCurrentPosition();
         currLen = currPI.getCurrentLength();
 
-        if(afterChar && relPos == currPos+currLen) {
+        if((afterChar || i == size-1) && relPos == currPos+currLen) {
           result = currPI.getOriginalPosition() + currPI.getOriginalLength();
           found = true;
           break;
