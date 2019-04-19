@@ -21,7 +21,13 @@ import gate.FeatureMap;
   */
 public interface FeatureBearer
 {
-  /** Get the feature set */
+  /**
+   * Get the feature set. This must follow the Java convention of returning a
+   * reference to the stored FeatureMap and not a copy. This means changes to
+   * the returned FeatureMap will be visible to any future callers of this
+   * method. It also means that there is no need to call setFeatures having
+   * updated the FeatureMap.
+   */
   public FeatureMap getFeatures();
 
   /** Set the feature set */
