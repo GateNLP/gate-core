@@ -18,6 +18,7 @@ package gate.gui;
 import gate.Controller;
 import gate.Corpus;
 import gate.CorpusController;
+import gate.CreoleRegister;
 import gate.DataStore;
 import gate.DataStoreRegister;
 import gate.Document;
@@ -1156,6 +1157,26 @@ public class NameBearerHandle implements Handle, StatusListener,
               fireProgressChanged(0);
               // the actual reinitialisation
               res.reInit();
+
+              SwingUtilities.invokeLater(() -> {
+                // once we've reinitialised the resource we need to ensure we've
+                // informaed any VRs for the resource so that they can update
+                // themselves if necessary.
+                
+                // called from the EDT to ensure that any UI updates are always
+                // done from the right thread to keep the UI responsive
+                
+                List<String> vrTypes = new ArrayList<String>();
+                vrTypes.addAll(Gate.getCreoleRegister().getLargeVRsForResource(res.getClass().getName()));
+                vrTypes.addAll(Gate.getCreoleRegister().getSmallVRsForResource(res.getClass().getName()));
+  
+                for (String vrType : vrTypes) {
+                  for (VisualResource vr : Gate.getCreoleRegister().getVrInstances(vrType)) {
+                    vr.targetReinitialised();
+                  }
+                }
+              });
+
             } finally {
               try {
                 AbstractResource.removeResourceListeners(res, listeners);

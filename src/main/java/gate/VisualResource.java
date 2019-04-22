@@ -41,4 +41,14 @@ public interface VisualResource extends Resource{
    */
   public void setHandle(Handle handle);
 
+  /**
+   * Used by the main GUI to tell this VR that the object it's displaying has
+   * been reinitialised and so the VR may need to update it's display. The
+   * default implementation does nothing which replicates the behaviour from
+   * before the method was added.
+   */
+  default void targetReinitialised() {
+    // do nothing
+  }
+
 } // interface VisualResource
