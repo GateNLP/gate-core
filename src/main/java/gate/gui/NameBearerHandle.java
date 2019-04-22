@@ -1166,13 +1166,23 @@ public class NameBearerHandle implements Handle, StatusListener,
                 // called from the EDT to ensure that any UI updates are always
                 // done from the right thread to keep the UI responsive
                 
-                List<String> vrTypes = new ArrayList<String>();
-                vrTypes.addAll(Gate.getCreoleRegister().getLargeVRsForResource(res.getClass().getName()));
-                vrTypes.addAll(Gate.getCreoleRegister().getSmallVRsForResource(res.getClass().getName()));
-  
-                for (String vrType : vrTypes) {
-                  for (VisualResource vr : Gate.getCreoleRegister().getVrInstances(vrType)) {
-                    vr.targetReinitialised();
+                if (largeView != null && largeView instanceof JTabbedPane) {
+                  JTabbedPane view = (JTabbedPane)largeView;
+                  for (int i = 0 ; i < view.getTabCount() ; ++i) {
+                    Component component = view.getComponentAt(i);
+                    if (component instanceof VisualResource) {
+                      ((VisualResource)component).targetReinitialised();
+                    }
+                  }
+                }
+
+                if (smallView != null && smallView instanceof JTabbedPane) {
+                  JTabbedPane view = (JTabbedPane)smallView;
+                  for (int i = 0 ; i < view.getTabCount() ; ++i) {
+                    Component component = view.getComponentAt(i);
+                    if (component instanceof VisualResource) {
+                      ((VisualResource)component).targetReinitialised();
+                    }
                   }
                 }
               });
