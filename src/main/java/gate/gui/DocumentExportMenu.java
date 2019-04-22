@@ -13,32 +13,11 @@
 
 package gate.gui;
 
-import gate.Corpus;
-import gate.CorpusExporter;
-import gate.Document;
-import gate.DocumentExporter;
-import gate.Factory;
-import gate.FeatureMap;
-import gate.Gate;
-import gate.Resource;
-import gate.corpora.export.GateXMLExporter;
-import gate.creole.Parameter;
-import gate.creole.ParameterException;
-import gate.creole.ResourceData;
-import gate.event.CreoleEvent;
-import gate.event.CreoleListener;
-import gate.swing.XJFileChooser;
-import gate.swing.XJMenu;
-import gate.util.Err;
-import gate.util.Files;
-import gate.util.InvalidOffsetException;
-
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -68,6 +47,26 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellEditor;
 
 import org.apache.log4j.Logger;
+
+import gate.Corpus;
+import gate.CorpusExporter;
+import gate.Document;
+import gate.DocumentExporter;
+import gate.Factory;
+import gate.FeatureMap;
+import gate.Gate;
+import gate.Resource;
+import gate.Utils;
+import gate.corpora.export.GateXMLExporter;
+import gate.creole.Parameter;
+import gate.creole.ParameterException;
+import gate.creole.ResourceData;
+import gate.event.CreoleEvent;
+import gate.event.CreoleListener;
+import gate.swing.XJFileChooser;
+import gate.swing.XJMenu;
+import gate.util.Err;
+import gate.util.Files;
 
 /**
  * A menu which updates as plugins are (un)loaded to allow the export of
@@ -127,50 +126,64 @@ public class DocumentExportMenu extends XJMenu implements CreoleListener {
     boolean singleFile = (document != null) || (de instanceof CorpusExporter);
 
     if(document != null && document.getSourceUrl() != null) {
-      String fileName = "";
+      // there is a document and it has a URL so let's try and figure out a
+      // sensible filename for it
+
       try {
-        fileName = document.getSourceUrl().toURI().getPath().trim();
-      } catch(URISyntaxException e) {
-        fileName = document.getSourceUrl().getPath().trim();
-      }
-      if(fileName.equals("") || fileName.equals("/")) {
+        // firstly is the source URL actually a file? if so just use it
+        selectedFile = Files.fileFromURL(document.getSourceUrl());
+      } catch(IllegalArgumentException e) {
+        // if the URL isn't a file then...
+
+        String fileName = null;
         if(document.getNamedAnnotationSets().containsKey("Original markups")
-                && !document.getAnnotations("Original markups").get("title")
-                        .isEmpty()) {
-          // use the title annotation if any
-          try {
-            fileName =
-                    document.getContent()
-                            .getContent(
-                                    document.getAnnotations("Original markups")
-                                            .get("title").firstNode()
-                                            .getOffset(),
-                                    document.getAnnotations("Original markups")
-                                            .get("title").lastNode()
-                                            .getOffset()).toString();
-          } catch(InvalidOffsetException e) {
-            e.printStackTrace();
-          }
-        } else {
-          fileName = document.getSourceUrl().toString();
+            && !document.getAnnotations("Original markups").get("title")
+                .isEmpty()) {
+          // use the title annotation from the document
+          fileName = Utils.stringFor(document,
+              document.getAnnotations("Original markups").get("title"));
         }
-        // cleans the file name
-        fileName = fileName.replaceAll("/", "_");
-      } else {
-        // replaces the extension with the default
-        fileName =
-                fileName.replaceAll("\\.[a-zA-Z]{1,4}$",
-                        "." + de.getDefaultExtension());
+
+        if (fileName == null) {
+          // if there was no title then see if we can get a file name from the URL path
+          String path = document.getSourceUrl().getPath();
+          if (!path.isEmpty()) {
+            // this may return the empty string but it should always be a valid
+            // substring call
+            fileName = path.substring(1+path.lastIndexOf("/"));
+          }
+        }
+
+        if (fileName == null) {
+          // if we still fail then use the document name
+          fileName = document.getName();
+        }
+
+        // just to be on the safe side replace any odd characters with
+        // underscores before trying to create a file
+        fileName = fileName.replaceAll("[^/a-zA-Z0-9._-]+", "_");
+        fileName = fileName.replaceAll("__+", "_");
+
+        selectedFile = new File(fileName);
       }
-      // cleans the file name
-      fileName = fileName.replaceAll("[^/a-zA-Z0-9._-]", "_");
-      fileName = fileName.replaceAll("__+", "_");
-      // adds the default extension if not present
+
+      // get just the filename so we can mess about with its extension
+      String fileName = selectedFile.getName();
+
+      // if the file has an extension already replace it with the default for
+      // this exporter
+      fileName = fileName.replaceAll("\\.[a-zA-Z]{1,4}$",
+          "." + de.getDefaultExtension());
+
+      // if the file still doesn't end with the right extension then append it
+      // to the end and be done with it
       if(!fileName.endsWith("." + de.getDefaultExtension())) {
         fileName += "." + de.getDefaultExtension();
       }
 
-      selectedFile = new File(fileName);
+      //finally create the File object
+      selectedFile = new File(selectedFile, fileName);
+
     }
 
     if(params == null || params.isEmpty()) {
