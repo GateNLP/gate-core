@@ -20,7 +20,8 @@
      type="Application"
      Categories="Development;IDE;"
      startupWmClass="GATE Developer $app-version"
-     encoding="UTF-8">
+     encoding="UTF-8"
+     createForAll="true">
      <createForPack name="Core"/>
    </shortcut>
 
@@ -39,7 +40,8 @@
      iconFile="$INSTALL_PATH/icons/mime-application-pdf.png"
      type="Application"
      Categories="Development;IDE;"
-     encoding="UTF-8">
+     encoding="UTF-8"
+     createForAll="true">
      <createForPack name="User guide"/>
    </shortcut>
    
@@ -57,7 +59,8 @@
      initialState="normal"
      type="Application"
      Categories="Development;IDE;"
-     encoding="UTF-8">
+     encoding="UTF-8"
+     createForAll="true">
      <createForPack name="Core"/>
    </shortcut>   
    
