@@ -48,6 +48,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static gate.util.maven.Utils.*;
 
@@ -55,6 +57,9 @@ import static gate.util.maven.Utils.*;
 public class UpgradeXGAPP {
 
   private static final Logger log = Logger.getLogger(UpgradeXGAPP.class);
+
+  private static final Pattern CREOLE_URI_PATTERN =
+          Pattern.compile("^creole://(?<group>[^;/]+);(?<artifact>[^;/]+);(?<version>[^/]+)/$");
 
   /**
    * XML outputter. Use LF for line endings rather than CRLF (the JDOM default) to match
@@ -648,6 +653,15 @@ public class UpgradeXGAPP {
         }
       }
       pathsByOldPath.computeIfAbsent(oldPath, (k) -> new ArrayList<>()).add(path);
+      // special case - if the oldPath is a creole URI (a Maven plugin) then also
+      // generalise to the special "any version" oldPath creole://group;artifact;*/
+      // to allow upgrade spec files that will do "any version of foo to vX.Y"
+      Matcher m = CREOLE_URI_PATTERN.matcher(oldPath);
+      if(m.matches()) {
+        pathsByOldPath.computeIfAbsent(
+                "creole://" + m.group("group") + ";" + m.group("artifact") + ";*/",
+                (k) -> new ArrayList<>()).add(path);
+      }
     }
     try(BufferedReader r = Files.newBufferedReader(inputFile.toPath(), StandardCharsets.UTF_8)) {
       String line;
