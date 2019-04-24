@@ -12,9 +12,6 @@
 
 package gate.util;
 
-import gate.AnnotationSet;
-import gate.Annotation;
-
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,8 +21,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import gate.Annotation;
+import gate.AnnotationSet;
 
 
 /**
@@ -138,7 +139,10 @@ public class ClassificationMeasures {
   {   
     // We'll accumulate a list of the feature values (a.k.a. class labels)
     featureValues = new TreeSet<String>();
-    
+
+    // Keep a track of any feature names we've logged as being merged
+    Set<String> mergedFeatures = new HashSet<String>();
+
     // Make a hash of hashes for the counts.
     HashMap<String, HashMap<String, Float>> countMap =
       new HashMap<String, HashMap<String, Float>>();
@@ -187,9 +191,24 @@ public class ClassificationMeasures {
           }
         } else if (coextensiveAnnotations.size() == 1) {
 
-          // What are our feature values?
-          String featVal1 = String.valueOf(relevantAnn1.getFeatures().get(feature));
-          String featVal2 = String.valueOf(coextensiveAnnotations.get(0).getFeatures().get(feature));
+          // get the feature values from the two annotations
+          Object featObj1 = relevantAnn1.getFeatures().get(feature);
+          Object featObj2 = coextensiveAnnotations.get(0).getFeatures().get(feature);
+
+          // convert the values to Strings (which will merge values of different
+          // types that have the same string representation)
+          String featVal1 = String.valueOf(featObj1);
+          String featVal2 = String.valueOf(featObj2);
+
+          // if we are merging feature values of differing types then print a
+          // warning for that feature, but only the first time
+          if (!featObj1.getClass().equals(featObj2.getClass())) {
+            if (!mergedFeatures.contains(feature)) {
+              Err.println("Values for feature '" + feature
+                  + "' are of differing types, results may be inconsistent");
+              mergedFeatures.add(feature);
+            }
+          }
 
           // Make sure both are present in our feature value list
           featureValues.add(featVal1);

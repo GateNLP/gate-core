@@ -317,7 +317,7 @@ public class FeaturesSchemaEditor extends XJTable
       switch(columnIndex){
         case VALUE_COL:
           if (feature.value != null
-           && feature.value.equals(aValue)) { return; }
+           && feature.value.toString().equals(aValue)) { return; }
           feature.value = aValue;
           if(feature.name != null && feature.name.length() > 0){
             targetFeatures.removeFeatureMapListener(instance);
