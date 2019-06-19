@@ -14,16 +14,41 @@
 
 package gate.creole;
 
-import gate.Gate;
-import gate.Gate.ResourceInfo;
-import gate.Resource;
-import gate.Utils;
-import gate.creole.metadata.CreoleResource;
-import gate.util.asm.*;
-import gate.util.asm.commons.EmptyVisitor;
-import gate.util.maven.SimpleMavenCache;
-import gate.util.maven.SimpleModelResolver;
-import gate.util.persistence.PersistenceManager;
+import static gate.util.maven.Utils.getRepositoryList;
+import static gate.util.maven.Utils.getRepositorySession;
+import static gate.util.maven.Utils.getRepositorySystem;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.maven.model.Model;
@@ -41,7 +66,11 @@ import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.WorkspaceReader;
-import org.eclipse.aether.resolution.*;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.ArtifactResult;
+import org.eclipse.aether.resolution.DependencyRequest;
+import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.transfer.TransferCancelledException;
 import org.eclipse.aether.transfer.TransferEvent;
 import org.eclipse.aether.transfer.TransferListener;
@@ -55,20 +84,20 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.net.*;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
-
-import static gate.util.maven.Utils.*;
-
-// import gate.util.maven.LoggingTransferListener;
+import gate.Gate;
+import gate.Gate.ResourceInfo;
+import gate.Resource;
+import gate.Utils;
+import gate.creole.metadata.CreoleResource;
+import gate.util.asm.AnnotationVisitor;
+import gate.util.asm.ClassReader;
+import gate.util.asm.ClassVisitor;
+import gate.util.asm.Opcodes;
+import gate.util.asm.Type;
+import gate.util.asm.commons.EmptyVisitor;
+import gate.util.maven.SimpleMavenCache;
+import gate.util.maven.SimpleModelResolver;
+import gate.util.persistence.PersistenceManager;
 
 public abstract class Plugin {
 
@@ -83,7 +112,7 @@ public abstract class Plugin {
     public void downloadFailed(String name, Throwable cause);
   }
 
-  protected Vector<DownloadListener> downloadListeners = null;
+  protected transient Vector<DownloadListener> downloadListeners = null;
 
   public void addDownloadListener(DownloadListener listener) {
     @SuppressWarnings("unchecked")
