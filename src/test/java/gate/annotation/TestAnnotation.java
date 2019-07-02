@@ -544,6 +544,50 @@ public class TestAnnotation extends TestCase
 
   } // testGetCovering()
 
+  /**
+   * Test that the nodesByOffset map inside AnnotationSetImpl gets updated
+   * correctly as annotations are added and removed from the annotation set.
+   */
+  public void testNodesByOffset() throws Exception {
+    // when we start the first annotation starts at offset 10
+    assertEquals(10, basicAS.firstNode().getOffset().longValue());
+
+    // and end at offset 40
+    assertEquals(40, basicAS.lastNode().getOffset().longValue());
+
+    // we then add a new annotation spanning offsets 0 to 5
+    int idFirst = basicAS.add(new Long(0), new Long(5), "FirstNode",
+        Factory.newFeatureMap());
+
+    // and one spanning 40 to 45
+    int idLast = basicAS.add(new Long(40), new Long(45), "LastNode",
+        Factory.newFeatureMap());
+
+    // at this point the first node is now at 0
+    assertEquals(0, basicAS.firstNode().getOffset().longValue());
+
+    // and the last node is now at 45
+    assertEquals(45, basicAS.lastNode().getOffset().longValue());
+
+    // now remove the annotation we added at offset 0
+    basicAS.remove(basicAS.get(idFirst));
+
+    // check that the first node is now at 10
+    assertEquals(10, basicAS.firstNode().getOffset().longValue());
+
+    // and the last is still at 45
+    assertEquals(45, basicAS.lastNode().getOffset().longValue());
+
+    // now remove the annotation we added at the end
+    basicAS.remove(basicAS.get(idLast));
+
+    // the first node should still be 10
+    assertEquals(10, basicAS.firstNode().getOffset().longValue());
+
+    // and the last node should now be 40 which puts us back where we started
+    assertEquals(40, basicAS.lastNode().getOffset().longValue());
+  }
+
   /** Test remove */
   public void testRemove() {
     AnnotationSet asBuf = basicAS.get("T1");
