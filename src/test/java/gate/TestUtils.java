@@ -82,7 +82,13 @@ public class TestUtils extends TestCase
     ret = intersect(getCoextensiveAnnotations(set1,ann1_1),ret);
     assertEquals(1, ret.size());
     
-    
+    ret = getAnnotationsEndingAtOffset(set1, 15L);
+    assertEquals(1, ret.size());
+    assertEquals(15,ret.iterator().next().getEndNode().getOffset().longValue());
+
+    ret = getAnnotationsEndingAtOffset(set1, 5L);
+    assertEquals(3, ret.size());
+
   } // testAnnotationSetHandling
 } // class TestAnnotation
 

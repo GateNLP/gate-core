@@ -15,16 +15,6 @@
 
 package gate;
 
-import gate.annotation.AnnotationSetImpl;
-import gate.annotation.ImmutableAnnotationSetImpl;
-import gate.creole.ConditionalSerialController;
-import gate.creole.Plugin;
-import gate.creole.RunningStrategy;
-import gate.util.FeatureBearer;
-import gate.util.GateRuntimeException;
-import gate.util.InvalidOffsetException;
-import gate.util.OffsetComparator;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +30,16 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+
+import gate.annotation.AnnotationSetImpl;
+import gate.annotation.ImmutableAnnotationSetImpl;
+import gate.creole.ConditionalSerialController;
+import gate.creole.Plugin;
+import gate.creole.RunningStrategy;
+import gate.util.FeatureBearer;
+import gate.util.GateRuntimeException;
+import gate.util.InvalidOffsetException;
+import gate.util.OffsetComparator;
 
 /**
  * Various utility methods to make often-needed tasks more easy and
@@ -332,6 +332,29 @@ public class Utils {
       }
     }
     return ret;
+  }
+
+  public static AnnotationSet getAnnotationsEndingAtOffset(AnnotationSet annotationSet, Long endOffset) {
+    Collection<Annotation> endsAt = new HashSet<Annotation>();
+
+    // start can't be negative
+    Long start = endOffset > 0 ? endOffset - 1 : 0;
+
+    // it seems we can ask for beyond the document without error
+    Long end = endOffset + 1;
+
+    // get annotations that overlap this bit
+    AnnotationSet annotations = annotationSet.get(start,end);
+
+    // filter to get just those that end at the offset
+    for (Annotation a : annotations) {
+      if (a.getEndNode().getOffset() == endOffset) {
+        endsAt.add(a);
+      }
+    }
+
+    // return the annotations we've found, if any
+    return new ImmutableAnnotationSetImpl(annotationSet.getDocument(), endsAt);
   }
 
   /**
