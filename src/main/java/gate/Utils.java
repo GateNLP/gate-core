@@ -348,7 +348,7 @@ public class Utils {
 
     // filter to get just those that end at the offset
     for (Annotation a : annotations) {
-      if (a.getEndNode().getOffset() == endOffset) {
+      if (a.getEndNode().getOffset().equals(endOffset)) {
         endsAt.add(a);
       }
     }
