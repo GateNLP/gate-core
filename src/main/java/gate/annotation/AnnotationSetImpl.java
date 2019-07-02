@@ -31,23 +31,6 @@
  */
 package gate.annotation;
 
-import gate.Annotation;
-import gate.AnnotationSet;
-import gate.Document;
-import gate.DocumentContent;
-import gate.FeatureMap;
-import gate.Gate;
-import gate.GateConstants;
-import gate.Node;
-import gate.corpora.DocumentImpl;
-import gate.event.AnnotationSetEvent;
-import gate.event.AnnotationSetListener;
-import gate.event.GateEvent;
-import gate.event.GateListener;
-import gate.relations.RelationSet;
-import gate.util.InvalidOffsetException;
-import gate.util.RBTreeMap;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -64,6 +47,23 @@ import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
+
+import gate.Annotation;
+import gate.AnnotationSet;
+import gate.Document;
+import gate.DocumentContent;
+import gate.FeatureMap;
+import gate.Gate;
+import gate.GateConstants;
+import gate.Node;
+import gate.corpora.DocumentImpl;
+import gate.event.AnnotationSetEvent;
+import gate.event.AnnotationSetListener;
+import gate.event.GateEvent;
+import gate.event.GateListener;
+import gate.relations.RelationSet;
+import gate.util.InvalidOffsetException;
+import gate.util.RBTreeMap;
 
 /**
  * Implementation of AnnotationSet. Has a number of indices, all bar one of
@@ -278,12 +278,47 @@ public class AnnotationSetImpl extends AbstractSet<Annotation> implements
 
   /** Remove from the offset indices. */
   protected void removeFromOffsetIndex(Annotation a) {
-    /*if(nodesByOffset != null) {
-      // knowing when a node is no longer needed would require keeping a
-      // reference
-      // count on annotations, or using a weak reference to the nodes in
-      // nodesByOffset
-    }*/
+
+    if (nodesByOffset != null) {
+      // if there is a nodesByOffset map then we need to make sure it is
+      // correctly updated and redundant nodes removed, otherwise methods that
+      // use it can report incorrect information
+      
+      // get all the annotations (ignoring the one we are removing that start at the same node
+      Set<Annotation> tmp = new HashSet<Annotation>();
+      tmp.addAll(gate.Utils.getAnnotationsAtOffset(this,a.getStartNode().getOffset()));
+      tmp.remove(a);
+
+      if (tmp.size() == 0) {
+        // if there aren't any then we may need to remove the node, but let's
+        // double check there aren't any annotations that end where this one
+        // starts
+        tmp.addAll(gate.Utils.getAnnotationsEndingAtOffset(this, a.getStartNode().getOffset()));
+        tmp.remove(a);
+
+        if (tmp.size() == 0) {
+          // nope, there are no annotations that start or end where the one we
+          // are removing starts so remove the node from the map
+          nodesByOffset.remove(a.getStartNode().getOffset());
+        }
+      }
+
+      // repeat the logic above but for the node at the end of the annotation we
+      // want to remove from the set
+      tmp = new HashSet<Annotation>();
+      tmp.addAll(gate.Utils.getAnnotationsAtOffset(this,a.getEndNode().getOffset()));
+      tmp.remove(a);
+
+      if (tmp.size() == 0) {
+        tmp.addAll(gate.Utils.getAnnotationsEndingAtOffset(this, a.getEndNode().getOffset()));
+        tmp.remove(a);
+
+        if (tmp.size() == 0) {
+          nodesByOffset.remove(a.getEndNode().getOffset());
+        }
+      }
+    }
+
     if(annotsByStartNode != null) {
       Integer id = a.getStartNode().getId();
       // might be an annotation or an annotationset
