@@ -1056,7 +1056,7 @@ public class PersistenceManager {
         oos = new ObjectOutputStream(new FileOutputStream(file));
       }
       
-      Object persistentList = getPersistentRepresentation(Gate.getCreoleRegister().getPlugins());
+      Object persistentList = getPersistentRepresentation(new ArrayList<Plugin>(Gate.getCreoleRegister().getPlugins()));
 
       Object persistentObject = getPersistentRepresentation(obj);
 
