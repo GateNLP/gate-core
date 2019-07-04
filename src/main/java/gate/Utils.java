@@ -323,7 +323,7 @@ public class Utils {
     // this returns all annotations that start at this atOffset OR AFTER!
     AnnotationSet tmp = annotationSet.get(atOffset);
     // so lets filter ...
-    AnnotationSet ret = new AnnotationSetImpl(annotationSet.getDocument());
+    List<Annotation> ret = new ArrayList<Annotation>();
     Iterator<Annotation> it = tmp.iterator();
     while(it.hasNext()) {
       Annotation ann = it.next();
@@ -331,11 +331,11 @@ public class Utils {
         ret.add(ann);
       }
     }
-    return ret;
+    return Factory.createImmutableAnnotationSet(annotationSet.getDocument(), ret);
   }
 
   public static AnnotationSet getAnnotationsEndingAtOffset(AnnotationSet annotationSet, Long endOffset) {
-    Collection<Annotation> endsAt = new HashSet<Annotation>();
+    List<Annotation> endsAt = new ArrayList<Annotation>();
 
     // start can't be negative
     Long start = endOffset > 0 ? endOffset - 1 : 0;
@@ -354,7 +354,7 @@ public class Utils {
     }
 
     // return the annotations we've found, if any
-    return new ImmutableAnnotationSetImpl(annotationSet.getDocument(), endsAt);
+    return Factory.createImmutableAnnotationSet(annotationSet.getDocument(), endsAt);
   }
 
   /**
