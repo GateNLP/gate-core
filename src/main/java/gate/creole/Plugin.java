@@ -1115,6 +1115,11 @@ public abstract class Plugin {
           "."));
     }
 
+    public Component(Class<? extends Resource> resourceClass, URL baseURL) throws MalformedURLException {
+      this.resourceClass = resourceClass;
+      this.baseURL = baseURL;
+    }
+
     public String getName() {
       return resourceClass.getName();
     }
