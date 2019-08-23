@@ -15,13 +15,8 @@
  */
 package gate.creole;
 
-import gate.Factory;
-import gate.FeatureMap;
-import gate.Resource;
-import gate.creole.metadata.CreoleParameter;
-import gate.creole.metadata.CreoleResource;
-
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,6 +29,12 @@ import java.util.Set;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
+
+import gate.Factory;
+import gate.FeatureMap;
+import gate.Resource;
+import gate.creole.metadata.CreoleParameter;
+import gate.creole.metadata.CreoleResource;
 
 /** This class handles annotation schemas.An annotation schema is a
   * representation of an annotation, together with its types and their
@@ -142,32 +143,53 @@ public class AnnotationSchema extends AbstractLanguageResource{
                 "The specified XML Schema doesn't define any annotation types");
       }
     }
+    
+    // set the name so we avoid using the URL as part of the name in the GUI
+    setName(getAnnotationName());
 
     return this;
   } // init()
 
   /** The xml file URL of the resource */
-  protected URL xmlFileUrl;
+  protected ResourceReference xmlFileUrl;
   
   private transient AnnotationSchema lastIncluded = null;
 
   /** Set method for the resource xml file URL */
   @CreoleParameter(comment="The url to the definition file", suffixes="xml;xsd")
-  public void setXmlFileUrl(URL xmlFileUrl) { this.xmlFileUrl = xmlFileUrl; }
+  public void setXmlFileUrl(ResourceReference xmlFileUrl) { this.xmlFileUrl = xmlFileUrl; }
 
   /** Get method for the resource xml file URL */
-  public URL getXmlFileUrl() { return xmlFileUrl; }
+  public ResourceReference getXmlFileUrl() { return xmlFileUrl; }
 
-  /** Creates an AnnotationSchema object from an XSchema file
-    * @param anXSchemaURL the URL where to find the XSchema file
-    */
+  /**
+   * Creates an AnnotationSchema object from an XSchema file
+   * 
+   * @param anXSchemaURL the URL where to find the XSchema file
+   * @deprecated use a ResourceReference instead
+   */
+  @Deprecated
   public void fromXSchema(URL anXSchemaURL)
+		  throws ResourceInstantiationException {
+    try {
+		fromXSchema(new ResourceReference(anXSchemaURL));
+	} catch (URISyntaxException e) {
+		throw new ResourceInstantiationException(e);
+	}
+  }
+
+  /**
+   * Creates an AnnotationSchema object from an XSchema file
+   * 
+   * @param anXSchemaURL the ResourceReference where to find the XSchema file
+   */
+  public void fromXSchema(ResourceReference anXSchemaURL)
               throws ResourceInstantiationException {
     org.jdom.Document jDom = null;
     SAXBuilder saxBuilder = new SAXBuilder(false);
     try {
     try{
-      jDom = saxBuilder.build(anXSchemaURL);
+      jDom = saxBuilder.build(anXSchemaURL.toURL());
     }catch(JDOMException je){
       throw new ResourceInstantiationException(je);
     }
@@ -230,7 +252,7 @@ public class AnnotationSchema extends AbstractLanguageResource{
       try {
         String url = childElement.getAttributeValue("schemaLocation");
         FeatureMap params = Factory.newFeatureMap();
-        params.put("xmlFileUrl", new URL(xmlFileUrl, url));
+        params.put("xmlFileUrl", new ResourceReference(xmlFileUrl, url));
 
         lastIncluded =
                 (AnnotationSchema)Factory.createResource(

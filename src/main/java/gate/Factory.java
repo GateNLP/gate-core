@@ -344,7 +344,7 @@ public abstract class Factory {
         if(res instanceof SimpleDocument) {
           sourceUrl = ((SimpleDocument)res).getSourceUrl();
         } else if(res instanceof AnnotationSchema) {
-          sourceUrl = ((AnnotationSchema)res).getXmlFileUrl();
+          sourceUrl = ((AnnotationSchema)res).getXmlFileUrl().toURL();
         } else if(res.getClass().getName()
                 .startsWith("gate.creole.ontology.owlim.")) {
           // get the name for the OWLIM2 ontology LR
