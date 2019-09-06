@@ -137,7 +137,12 @@ public class AnnotationSchema extends AbstractLanguageResource{
       if(annotationName == null) {
         Factory.deleteResource(this);
 
-        if(lastIncluded != null) return lastIncluded;
+        if(lastIncluded != null) {
+            // we have to remove the last one we loaded otherwise when we then
+            // return it again here we end up with two copies
+            Factory.deleteResource(lastIncluded);
+            return lastIncluded;
+        }
 
         throw new ResourceInstantiationException(
                 "The specified XML Schema doesn't define any annotation types");
