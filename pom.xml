@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -64,11 +65,11 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<tika.version>1.23</tika.version>
 		<pdfbox.version>2.0.17</pdfbox.version>
-    	<jempbox.version>1.8.16</jempbox.version>
-    	<bouncycastle.version>1.64</bouncycastle.version>
-    	<poi.version>4.1.1</poi.version>
-    	<maven.resolver.version>1.4.1</maven.resolver.version>
-    	<maven.version>3.6.3</maven.version>
+		<jempbox.version>1.8.16</jempbox.version>
+		<bouncycastle.version>1.64</bouncycastle.version>
+		<poi.version>4.1.1</poi.version>
+		<maven.resolver.version>1.4.1</maven.resolver.version>
+		<maven.version>3.6.3</maven.version>
 	</properties>
 
 	<dependencies>
@@ -86,25 +87,25 @@
 			<artifactId>maven-resolver-impl</artifactId>
 			<version>${maven.resolver.version}</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-model-builder</artifactId>
 			<version>${maven.version}</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-resolver-provider</artifactId>
 			<version>${maven.version}</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.maven.resolver</groupId>
 			<artifactId>maven-resolver-connector-basic</artifactId>
 			<version>${maven.resolver.version}</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.maven.resolver</groupId>
 			<artifactId>maven-resolver-transport-http</artifactId>
@@ -117,19 +118,19 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.maven.resolver</groupId>
 			<artifactId>maven-resolver-transport-file</artifactId>
 			<version>${maven.resolver.version}</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.maven.resolver</groupId>
 			<artifactId>maven-resolver-transport-wagon</artifactId>
 			<version>${maven.resolver.version}</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.maven.resolver</groupId>
 			<artifactId>maven-resolver-transport-classpath</artifactId>
@@ -140,14 +141,14 @@
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-settings-builder</artifactId>
 			<version>${maven.version}</version>
-		</dependency> 
+		</dependency>
 
 		<dependency>
 			<groupId>org.codehaus.plexus</groupId>
 			<artifactId>plexus-container-default</artifactId>
 			<version>2.1.0</version>
 
-                        <!-- we only need one simple abstract class from this JAR -->
+			<!-- we only need one simple abstract class from this JAR -->
 			<exclusions>
 				<exclusion>
 					<groupId>*</groupId>
@@ -224,7 +225,7 @@
 			<artifactId>tika-parsers</artifactId>
 			<version>${tika.version}</version>
 			<scope>compile</scope>
-	
+
 			<exclusions>
 				<exclusion>
 					<groupId>*</groupId>
@@ -232,14 +233,14 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-core</artifactId>
 			<version>${tika.version}</version>
 			<scope>compile</scope>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>pdfbox</artifactId>
@@ -283,7 +284,7 @@
 			<artifactId>bcprov-jdk15on</artifactId>
 			<version>${bouncycastle.version}</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
@@ -315,19 +316,19 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>com.drewnoakes</groupId>
 			<artifactId>metadata-extractor</artifactId>
 			<version>2.12.0</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.30</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
@@ -476,7 +477,7 @@
 			<version>5.1.1</version>
 		</dependency>
 
-		<!-- these dependencies should ensure the plugin works properly under Java
+		<!-- these dependencies should ensure the plugin works properly under Java 
 			9 and above where these APIs are no longer availble by default -->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
@@ -568,13 +569,34 @@
 						<goals>
 							<goal>run</goal>
 						</goals>
-					</execution>			
+					</execution>
 				</executions>
 				<configuration>
 					<projectsDirectory>.</projectsDirectory>
 					<pomIncludes>distro/pom.xml</pomIncludes>
 					<goals>compile</goals>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.0.0-M3</version>
+				<executions>
+					<execution>
+						<id>enforce-maven</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>3.5.2</version>
+								</requireMavenVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 
