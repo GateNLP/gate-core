@@ -673,7 +673,7 @@ public class DocumentImpl extends AbstractLanguageResource implements
 
   /** Set the encoding of the document content source */
   @Optional
-  @CreoleParameter(comment = "Encoding")
+  @CreoleParameter(comment = "Encoding", defaultValue = "UTF-8")
   public void setEncoding(String encoding) {
     this.encoding = encoding;
   }
