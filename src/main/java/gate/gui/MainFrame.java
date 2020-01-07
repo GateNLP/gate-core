@@ -49,7 +49,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -60,7 +64,20 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -103,7 +120,6 @@ import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.OverlayLayout;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.TransferHandler;
@@ -124,12 +140,19 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import gate.swing.*;
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.codehaus.httpcache4j.HTTPRequest;
+import org.codehaus.httpcache4j.cache.CacheStorage;
+import org.codehaus.httpcache4j.cache.FilePersistentCacheStorage;
+import org.codehaus.httpcache4j.cache.HTTPCache;
+import org.codehaus.httpcache4j.cache.NullCacheStorage;
+import org.codehaus.httpcache4j.payload.Payload;
+import org.codehaus.httpcache4j.resolver.ConnectionConfiguration;
+import org.codehaus.httpcache4j.resolver.JavaNetResponseResolver;
 
 import gate.Controller;
 import gate.CreoleRegister;
@@ -162,11 +185,18 @@ import gate.gui.creole.manager.PluginUpdateManager;
 import gate.persist.PersistenceException;
 import gate.resources.img.svg.AvailableIcon;
 import gate.resources.img.svg.GATEIcon;
+import gate.resources.img.svg.GATENameIcon;
 import gate.resources.img.svg.GATEVersionIcon;
 import gate.resources.img.svg.ReadyMadeIcon;
+import gate.swing.JMenuButton;
+import gate.swing.ResourceReferenceChooser;
+import gate.swing.XJFileChooser;
+import gate.swing.XJMenu;
+import gate.swing.XJMenuItem;
+import gate.swing.XJPopupMenu;
+import gate.swing.XJTabbedPane;
 import gate.util.Benchmark;
 import gate.util.CorpusBenchmarkTool;
-import gate.util.Files;
 import gate.util.GateClassLoader;
 import gate.util.GateException;
 import gate.util.GateRuntimeException;
@@ -178,14 +208,6 @@ import gate.util.persistence.UpgradeXGAPP;
 import gate.util.reporting.DocTimeReporter;
 import gate.util.reporting.PRTimeReporter;
 import gate.util.reporting.exceptions.BenchmarkReportException;
-import org.codehaus.httpcache4j.HTTPRequest;
-import org.codehaus.httpcache4j.cache.CacheStorage;
-import org.codehaus.httpcache4j.cache.FilePersistentCacheStorage;
-import org.codehaus.httpcache4j.cache.HTTPCache;
-import org.codehaus.httpcache4j.cache.NullCacheStorage;
-import org.codehaus.httpcache4j.payload.Payload;
-import org.codehaus.httpcache4j.resolver.ConnectionConfiguration;
-import org.codehaus.httpcache4j.resolver.JavaNetResponseResolver;
 
 /**
  * The main Gate GUI frame.
@@ -760,7 +782,7 @@ public class MainFrame extends JFrame implements ProgressListener,
     constraints.gridy = 2;
     constraints.gridwidth = 2;
     constraints.fill = GridBagConstraints.HORIZONTAL;
-    String splashHtml;
+    /*String splashHtml;
     try {
       splashHtml = Files.getGateResourceAsString("splash.html");
     }
@@ -770,19 +792,22 @@ public class MainFrame extends JFrame implements ProgressListener,
     }
     JLabel htmlLbl = new JLabel(splashHtml);
     htmlLbl.setHorizontalAlignment(SwingConstants.CENTER);
-    splashBox.add(htmlLbl, constraints);
+    splashBox.add(htmlLbl, constraints);*/
 
-    constraints.gridy = 3;
-    htmlLbl =
-      new JLabel("<HTML><FONT color=\"blue\">Version <B>" + Gate.VERSION_STRING
+    //constraints.gridy = 3;
+    JLabel htmlLbl =
+      new JLabel("<HTML>"
+        +"<p><FONT color=\"blue\">GATE <B>" + Gate.VERSION_STRING
         + "</B></FONT>" + ", <FONT color=\"red\">build <B>" + Gate.BUILD
-        + "</B></FONT>" + "<P><B>JVM version</B>: "
+        + "</B></FONT>" + "</p><p>Developed at The University of Sheffield.</p>"
+        +"<p>Distributed under the GNU Lesser General Public License v3</p>"
+        +"<P><B>Running on Java</B> "
         + System.getProperty("java.version") + " from "
-        + System.getProperty("java.vendor") + "</HTML>");
+        + System.getProperty("java.vendor") + "</P></HTML>");
     constraints.fill = GridBagConstraints.HORIZONTAL;
     splashBox.add(htmlLbl, constraints);
 
-    constraints.gridy = 4;
+    constraints.gridy = 3;
     constraints.gridwidth = 2;
     constraints.fill = GridBagConstraints.NONE;
     final JButton okButton = new JButton("OK");
@@ -4817,7 +4842,7 @@ public class MainFrame extends JFrame implements ProgressListener,
   class HelpAboutAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
     public HelpAboutAction() {
-      super("About");
+      super("About...");
       putValue(SHORT_DESCRIPTION, "Show developers names and version");
     }
 
@@ -5059,7 +5084,8 @@ public class MainFrame extends JFrame implements ProgressListener,
       super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row,
         hasFocus);
       if(value == resourcesTreeRoot) {
-        setIcon(MainFrame.getIcon("GATE"));
+        setIcon(new GATENameIcon(73,24));
+        setText(null);
         setToolTipText("Resources tree root ");
       }
       else if(value == applicationsRoot) {

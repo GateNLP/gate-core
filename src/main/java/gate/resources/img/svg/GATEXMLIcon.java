@@ -73,96 +73,26 @@ origAlpha = origAlpha * 1.0f;
 g.setComposite(AlphaComposite.getInstance(3, origAlpha));
 Shape clip__0_0 = g.getClip();
 AffineTransform defaultTransform__0_0 = g.getTransform();
-g.transform(new AffineTransform(0.8500000238418579f, 0.0f, 0.0f, 0.8500000238418579f, 4.0f, -2.7999989986419678f));
-// _0_0 is CompositeGraphicsNode
-float alpha__0_0_0 = origAlpha;
-origAlpha = origAlpha * 1.0f;
-g.setComposite(AlphaComposite.getInstance(3, origAlpha));
-Shape clip__0_0_0 = g.getClip();
-AffineTransform defaultTransform__0_0_0 = g.getTransform();
 g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
-// _0_0_0 is ShapeNode
-paint = getColor(255, 255, 255, 255, disabled);
+// _0_0 is ShapeNode
+paint = getColor(0, 150, 65, 255, disabled);
 shape = new GeneralPath();
-((GeneralPath)shape).moveTo(39.186287, 27.999989);
-((GeneralPath)shape).curveTo(39.320816, 51.410988, 0.81336004, 46.822826, 0.81336004, 46.822826);
-((GeneralPath)shape).lineTo(0.81336004, 9.177162);
-((GeneralPath)shape).curveTo(0.81336004, 9.177162, 39.051773, 4.589025, 39.186287, 27.99999);
-((GeneralPath)shape).closePath();
+((GeneralPath)shape).moveTo(37.250168, 26.347782);
+((GeneralPath)shape).lineTo(37.250168, 18.789976);
+((GeneralPath)shape).lineTo(19.559023, 18.789976);
+((GeneralPath)shape).lineTo(19.559023, 24.77957);
+((GeneralPath)shape).lineTo(29.877855, 24.77957);
+((GeneralPath)shape).curveTo(28.642595, 28.535686, 25.839447, 30.677065, 21.796923, 30.677065);
+((GeneralPath)shape).curveTo(15.9466095, 30.677065, 12.426611, 27.06432, 12.426611, 20.880402);
+((GeneralPath)shape).curveTo(12.426611, 15.080385, 15.900085, 11.371112, 21.13103, 11.371112);
+((GeneralPath)shape).curveTo(24.174395, 11.371112, 26.454704, 12.559851, 27.689964, 14.793645);
+((GeneralPath)shape).lineTo(36.680805, 14.793645);
+((GeneralPath)shape).curveTo(34.919224, 7.948261, 29.118599, 3.855398, 21.13103, 3.855398);
+((GeneralPath)shape).curveTo(11.145144, 3.855398, 4.152302, 10.894476, 4.152302, 20.880402);
+((GeneralPath)shape).curveTo(4.152302, 30.866325, 11.191351, 37.8554, 21.177237, 37.8554);
+((GeneralPath)shape).curveTo(29.974384, 37.8554, 35.53891, 32.10191, 37.250168, 26.347786);
 g.setPaint(paint);
 g.fill(shape);
-paint = getColor(0, 128, 0, 255, disabled);
-stroke = new BasicStroke(1.6267201f,0,0,4.0f,null,0.0f);
-shape = new GeneralPath();
-((GeneralPath)shape).moveTo(39.186287, 27.999989);
-((GeneralPath)shape).curveTo(39.320816, 51.410988, 0.81336004, 46.822826, 0.81336004, 46.822826);
-((GeneralPath)shape).lineTo(0.81336004, 9.177162);
-((GeneralPath)shape).curveTo(0.81336004, 9.177162, 39.051773, 4.589025, 39.186287, 27.99999);
-((GeneralPath)shape).closePath();
-g.setPaint(paint);
-g.setStroke(stroke);
-g.draw(shape);
-origAlpha = alpha__0_0_0;
-g.setTransform(defaultTransform__0_0_0);
-g.setClip(clip__0_0_0);
-float alpha__0_0_1 = origAlpha;
-origAlpha = origAlpha * 1.0f;
-g.setComposite(AlphaComposite.getInstance(3, origAlpha));
-Shape clip__0_0_1 = g.getClip();
-AffineTransform defaultTransform__0_0_1 = g.getTransform();
-g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
-// _0_0_1 is ShapeNode
-paint = getColor(255, 0, 0, 255, disabled);
-shape = new GeneralPath();
-((GeneralPath)shape).moveTo(30.316797, 39.760696);
-((GeneralPath)shape).lineTo(15.039994, 39.760696);
-((GeneralPath)shape).curveTo(11.543449, 39.760696, 8.645321, 38.599094, 6.3455925, 36.275894);
-((GeneralPath)shape).curveTo(4.0693283, 33.952694, 2.9311917, 31.019365, 2.9311917, 27.475891);
-((GeneralPath)shape).curveTo(2.9311917, 23.955906, 4.057592, 21.116442, 6.3103924, 18.957489);
-((GeneralPath)shape).curveTo(8.586657, 16.798576, 11.496521, 15.719112, 15.039994, 15.719088);
-((GeneralPath)shape).lineTo(28.627197, 15.719088);
-((GeneralPath)shape).lineTo(28.627197, 19.907888);
-((GeneralPath)shape).lineTo(15.039994, 19.907888);
-((GeneralPath)shape).curveTo(12.740251, 19.907904, 10.839449, 20.647104, 9.337593, 22.12549);
-((GeneralPath)shape).curveTo(7.8591847, 23.603907, 7.1199923, 25.504698, 7.1199923, 27.827892);
-((GeneralPath)shape).curveTo(7.1199923, 30.127636, 7.8591843, 31.993229, 9.337593, 33.424694);
-((GeneralPath)shape).curveTo(10.839449, 34.856167, 12.74025, 35.571896, 15.039994, 35.571896);
-((GeneralPath)shape).lineTo(26.127998, 35.571896);
-((GeneralPath)shape).lineTo(26.127998, 30.327095);
-((GeneralPath)shape).lineTo(14.723195, 30.327095);
-((GeneralPath)shape).lineTo(14.723195, 26.490294);
-((GeneralPath)shape).lineTo(30.3168, 26.490294);
-((GeneralPath)shape).lineTo(30.3168, 39.760696);
-g.setPaint(paint);
-g.fill(shape);
-paint = getColor(128, 0, 0, 255, disabled);
-stroke = new BasicStroke(0.8000002f,0,0,4.0f,null,0.0f);
-shape = new GeneralPath();
-((GeneralPath)shape).moveTo(30.316797, 39.760696);
-((GeneralPath)shape).lineTo(15.039994, 39.760696);
-((GeneralPath)shape).curveTo(11.543449, 39.760696, 8.645321, 38.599094, 6.3455925, 36.275894);
-((GeneralPath)shape).curveTo(4.0693283, 33.952694, 2.9311917, 31.019365, 2.9311917, 27.475891);
-((GeneralPath)shape).curveTo(2.9311917, 23.955906, 4.057592, 21.116442, 6.3103924, 18.957489);
-((GeneralPath)shape).curveTo(8.586657, 16.798576, 11.496521, 15.719112, 15.039994, 15.719088);
-((GeneralPath)shape).lineTo(28.627197, 15.719088);
-((GeneralPath)shape).lineTo(28.627197, 19.907888);
-((GeneralPath)shape).lineTo(15.039994, 19.907888);
-((GeneralPath)shape).curveTo(12.740251, 19.907904, 10.839449, 20.647104, 9.337593, 22.12549);
-((GeneralPath)shape).curveTo(7.8591847, 23.603907, 7.1199923, 25.504698, 7.1199923, 27.827892);
-((GeneralPath)shape).curveTo(7.1199923, 30.127636, 7.8591843, 31.993229, 9.337593, 33.424694);
-((GeneralPath)shape).curveTo(10.839449, 34.856167, 12.74025, 35.571896, 15.039994, 35.571896);
-((GeneralPath)shape).lineTo(26.127998, 35.571896);
-((GeneralPath)shape).lineTo(26.127998, 30.327095);
-((GeneralPath)shape).lineTo(14.723195, 30.327095);
-((GeneralPath)shape).lineTo(14.723195, 26.490294);
-((GeneralPath)shape).lineTo(30.3168, 26.490294);
-((GeneralPath)shape).lineTo(30.3168, 39.760696);
-g.setPaint(paint);
-g.setStroke(stroke);
-g.draw(shape);
-origAlpha = alpha__0_0_1;
-g.setTransform(defaultTransform__0_0_1);
-g.setClip(clip__0_0_1);
 origAlpha = alpha__0_0;
 g.setTransform(defaultTransform__0_0);
 g.setClip(clip__0_0);
@@ -416,7 +346,7 @@ g.setClip(clip_);
      * @return The X of the bounding box of the original SVG image.
      */
     public static int getOrigX() {
-        return 4;
+        return 5;
     }
 
     /**
@@ -425,7 +355,7 @@ g.setClip(clip_);
      * @return The Y of the bounding box of the original SVG image.
      */
     public static int getOrigY() {
-        return 2;
+        return 4;
     }
 
 	/**

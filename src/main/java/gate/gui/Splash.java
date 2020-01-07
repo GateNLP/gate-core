@@ -30,13 +30,13 @@ import javax.swing.border.EtchedBorder;
  * When clicked it is hidden.
  */
 @SuppressWarnings("serial")
-public class Splash extends JWindow {
+public class Splash extends JDialog {
 
   /**
    * Constructor from owner, GraphicsConfiguration and content.
    */
   public Splash(Window owner, GraphicsConfiguration gc, final JComponent content) {
-    super(owner, gc);
+    super(owner, "About...", ModalityType.APPLICATION_MODAL, gc);
     getContentPane().setLayout(new BorderLayout());
     content.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
     getContentPane().add(content, BorderLayout.CENTER);
