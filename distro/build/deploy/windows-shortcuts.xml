@@ -2,10 +2,10 @@
 
 <shortcuts>
 
-  <programGroup defaultName="GATE Developer $APP_VER" location="applications"/>
+  <programGroup defaultName="GATE $APP_VER" location="applications"/>
 
    <shortcut
-     name="GATE Developer $APP_VER"
+     name="GATE $APP_VER"
      target="$INSTALL_PATH/gate.exe"
      workingDirectory="$INSTALL_PATH"
      description="Starts GATE Developer $APP_VER"

@@ -3,10 +3,10 @@
 <shortcuts>
   <skipIfNotSupported/>
   
-  <programGroup defaultName="GATE Developer $APP_VER" location="applications"/>
+  <programGroup defaultName="GATE $APP_VER" location="applications"/>
 
    <shortcut
-     name="GATE Developer $APP_VER"
+     name="GATE $APP_VER"
      target="$INSTALL_PATH/bin/gate.sh"
      programGroup="yes"
      desktop="no"      
@@ -46,7 +46,7 @@
    </shortcut>
    
    <shortcut
-     name="Uninstall GATE Developer $APP_VER"
+     name="Uninstall GATE $APP_VER"
      programGroup="yes"
      desktop="no"      
      applications="no"
