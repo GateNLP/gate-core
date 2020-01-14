@@ -420,6 +420,14 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int column) {
+    	
+      if (table == null || value == null) {
+    	  System.err.println("Null value when rendering table: " + table+"/"+value);
+    	  
+    	  //this is hideous but hey
+    	  return this;
+      }
+      
       ParameterDisjunction pDisj = (ParameterDisjunction)value;
       text = pDisj.getName();
       String type = pDisj.getType();
