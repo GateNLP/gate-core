@@ -144,7 +144,7 @@ public class AnnotationMerging {
           if(ann.getFeatures().get(nameFeat)!= null)
               featTh =  ann.getFeatures().get(nameFeat).toString();
           
-          featOthers.put(featTh, new Integer(iA).toString());
+          featOthers.put(featTh, Integer.toString(iA));
           HashMap<String,Annotation>annAll = new HashMap<String,Annotation>();
           annAll.put(featTh, ann);
           for(int i = iA + 1; i < numA; ++i) {

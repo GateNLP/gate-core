@@ -599,7 +599,7 @@ public class EmailDocumentHandler {
     * in this member.
     */
   private String getFieldName() {
-    if (fieldName == null) return new String("");
+    if (fieldName == null) return "";
     else return fieldName;
   } // getFieldName
 

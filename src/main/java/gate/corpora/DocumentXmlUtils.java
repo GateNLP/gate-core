@@ -298,7 +298,7 @@ public class DocumentXmlUtils {
     // filterNonXmlChars
     // getoffsets for Nodes
     // getoffsets for XML entities
-    if(aText == null) return new String("");
+    if(aText == null) return "";
     StringBuffer textWithNodes = filterNonXmlChars(new StringBuffer(aText));
     // Construct a map from offsets to Chars ()
     SortedMap<Long, Character> offsets2CharsMap = new TreeMap<Long, Character>();

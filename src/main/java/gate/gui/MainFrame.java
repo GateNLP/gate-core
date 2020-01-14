@@ -1585,8 +1585,8 @@ public class MainFrame extends JFrame implements ProgressListener,
           if (menuLocation == null) {
             // menu location at the bottom left of the JTable or JTree
             menuLocation = new Point(
-              new Double(selectionRectangle.getMinX()+1).intValue(),
-              new Double(selectionRectangle.getMaxY()-1).intValue());
+              (int)(selectionRectangle.getMinX()+1),
+              (int)(selectionRectangle.getMaxY()-1));
           }
 
           // generate a right/button 3/popup menu mouse click

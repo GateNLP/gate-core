@@ -72,7 +72,7 @@ public class ParameterDisjunction implements CreoleListener {
           "Could not get default value for \"" + names[i] +
           "\"property of " + resource.getClass().getName(),pe);
       }
-      required[i] = new Boolean(!params[i].isOptional());
+      required[i] = !params[i].isOptional();
     }
 
     setSelectedIndex(0);

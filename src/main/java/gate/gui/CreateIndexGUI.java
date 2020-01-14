@@ -167,9 +167,9 @@ public class CreateIndexGUI extends JPanel {
         featuresList.clear();
         featuresList.addAll(result);
         if(featuresList.size() > 0){
-          String text = "[" + featuresList.get(0).toString();
+          String text = "[" + featuresList.get(0);
           for(int j = 1; j < featuresList.size(); j++){
-            text += ", " + featuresList.get(j).toString();
+            text += ", " + featuresList.get(j);
           }
           text += "]";
           featuresListTextField.setText(text);

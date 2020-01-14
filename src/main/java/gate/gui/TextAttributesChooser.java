@@ -116,8 +116,8 @@ public class TextAttributesChooser extends JDialog {
     fontFamilyCombo.setSelectedItem(StyleConstants.getFontFamily(currentStyle));
     fontSizeCombo = new JComboBox<String>(new String[]{"6", "8", "10", "12", "14", "16",
                                               "18", "20", "22", "24", "26"});
-    fontSizeCombo.setSelectedItem(new Integer(
-                        StyleConstants.getFontSize(currentStyle)).toString());
+    fontSizeCombo.setSelectedItem(Integer.toString(
+                        StyleConstants.getFontSize(currentStyle)));
     fontSizeCombo.setEditable(true);
     JPanel box = new JPanel();
     box.setLayout(new BoxLayout(box, BoxLayout.X_AXIS));
@@ -399,8 +399,8 @@ public class TextAttributesChooser extends JDialog {
    */
   protected void updateData() {
     fontFamilyCombo.setSelectedItem(StyleConstants.getFontFamily(currentStyle));
-    fontSizeCombo.setSelectedItem(new Integer(
-                        StyleConstants.getFontSize(currentStyle)).toString());
+    fontSizeCombo.setSelectedItem(Integer.toString(
+                        StyleConstants.getFontSize(currentStyle)));
     boldChk.setSelected(StyleConstants.isBold(currentStyle));
     italicChk.setSelected(StyleConstants.isItalic(currentStyle));
     italicChk.setSelected(StyleConstants.isItalic(currentStyle));

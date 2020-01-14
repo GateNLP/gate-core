@@ -395,7 +395,7 @@ public class PRTimeReporter implements BenchmarkReportable {
         Iterator<String> keyIt = mapKeys.iterator();
         while (keyIt.hasNext()) {
           String key = keyIt.next();
-          String comp1 = passedMap.get(key).toString();
+          String comp1 = passedMap.get(key);
           String comp2 = val.toString();
 
           if (comp1.equals(comp2)) {

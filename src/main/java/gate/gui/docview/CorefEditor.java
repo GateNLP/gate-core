@@ -511,7 +511,7 @@ public class CorefEditor
     Iterator<String> setIter = matchesMap.keySet().iterator();
     HashMap<Object, Boolean> annotSetsNamesMap = new HashMap<Object, Boolean>();
     for (int i = 0; i < annotSets.getItemCount(); i++) {
-      annotSetsNamesMap.put( annotSets.getItemAt(i), new Boolean(false));
+      annotSetsNamesMap.put( annotSets.getItemAt(i), false);
     }
     outer:while (setIter.hasNext()) {
       String currentSet = setIter.next();
@@ -1148,7 +1148,7 @@ public class CorefEditor
 
         // chainNode --> All related annotIds
         chainLinks.put(chainNode, matches);
-        selectionMap.put(chainNode.toString(), new Boolean(false));
+        selectionMap.put(chainNode.toString(), false);
         // and generate the color for this chainNode
         float components[] = colorGenerator.getNextColor().getComponents(null);
         Color color = new Color(components[0],
@@ -2051,7 +2051,7 @@ public class CorefEditor
 
         boolean isSelected = ! currentSelections.get(node.toString()).
                              booleanValue();
-        currentSelections.put(node.toString(), new Boolean(isSelected));
+        currentSelections.put(node.toString(), isSelected);
 
         // so now we need to highlight all the stuff
         highlightAnnotations();

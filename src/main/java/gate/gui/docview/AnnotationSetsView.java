@@ -922,9 +922,9 @@ public class AnnotationSetsView extends AbstractDocumentView
           return value;
         case SELECTED_COL:
           if(value instanceof SetHandler)
-            return new Boolean(((SetHandler)value).isExpanded());
+            return ((SetHandler)value).isExpanded();
           if(value instanceof TypeHandler) 
-            return new Boolean(((TypeHandler)value).isSelected());
+            return ((TypeHandler)value).isSelected();
           return null;
         default:
           return null;
@@ -1192,7 +1192,7 @@ public class AnnotationSetsView extends AbstractDocumentView
     
     @Override
     public Object getCellEditorValue(){
-      return new Boolean(currentChk.isSelected());
+      return currentChk.isSelected();
     }
     
     @Override

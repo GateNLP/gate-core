@@ -15,11 +15,30 @@
  */
 package gate.creole;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.StringTokenizer;
 
-import gate.util.*;
+import gate.util.BomStrippingInputStreamReader;
+import gate.util.Err;
+import gate.util.Files;
+import gate.util.GateException;
+import gate.util.Out;
+import gate.util.Strings;
 
 
 /**
@@ -89,13 +108,11 @@ public class BootStrap {
     */
   public String changeKeyValue ( String text, Map<String,String> map ){
 
-    Set<String> keys = map.keySet();
-    Iterator<String> iteratorKeys = keys.iterator();
-    while (iteratorKeys.hasNext()) {
-      String key = iteratorKeys.next();
-      String value = map.get(key);
+	for (Map.Entry<String, String> entry : map.entrySet()) {
+      String key = entry.getKey();
+      String value = entry.getValue();
       text = text.replaceAll(key,value);
-    } // while
+    }
     return text;
   } // changeKeyValue ( String text )
 
@@ -106,8 +123,8 @@ public class BootStrap {
     // determine the position of the last "."
     int index = text.lastIndexOf(".");
     int ind = text.lastIndexOf(";");
-    String type = new String();
-    String packageName = new String();
+    String type = "";
+    String packageName = "";
 
     if (index != -1){
       // determine the package and add to the list of packages
@@ -346,10 +363,9 @@ public class BootStrap {
     }
 
     // go through all fields
-    Iterator<Integer> iter = fields.keySet().iterator();
-    while (iter.hasNext()) {
-      Integer index = iter.next();
-      String type = fields.get(index);
+    for (Map.Entry<Integer, String> entry : fields.entrySet()) {
+      Integer index = entry.getKey();
+      String type = entry.getValue();
       if (type.endsWith("[]"))
         methodsFields = methodsFields + newLine + "protected " + type +" " +
                        type.substring(0,type.length()-2).toLowerCase() +
@@ -435,7 +451,7 @@ public class BootStrap {
   /** determine all the packages */
   public String namesPackages (Set<String> listPackages) {
     Iterator<String> iterator = listPackages.iterator();
-    String packages = new String();
+    String packages = "";
     while (iterator.hasNext()) {
       String currentPackage = iterator.next();
       if ((!currentPackage.equals("gate.*"))&&
@@ -681,8 +697,8 @@ class FeatureMethod {
   protected List<String> exceptionTypes;
 
   FeatureMethod() {
-    nameMethod = new String();
-    valueReturn = new String();
+    nameMethod = "";
+    valueReturn = "";
     parameterTypes = new ArrayList<String>();
     exceptionTypes = new ArrayList<String>();
   }

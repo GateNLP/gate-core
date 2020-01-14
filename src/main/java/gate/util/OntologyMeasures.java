@@ -375,7 +375,7 @@ public class OntologyMeasures {
           String oneCon = terms[0].substring(4);
           String anoCon = terms[1].substring(9);
           String bdmS = terms[2].substring(4);
-          bdmByConceptsMap.put(oneCon + ", " + anoCon, new Float(bdmS));
+          bdmByConceptsMap.put(oneCon + ", " + anoCon, Float.valueOf(bdmS));
         } else {
           Out.prln("File " + bdmFile.toString() + " has incorrect format" +
             "for the line [" + line + "].");

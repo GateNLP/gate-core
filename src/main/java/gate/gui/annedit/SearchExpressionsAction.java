@@ -158,7 +158,7 @@ public class SearchExpressionsAction extends AbstractAction {
     b1.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-          modifySearchExpression(list1.getSelectedValue().toString(),
+          modifySearchExpression(list1.getSelectedValue(),
             modifiedTextField);
       }
     });
@@ -167,7 +167,7 @@ public class SearchExpressionsAction extends AbstractAction {
       public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
         if (e.getClickCount() == 2) {
-          modifySearchExpression(list1.getSelectedValue().toString(),
+          modifySearchExpression(list1.getSelectedValue(),
             modifiedTextField);
         }
       }
@@ -185,7 +185,7 @@ public class SearchExpressionsAction extends AbstractAction {
     b2.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-          modifySearchExpression(list2.getSelectedValue().toString(),
+          modifySearchExpression(list2.getSelectedValue(),
             modifiedTextField);
       }
     });
@@ -194,7 +194,7 @@ public class SearchExpressionsAction extends AbstractAction {
       public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
         if (e.getClickCount() == 2) {
-          modifySearchExpression(list2.getSelectedValue().toString(),
+          modifySearchExpression(list2.getSelectedValue(),
             modifiedTextField);
         }
       }
@@ -212,7 +212,7 @@ public class SearchExpressionsAction extends AbstractAction {
     b3.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-          modifySearchExpression(list3.getSelectedValue().toString(),
+          modifySearchExpression(list3.getSelectedValue(),
             modifiedTextField);
       }
     });
@@ -221,7 +221,7 @@ public class SearchExpressionsAction extends AbstractAction {
       public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
         if (e.getClickCount() == 2 && list3.isEnabled()) {
-          modifySearchExpression(list3.getSelectedValue().toString(),
+          modifySearchExpression(list3.getSelectedValue(),
             modifiedTextField);
         }
       }

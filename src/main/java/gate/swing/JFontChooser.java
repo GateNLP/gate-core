@@ -128,8 +128,8 @@ public class JFontChooser extends JPanel {
 
     sizeCombo = new JComboBox<String>(new String[]{"6", "8", "10", "12", "14", "16",
                                               "18", "20", "22", "24", "26"});
-    sizeCombo.setSelectedItem(new Integer(
-                        UIManager.getFont("Label.font").getSize()).toString());
+    sizeCombo.setSelectedItem(Integer.toString(
+                        UIManager.getFont("Label.font").getSize()));
 
     italicChk = new JCheckBox("<html><i>Italic</i></html>", false);
     boldChk = new JCheckBox("<html><i=b>Bold</b></html>", false);
@@ -193,7 +193,7 @@ public class JFontChooser extends JPanel {
   protected void updateFont(){
     Map<TextAttribute, Object> fontAttrs = new HashMap<TextAttribute, Object>();
     fontAttrs.put(TextAttribute.FAMILY, familyCombo.getSelectedItem());
-    fontAttrs.put(TextAttribute.SIZE, new Float((String)sizeCombo.getSelectedItem()));
+    fontAttrs.put(TextAttribute.SIZE, Float.valueOf((String)sizeCombo.getSelectedItem()));
 
     if(boldChk.isSelected())
       fontAttrs.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);

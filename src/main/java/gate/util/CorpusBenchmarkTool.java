@@ -112,7 +112,7 @@ public class CorpusBenchmarkTool {
         String thresholdString = this.configs.getProperty("threshold");
         if (thresholdString != null && !thresholdString.equals("")) {
           thresholdString=thresholdString.trim();
-          this.threshold = (new Double(thresholdString)).doubleValue();
+          this.threshold = Double.valueOf(thresholdString);
           Out.prln("New threshold is: " + this.threshold + "<P>\n");
         }
         String setName = this.configs.getProperty("annotSetName");
@@ -1516,10 +1516,10 @@ public class CorpusBenchmarkTool {
 
     Double oldPrecision = precisionByType.get(annotType);
     if (oldPrecision == null)
-      precisionByType.put(annotType, new Double(precisionAverage));
+      precisionByType.put(annotType, precisionAverage);
     else
       precisionByType.put(annotType,
-                          new Double(oldPrecision.doubleValue() + precisionAverage));
+                          oldPrecision.doubleValue() + precisionAverage);
 
     Integer precCount = prCountByType.get(annotType);
     if (precCount == null)
@@ -1615,11 +1615,11 @@ public class CorpusBenchmarkTool {
 
     Double oldPrecision = proc_precisionByType.get(annotType);
     if (oldPrecision == null)
-      proc_precisionByType.put(annotType, new Double(precisionAverage));
+      proc_precisionByType.put(annotType, precisionAverage);
     else
       proc_precisionByType.put(annotType,
-                               new Double(oldPrecision.doubleValue() +
-                                          precisionAverage));
+                               oldPrecision.doubleValue() +
+                                          precisionAverage);
     Integer precCount = proc_prCountByType.get(annotType);
     if (precCount == null)
       proc_prCountByType.put(annotType, new Integer(1));
