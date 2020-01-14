@@ -143,7 +143,7 @@ public class BootStrapDialog extends JDialog{
 
   /**Initialises the data (the loaded resources)*/
   public void initLocalData(){
-    pathNewProject = new String(".");
+    pathNewProject = ".";
     resourceTypes = new HashMap<String,String>();
     resourceTypes.put("LanguageResource","gate.LanguageResource");
     resourceTypes.put("VisualResource","gate.VisualResource");
@@ -151,7 +151,7 @@ public class BootStrapDialog extends JDialog{
 
     possibleInterfaces = resourceTypes.get("LanguageResource");
     if (possibleInterfaces == null)
-      possibleInterfaces = new String();
+      possibleInterfaces = "";
   }// initLocalData
 
   /**

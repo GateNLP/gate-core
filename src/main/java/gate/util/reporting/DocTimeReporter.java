@@ -194,7 +194,7 @@ public class DocTimeReporter implements BenchmarkReportable {
       while (keyIt.hasNext()) {
         String key = keyIt.next();
         String comp1 = passedMap.get(key);
-        String comp2 = val.toString();
+        String comp2 = val;
 
         if (comp1.equals(comp2)) {
           passedMap.remove(key);

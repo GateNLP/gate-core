@@ -195,7 +195,7 @@ public class BootStrap {
     }// if
 
     // add the abstract class
-    if (!interfacesList.contains("gate."+typeResource))
+    if (interfacesList == null || !interfacesList.contains("gate."+typeResource))
       interfacesAndClass = interfacesAndClass + typeResource;
     else if (interfacesAndClass.endsWith(", "))
       interfacesAndClass = interfacesAndClass.substring
@@ -486,7 +486,7 @@ public class BootStrap {
     char[] classNameChars = className.toCharArray();
     for (int i=0;i<classNameChars.length;i++){
       if (!Character.isLetterOrDigit(classNameChars[i]))
-        throw new GateException("Only letters and digits in the class name");
+        throw new GateException("Only letters and digits in	 the class name");
     }
 
     // verify if it exits a directory of given path

@@ -157,7 +157,7 @@ public class AnnotationMerging {
                   if(ann0.getFeatures().get(nameFeat)!=null)
                     featValue = ann0.getFeatures().get(nameFeat).toString();
                   if(!featOthers.containsKey(featValue)) {
-                    featOthers.put(featValue, new Integer(i).toString());
+                    featOthers.put(featValue, Integer.toString(i));
                     annAll.put(featValue, ann0);
                   }
                   else {
