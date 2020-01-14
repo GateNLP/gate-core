@@ -622,28 +622,26 @@ public class BootStrap {
           // the current file for writing characters
           newFile = new File(pathNewProject+newPathFile);
 
-          //create a filewriter for writing
-          FileWriter fileWriter = new FileWriter(newFile);
+          try (
+            //create a filewriter for writing
+            FileWriter fileWriter = new FileWriter(newFile);
 
-          // get the input stream from
-          InputStream currentInputStream =
-              Files.getGateResourceAsStream(oldResource+oldPathFile);
+            // get the input stream from
+            InputStream currentInputStream =
+                Files.getGateResourceAsStream(oldResource+oldPathFile);
 
-          Reader inputStreamReader = new BomStrippingInputStreamReader(currentInputStream);
-          int  charRead = 0;
-          String text = null;
-          while(
-          (charRead = inputStreamReader.read(cbuffer,0,BUFF_SIZE)) != -1){
-            text = new String (cbuffer,0,charRead);
-            text = changeKeyValue(text,names);
-            fileWriter.write(text ,0,text.length());
-           }//while
-           inputStreamReader.close();
-           // close the input stream
-           currentInputStream.close();
-           // close the file for writing
-           fileWriter.close();
-
+            Reader inputStreamReader = new BomStrippingInputStreamReader(currentInputStream);
+          ) {
+        	  
+            int  charRead = 0;
+            String text = null;
+            while((charRead = inputStreamReader.read(cbuffer,0,BUFF_SIZE)) != -1){
+              text = new String (cbuffer,0,charRead);
+              text = changeKeyValue(text,names);
+              fileWriter.write(text ,0,text.length());
+            }//while
+          }
+          
           // change sh files in executable
           if (newPathFile.endsWith("configure")||newPathFile.endsWith(".sh"))
             executableFile(pathNewProject+newPathFile);

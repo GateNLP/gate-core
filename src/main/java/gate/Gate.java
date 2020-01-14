@@ -537,8 +537,7 @@ public class Gate implements GateConstants {
 	      // this should never happen
 	      throw new GateRuntimeException(mue);
 	    }
-	    try {
-	      InputStream configStream = new FileInputStream(siteConfigFile);
+	    try (InputStream configStream = new FileInputStream(siteConfigFile)) {
 	      configProcessor.parseConfigFile(configStream, configURL);
 	    }
 	    catch(IOException e) {
@@ -556,8 +555,7 @@ public class Gate implements GateConstants {
         // this should never happen
         throw new GateRuntimeException(mue);
       }
-      try {
-        InputStream configStream = new FileInputStream(userConfigFile);
+      try (InputStream configStream = new FileInputStream(userConfigFile)) {
         configProcessor.parseConfigFile(configStream, configURL);
       }
       catch(IOException e) {

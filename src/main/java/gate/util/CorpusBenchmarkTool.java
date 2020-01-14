@@ -106,8 +106,8 @@ public class CorpusBenchmarkTool {
       propFile = new File("corpus_tool.properties");    
     Out.prln("Loading properties from " + propFile.getAbsolutePath());
     if (propFile.exists()) {
-      try {
-        InputStream inputStream = new FileInputStream(propFile);
+      try (InputStream inputStream = new FileInputStream(propFile)){
+        
         this.configs.load(inputStream);
         String thresholdString = this.configs.getProperty("threshold");
         if (thresholdString != null && !thresholdString.equals("")) {
