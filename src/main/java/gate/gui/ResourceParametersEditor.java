@@ -422,9 +422,13 @@ public class ResourceParametersEditor extends XJTable implements CreoleListener 
             boolean isSelected, boolean hasFocus, int row, int column) {
     	
       if (table == null || value == null) {
-    	  System.err.println("Null value when rendering table: " + table+"/"+value);
+    	  // for some reason we have a null value (unlikely a table) which causes an NPE if
+    	  // we don't check for it. Problem is what do we do if we have no value?
+    	  // current solution is to return whatever the renderer was last time, which may
+    	  // or may not be correct. In practice it seems to work okay.
     	  
-    	  //this is hideous but hey
+    	  // this was intended as a fix for
+    	  // https://github.com/GateNLP/gate-core/issues/98
     	  return this;
       }
       
