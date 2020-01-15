@@ -978,7 +978,7 @@ public class MainFrame extends JFrame implements ProgressListener,
             // store old value of benchmark switch
             benchmarkWasEnabled = Benchmark.isBenchmarkingEnabled();
             Benchmark.setBenchmarkingEnabled(true);
-            Layout layout = new PatternLayout("%m%n");
+            /*Layout layout = new PatternLayout("%m%n");
             File logFile = new File(System.getProperty("java.io.tmpdir"),
               "gate-benchmark-log.txt");
             logFile.deleteOnExit();
@@ -991,7 +991,7 @@ public class MainFrame extends JFrame implements ProgressListener,
               return;
             }
             appender.setName("gate-benchmark");
-            Benchmark.logger.addAppender(appender);
+            Benchmark.logger.addAppender(appender);*/
             putValue(NAME, "Stop Profiling Applications");
           } else {
             // reset old value of benchmark switch - i.e. if benchmarking was
@@ -1000,7 +1000,7 @@ public class MainFrame extends JFrame implements ProgressListener,
             // started profiling then we assume it was turned on explicitly and
             // leave it alone.
             Benchmark.setBenchmarkingEnabled(benchmarkWasEnabled);
-            Benchmark.logger.removeAppender("gate-benchmark");
+            //Benchmark.logger.removeAppender("gate-benchmark");
             putValue(NAME, "Start Profiling Applications");
             reportClearMenuItem.setEnabled(true);
           }

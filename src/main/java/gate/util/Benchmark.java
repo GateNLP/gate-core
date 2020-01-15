@@ -266,6 +266,7 @@ public class Benchmark {
    */
   public static void setBenchmarkingEnabled(boolean benchmarkingEnabled) {
     Benchmark.benchmarkingEnabled = benchmarkingEnabled;
+    logger.info("Benchmark has been "+(benchmarkingEnabled ? " enabled" : " disabled"));
   }
 
   /**
