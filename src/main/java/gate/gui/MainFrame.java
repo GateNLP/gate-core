@@ -74,6 +74,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -140,11 +141,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.codehaus.httpcache4j.HTTPRequest;
 import org.codehaus.httpcache4j.cache.CacheStorage;
 import org.codehaus.httpcache4j.cache.FilePersistentCacheStorage;
@@ -1255,20 +1252,15 @@ public class MainFrame extends JFrame implements ProgressListener,
     toolbar.add(button);
     toolbar.addSeparator();
 
-    try {
-      JButton annieMenu =
+    JButton annieMenu =
           new JButton(new LoadApplicationAction("ANNIE", "annie-application",
-              new ResourceReference(new URI(
-                  "creole://uk.ac.gate.plugins;annie;" + gate.Main.version + "/resources/"
-                      + ANNIEConstants.DEFAULT_FILE))));
-      annieMenu.setText("");
-      annieMenu.setToolTipText("Load ANNIE");
-      toolbar.add(annieMenu);
-      toolbar.addSeparator();
-    } catch(URISyntaxException e) {
-      // should be impossible
-    }
-
+              "uk.ac.gate.plugins","annie","/resources/"
+                      + ANNIEConstants.DEFAULT_FILE));
+    annieMenu.setText("");
+    annieMenu.setToolTipText("Load ANNIE");
+    toolbar.add(annieMenu);
+    toolbar.addSeparator();
+    
     LiveMenu tbNewLRMenu = new LiveMenu(LiveMenu.LR);
     JMenuButton menuButton = new JMenuButton(tbNewLRMenu);
     menuButton.setToolTipText("New Language Resource");
@@ -2887,6 +2879,8 @@ public class MainFrame extends JFrame implements ProgressListener,
     private String name, icon;
     
     private ResourceReference pipelineURL = null;
+    
+    private String group, artifact, path;
 
     public LoadApplicationAction(ResourceData rData, ResourceReference pipelineURL) {
       super(rData.getName(),MainFrame.getIcon(rData.getIcon(),rData.getResourceClassLoader()));
@@ -2903,9 +2897,43 @@ public class MainFrame extends JFrame implements ProgressListener,
       this.pipelineURL = pipelineURL;
       this.icon = icon;
     }
+    
+    public LoadApplicationAction(String name, String icon, String group, String artifact, String path) {
+    	super(name,MainFrame.getIcon(icon));
+        if (getValue(Action.SMALL_ICON) == null) putValue(Action.SMALL_ICON, MainFrame.getIcon("application"));
+        this.name = name;
+        this.icon = icon;
+        this.group = group;
+        this.artifact = artifact;
+        this.path = path;
+    }
         
     @Override
     public void actionPerformed(ActionEvent e) {
+      if (group != null &&  artifact != null || path != null) {
+    	  // we need to locate the relevant Mavnen plugin first
+    	  pipelineURL = null;
+    	  
+    	  Set<Plugin> allPlugins = new LinkedHashSet<Plugin>(Gate.getCreoleRegister().getPlugins());
+    	  allPlugins.addAll(PluginUpdateManager.getDefaultPlugins());
+    	  
+    	  for (Plugin plugin : allPlugins) {
+    		  if (plugin instanceof Plugin.Maven) {
+    			  Plugin.Maven mp = (Plugin.Maven)plugin;
+    			  
+    			  if (mp.getGroup().equals(group) && mp.getArtifact().equals(artifact)) {
+    				  try {
+						pipelineURL = new ResourceReference(plugin, path);
+						break;
+					} catch (URISyntaxException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+    			  }
+    		  }
+    	  }
+      }
+      
       if (pipelineURL == null) {
         System.err.println("The URL of the application has not been correctly set and cannot be loaded.");
         return;
@@ -4366,8 +4394,19 @@ public class MainFrame extends JFrame implements ProgressListener,
             @Override
             public void actionPerformed(ActionEvent e) {
               try {
-                Plugin anniePlugin = new Plugin.Maven("uk.ac.gate.plugins", "annie", Main.version);
-                Gate.getCreoleRegister().registerPlugin(anniePlugin);
+            	  for (Plugin plugin : PluginUpdateManager.getDefaultPlugins()) {
+              		if (plugin instanceof Plugin.Maven) {
+              			Plugin.Maven mp = (Plugin.Maven)plugin;
+              			
+              			if (mp.getGroup().equals("uk.ac.gate.plugins") && mp.getArtifact().equals("annie")) {
+              				Gate.getCreoleRegister().registerPlugin(plugin);
+              				return;
+              			}
+              				
+              		}
+            	  }
+            	  
+            	  log.error("Unable to find ANNIE plugin, please use the plugin manager");
               } catch(Exception ex) {
                 log.error("Unable to load ANNIE plugin.", ex);
               }
@@ -5344,18 +5383,15 @@ public class MainFrame extends JFrame implements ProgressListener,
       super("Ready Made Applications");
       setIcon(new ReadyMadeIcon(24, 24));
 
-      try {
         annie = new XJMenuItem(
             new LoadApplicationAction("ANNIE", "annie-application",
-                new ResourceReference(
-                    new URI("creole://uk.ac.gate.plugins;annie;" + gate.Main.version + "/resources/"
-                        + ANNIEConstants.DEFAULT_FILE))),
+                "uk.ac.gate.plugins","annie", "/resources/"
+                        + ANNIEConstants.DEFAULT_FILE),
             MainFrame.this);
         
         openNLP = new XJMenuItem(
             new LoadApplicationAction("OpenNLP (English)", "application",
-                new ResourceReference(
-                    new URI("creole://uk.ac.gate.plugins;opennlp;" + gate.Main.version + "/resources/opennlp.gapp"))),
+                "uk.ac.gate.plugins","opennlp","/resources/opennlp.gapp"),
             MainFrame.this);
 
         addMenuListener(new MenuListener() {
@@ -5375,9 +5411,6 @@ public class MainFrame extends JFrame implements ProgressListener,
             menuDeselected(e);
           }
         });
-      } catch(URISyntaxException e) {
-        throw new RuntimeException(e);
-      }
 
       // rebuild the menu when resources are added or removed
       Gate.getCreoleRegister().addCreoleListener(new CreoleListener() {
