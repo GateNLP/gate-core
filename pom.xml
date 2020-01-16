@@ -158,14 +158,6 @@
 			</exclusions>
 		</dependency>
 
-		<!-- needed to ensure the same version across configurations -->
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.2</version>
-			<scope>compile</scope>
-		</dependency>
-
 		<!-- used for escaping strings in the Annotation Stack and elsewhere -->
 		<dependency>
 			<groupId>commons-lang</groupId>
@@ -183,7 +175,21 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- the logging framework GATE uses -->
+		<!-- We use SLF4J as the logging framework and allow users to
+		     choose the most relevant logging implementation for their
+		     use case -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		
+		<!--  we used to use Log4J directly and so we add the bridge to avoid
+		      breaking existing code. Over time we should replace the legacy
+		      code and then remove this dependency, or at least change the
+		      scope to runtime to avoid breaking plugins which assume it
+		      is available via the main GATE classloader -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
@@ -191,13 +197,17 @@
 			<scope>compile</scope>
 		</dependency>
 		
+		<!-- some of our dependencies use commons-logging, but we exclude those
+		     transitive dependencies a) to ensure we are consistent in which version
+		     is pulled in, but also so we can use the bridge API to delegate the
+		     calls back to SLF4J and hence have proper control over the log messages -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
+			<artifactId>jcl-over-slf4j</artifactId>
 			<version>${slf4j.version}</version>
-			<scope>compile</scope>
+			<scope>runtime</scope>
 		</dependency>
-
+		
 		<!-- used extensively throughout GATE for processing XML files -->
 		<dependency>
 			<groupId>org.jdom</groupId>
