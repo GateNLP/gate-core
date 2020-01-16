@@ -137,7 +137,7 @@ public class Utils {
 
     RemoteRepository central =
             new RemoteRepository.Builder("central", "default",
-                    "http://repo1.maven.org/maven2/").build();
+                    "https://repo1.maven.org/maven2/").build();
 
     // Without this we wouldn't be able to find SNAPSHOT builds of plugins we
     // haven't built and installed locally ourselves
