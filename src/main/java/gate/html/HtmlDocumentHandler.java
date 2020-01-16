@@ -333,7 +333,6 @@ public class HtmlDocumentHandler extends ParserCallback {
     // concatenation "tmpDocContent + content" will result into a new different
     // word... and we want to avoid that...
     if ( tmpDocContentSize != 0 &&
-         content.length() != 0 &&
          !Character.isWhitespace(content.charAt(0)) &&
          !Character.isWhitespace(tmpDocContent.charAt(tmpDocContentSize - 1))){
 
