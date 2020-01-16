@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 
 /**
@@ -92,7 +93,7 @@ public class SimpleArraySet<T> implements Serializable, Iterable<T>
           @Override
           public boolean hasNext() {return false;}
           @Override
-          public T next() { return null; }
+          public T next() { throw new NoSuchElementException("the array is empty"); }
           @Override
           public void remove() {}
         };
@@ -110,7 +111,7 @@ public class SimpleArraySet<T> implements Serializable, Iterable<T>
           @Override
           public T next() {
             if (theArray == null)
-              throw new RuntimeException("");
+              throw new NoSuchElementException("the array is empty");
             return theArray[count++];
           }
           @Override
