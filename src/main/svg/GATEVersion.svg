@@ -198,22 +198,22 @@
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:none"
        id="rect3003"
-       width="25.646969"
+       width="40.24638"
        height="14.104341"
-       x="151.00754"
+       x="136.40813"
        y="250.36763"
        ry="0" />
     <text
        xml:space="preserve"
        style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;text-align:justify;line-height:125%;letter-spacing:-1.5px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#008000;fill-opacity:1;stroke:#008000;stroke-opacity:1;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans Bold Semi-Condensed"
-       x="151.08493"
+       x="136.40813"
        y="263.25183"
        id="text3773"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3821"
-         x="151.08493"
+         x="136.40813"
          y="263.25183"
-         style="-inkscape-font-specification:DejaVu Sans Bold;font-family:DejaVu Sans;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal;font-size:16px;text-anchor:start;text-align:justify;writing-mode:lr;line-height:125%;letter-spacing:-1.5px">8.6</tspan></text>
+         style="-inkscape-font-specification:DejaVu Sans Bold;font-family:DejaVu Sans;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal;font-size:16px;text-anchor:start;text-align:justify;writing-mode:lr;line-height:125%;letter-spacing:-1.5px">8.6.1</tspan></text>
   </g>
 </svg>
