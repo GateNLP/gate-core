@@ -1,44 +1,112 @@
-<configuration debug="true">
+<?xml version="1.0" encoding="UTF-8"?>
 
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+<configuration>
 
-    <target>System.out</target>
-
+  <!-- File appender that outputs only benchmark messages -->
+  <appender name="benchmarklog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
+    <File>${user.home}/.gate/benchmark.txt</File>
     <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      <pattern>%m%n</pattern>
     </encoder>
-
-    <filter class="ch.qos.logback.classic.filter.LevelFilter">
-    <level>WARN</level>
-      <onMatch>ACCEPT</onMatch>
-      <onMismatch>DENY</onMismatch>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>DEBUG</level>
     </filter>
-
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <maxIndex>1</maxIndex>
+      <FileNamePattern>${user.home}/.gate/benchmark.txt.%i</FileNamePattern>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <MaxFileSize>5MB</MaxFileSize>
+    </triggeringPolicy>
   </appender>
 
-  <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
-
-    <target>System.err</target>
-
+  <!-- File appender that outputs only OntoRootGaz messages -->
+  <appender name="ontorootgazlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
+    <File>${user.home}/.gate/ontoRootGaz.txt</File>
     <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      <pattern>%m%n</pattern>
     </encoder>
-
-    <filter class="ch.qos.logback.classic.filter.LevelFilter">
-    <level>ERROR</level>
-      <onMatch>ACCEPT</onMatch>
-      <onMismatch>DENY</onMismatch>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>DEBUG</level>
     </filter>
-
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <maxIndex>1</maxIndex>
+      <FileNamePattern>${user.home}/.gate/ontoRootGaz.txt.%i</FileNamePattern>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <MaxFileSize>5MB</MaxFileSize>
+    </triggeringPolicy>
   </appender>
 
-  <logger name="gate" level="INFO" />
-  <logger name="gate.jape" level="DEBUG" />
-  <logger name="org.apache.http" level="INFO" />
+  <!-- File appender that outputs to a file called logfile.txt -->
+  <appender name="generalfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
+    <File>${user.home}/.gate/logfile.txt</File>
+    <encoder>
+      <pattern>%d{dd HH:mm:ss} %-5.5p %-30.30c{5}: %m%n</pattern>
+    </encoder>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>DEBUG</level>
+    </filter>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <maxIndex>1</maxIndex>
+      <FileNamePattern>${user.home}/.gate/logfile.txt.%i</FileNamePattern>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <MaxFileSize>5MB</MaxFileSize>
+    </triggeringPolicy>
+  </appender>
+
+  <!-- Console appender that outputs messages of INFO level up to WARN to stdout -->
+  <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+    <filter.upToWarn>org.apache.log4j.varia.LevelRangeFilter</filter.upToWarn>
+    <filter.upToWarn.AcceptOnMatch>true</filter.upToWarn.AcceptOnMatch>
+    <filter.upToWarn.LevelMax>WARN</filter.upToWarn.LevelMax>
+    <Follow>true</Follow>
+    <encoder>
+      <pattern>%m%n</pattern>
+    </encoder>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>INFO</level>
+    </filter>
+  </appender>
+
+  <!-- Console appender that outputs messages of ERROR or above to stderr -->
+  <appender name="stderr" class="ch.qos.logback.core.ConsoleAppender">
+    <Follow>true</Follow>
+    <Target>System.err</Target>
+    <encoder>
+      <pattern>%m%n</pattern>
+    </encoder>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>ERROR</level>
+    </filter>
+  </appender>
+
+  <logger name="gate.jape" level="DEBUG"/>
+
+  <!-- Configure the Benchmark logger so that it only goes to the benchmark log file -->
+  <logger name="gate.util.Benchmark" additivity="false" level="DEBUG">
+    <appender-ref ref="benchmarklog"/>
+  </logger>
+
+  <!-- Configure the OntoRootGaz logger so that it only goes to the ontoRootGaz log file -->
+  <logger name="gate.clone.ql.OntoRootGaz" additivity="false" level="DEBUG">
+    <appender-ref ref="ontorootgazlog"/>
+  </logger>
+
+  <!-- most classes stay at INFO level by default so the log isn't flooded.
+       Add on individual classes or packages as needed. -->
+  <logger name="gate" level="INFO"/>
+
+  <logger name="org.apache.http" level="ERROR"/>
 
   <root level="DEBUG">
-    <appender-ref ref="STDOUT" />
-    <appender-ref ref="STDERR" />
+    <appender-ref ref="generalfile"/>
+    <appender-ref ref="stdout"/>
+    <appender-ref ref="stderr"/>
   </root>
 
 </configuration>
