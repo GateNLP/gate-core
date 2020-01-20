@@ -106,6 +106,7 @@
                   <outfile>target/gate-developer-${project.version}-installer.exe</outfile>
                   <jar>target/gate-developer-${project.version}-installer.jar</jar>
                   <errTitle>GATE Developer</errTitle>
+                  <downloadUrl>https://adoptopenjdk.net</downloadUrl>
                   <supportUrl>https://gate.ac.uk</supportUrl>
                   <customProcName>false</customProcName>
                   <stayAlive>false</stayAlive>
