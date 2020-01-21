@@ -22,7 +22,7 @@ import gate.Annotation;
 /**
  * Compares annotations by start offsets first, then by end 
  * offset if the start offsets are equal.
- * Example: [5,9] < [6,7] < [6,9] < [7,8]
+ * Example: [5,9] &lt; [6,7] &lt; [6,9] &lt; [7,8]
  */
 public class OffsetComparator implements Comparator<Annotation>, Serializable {
 

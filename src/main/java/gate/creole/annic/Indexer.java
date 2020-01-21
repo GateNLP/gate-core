@@ -47,9 +47,6 @@ public interface Indexer {
 
   /**
    * remove documents from the Index
-   * 
-   * @param removedDocumentPersistenceIds
-   * @throws Exception
    */
   public void remove(List<Object> removedDocumentPersistenceIds) throws IndexException;
 

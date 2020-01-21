@@ -365,7 +365,7 @@ extends AbstractFeatureBearer implements Resource
    * {@link ParameterList#getRuntimeParameters()}).
    * @return <tt>true</tt> if all the required parameters have non null values,
    * <tt>false</tt> otherwise.
-   * @throws {@link ResourceInstantiationException} if problems occur while
+   * @throws ResourceInstantiationException if problems occur while
    * inspecting the parameters for the resource. These will normally be
    * introspection problems and are usually caused by the lack of a parameter
    * or of the read accessor for a parameter.

@@ -2241,7 +2241,7 @@ public class AnnotationSetsView extends AbstractDocumentView
   /**
    * Stores the list of visible annotation types when the view is inactivated 
    * so that the selection can be restored when the view is made active again.
-   * The values are String[2] pairs of form <set name, type>.
+   * The values are String[2] pairs of form &lt;set name, type&gt;.
    */
   protected BlockingQueue<TypeSpec> visibleAnnotationTypes;
   

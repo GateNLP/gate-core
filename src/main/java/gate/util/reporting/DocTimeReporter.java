@@ -156,7 +156,7 @@ public class DocTimeReporter implements BenchmarkReportable {
    * resources and system noted time.
    *
    * @param reportContainer
-   *          An Object of type LinkedHashMap<String, Object> containing the
+   *          An Object of type LinkedHashMap&lt;String, Object&gt; containing the
    *          processing elements (with time in milliseconds) in hierarchical
    *          structure.
    * @return An Object containing modified hierarchical structure of processing
@@ -246,7 +246,7 @@ public class DocTimeReporter implements BenchmarkReportable {
    * Prints a report as per the value provided for print media option.
    *
    * @param reportSource
-   *          An Object of type LinkedHashMap<String, Object> containing the
+   *          An Object of type LinkedHashMap&lt;String, Object&gt; containing the
    *          processing elements (with time in milliseconds) in hierarchical
    *          structure.
    * @param outputFile
@@ -375,7 +375,7 @@ public class DocTimeReporter implements BenchmarkReportable {
    * @param inputFile
    *          A handle to the input benchmark file.
    *
-   * @return An Object of type LinkedHashMap<String, Object> containing the
+   * @return An Object of type LinkedHashMap&lt;String, Object&gt; containing the
    *         processing elements (with time in milliseconds) in hierarchical
    *         structure. Null if there was an error.
    *

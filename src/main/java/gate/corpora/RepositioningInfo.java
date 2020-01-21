@@ -291,7 +291,7 @@ public class RepositioningInfo extends ArrayList<PositionInfo> {
    *
    *  Normaly the text peaces have same sizes in both original text and
    *  extracted text. But in some cases there are nonlinear substitutions.
-   *  For example the sequence "&lt;" is converted to "<".
+   *  For example the sequence "&amp;lt;" is converted to "&lt;".
    *  <br>
    *
    *  The correction will split the corresponding PositionInfo structure to

@@ -430,7 +430,7 @@ public class ConditionalSerialAnalyserController
    *
    * @return a {@link List} of {@link ProcessingResource}s that have required
    * parameters with null values if they exist <tt>null</tt> otherwise.
-   * @throws {@link ResourceInstantiationException} if problems occur while
+   * @throws ResourceInstantiationException if problems occur while
    * inspecting the parameters for one of the resources. These will normally be
    * introspection problems and are usually caused by the lack of a parameter
    * or of the read accessor for a parameter.

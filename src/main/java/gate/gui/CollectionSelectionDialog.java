@@ -85,9 +85,8 @@ public class CollectionSelectionDialog extends JDialog {
     mainFrame = aFrame;
   }//CollectionSelectionDialog
 
-  /** Constructs an ColectionSelectionDialog using <b>null<b> as a frame
-    *   and <b>true
-    *  </b> as modal value for dialog
+  /** Constructs an ColectionSelectionDialog using <b>null</b> as a frame
+    *   and <b>true</b> as modal value for dialog
     */
   public CollectionSelectionDialog(){
     this(null, true);

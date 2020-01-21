@@ -23,7 +23,6 @@ import java.lang.annotation.Target;
 import java.util.Collection;
 
 /**
- * <p>
  * Annotation used to define a parameter to a CREOLE resource. This annotation
  * should be used in one of two ways:
  * 
@@ -40,7 +39,6 @@ import java.util.Collection;
  * from any generic type arguments given. If the collection type is a raw type
  * then you will need to supply the collectionElementType explicitly in the
  * annotation.
- * </p>
  * 
  * <p>
  * Parameters can be marked as optional or runtime parameters using the

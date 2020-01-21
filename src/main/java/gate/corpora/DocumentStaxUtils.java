@@ -1004,7 +1004,7 @@ public class DocumentStaxUtils {
    *          will be treated as the default set. All other entries are
    *          treated as named annotation sets.
    * @param xsw the StAX XMLStreamWriter to use for output
-   * @throws GateException if an error occurs during writing
+   * @throws XMLStreamException if an error occurs during writing
    */
   public static void writeDocument(Document doc,
           Map<String, Collection<Annotation>> annotationSets,

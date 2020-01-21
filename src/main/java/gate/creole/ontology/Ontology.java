@@ -28,24 +28,24 @@ import java.util.Set;
  * A client program may only use the methods defined in this interface
  * to manipulate ontologies and must never use any methods from the
  * implementing package.
- * <p>
+ * 
  * All ontology language resources must be created using the
  * {@link gate.Factory#createResource(String, gate.FeatureMap) Factory.createResource} method.
- * <p>
+ * 
  * See the documentation for the implementing plugins for details on
  * how to create ontology language resources programmatically.
- * <p>
+ * 
  * Unless stated otherwise, this documentation describes 
  * the behavior of the methods as implemented in the
  * ontology API implementation plugin,
  * <a href="../../../../../plugins/Ontology/doc/javadoc/index.html" target="_parent">Ontology</a>
- * <p>
+ * 
  * The backwards-compatibility plugin
- * a href="../../../../../plugins/Ontology/doc/javadoc/index.html" target="_parent">Ontology_OWLIM2</a>
+ * <a href="../../../../../plugins/Ontology/doc/javadoc/index.html" target="_parent">Ontology_OWLIM2</a>
  * implements all of the deprecated methods and classes but none of the
  * new methods that were added to the API in version 5.1.  Some but not all depracated
  * methods are also implemented in the new plugin <code>Ontology</code>
- * <p>
+ * 
  * The use of deprecated methods should be avoided and replaced by
  * other methods as soon as possible as the backwards-compatibility
  * plugin may get removed in the future and deprecated methods may
@@ -69,7 +69,7 @@ public interface Ontology extends LanguageResource {
    * Retrieves the ontology data and returns a string with the serialization
    * of the data in the specified format.
    * 
-   * @param format the format to be used for serialization <@see OConstants>
+   * @param format the format to be used for serialization
    * @return a string containing the serialization of the ontology
    * @deprecated not supported any more - throws UnsupportedOperationException
    */
@@ -186,14 +186,14 @@ public interface Ontology extends LanguageResource {
   /**
    * Loads all imported ontologies. This method finds all ontology import
    * URIs in the current ontology and loads as imports the ontologies
-   * referenced by these URIs. If an URI is found in <code>importMappings<code>,
+   * referenced by these URIs. If an URI is found in <code>importMappings</code>,
    * and maps to an empty String, the import will be ignored. If an URI
    * is found and maps to a non-empty string, the string will be interpreted
    * as an URL from which to load the imported ontology. If no entry is found
    * for the URI, the URI will be interpreted as an URL from which to load
    * the ontology. All import URIs of ontologies loaded during this process
    * will be recursively processed in the same way.
-   * <p>
+   * 
    * A GateOntologyException is thrown if any import that should be loaded
    * cannot be loaded and the import loading process is aborted before
    * potential additional imports are processed.
@@ -517,15 +517,15 @@ public interface Ontology extends LanguageResource {
 
   /**
    * Gets the set of RDF Properties in the ontology where for a property
-   * there exists a statement <theProperty, RDF:Type, RDF:Property>.
+   * there exists a statement @lt;theProperty, RDF:Type, RDF:Property&gt;.
    * 
    * @return a {@link Set} of {@link RDFProperty}.
    */
   public Set<RDFProperty> getRDFProperties();
 
   /**
-   * Checkes whether there exists a statement <thePropertyURI, RDF:Type,
-   * RDF:Property> in the ontology or not.
+   * Checkes whether there exists a statement &lt;thePropertyURI, RDF:Type,
+   * RDF:Property&gt; in the ontology or not.
    * 
    * @param thePropertyURI
    * @return true, only if there exists the above statement, otherwise -
@@ -543,16 +543,16 @@ public interface Ontology extends LanguageResource {
 
   /**
    * Gets the set of Annotation Properties in the ontology where for a
-   * property there exists a statement <theProperty, RDF:Type,
-   * OWL:AnnotationProperty>.
+   * property there exists a statement &lt;theProperty, RDF:Type,
+   * OWL:AnnotationProperty&gt;.
    * 
    * @return a {@link Set} of {@link AnnotationProperty}.
    */
   public Set<AnnotationProperty> getAnnotationProperties();
 
   /**
-   * Checkes whether there exists a statement <thePropertyURI, RDF:Type,
-   * OWL:AnnotationProperty> in the ontology or not.
+   * Checkes whether there exists a statement &lt;thePropertyURI, RDF:Type,
+   * OWL:AnnotationProperty&gt; in the ontology or not.
    * 
    * @param thePropertyURI
    * @return true, only if there exists the above statement, otherwise -
@@ -666,8 +666,8 @@ public interface Ontology extends LanguageResource {
   public Set<SymmetricProperty> getSymmetricProperties();
 
   /**
-   * Checkes whether there exists a statement <thePropertyURI, RDF:Type,
-   * OWL:SymmetricProperty> in the ontology or not.
+   * Checkes whether there exists a statement &lt;thePropertyURI, RDF:Type,
+   * OWL:SymmetricProperty&gt; in the ontology or not.
    * 
    * @param thePropertyURI
    * @return true, only if there exists the above statement, otherwise -
@@ -678,7 +678,7 @@ public interface Ontology extends LanguageResource {
   /**
    * Creates a new transitive property (an object property that is
    * transitive).
-   * <p>
+   * 
    * If this method is called with an OURI of a transitive property that
    * already exists, any specified domain or range class is added to the intersection
    * of classes already defined for the domain or range.
@@ -705,8 +705,8 @@ public interface Ontology extends LanguageResource {
   public Set<TransitiveProperty> getTransitiveProperties();
 
   /**
-   * Checkes whether there exists a statement <thePropertyURI, RDF:Type,
-   * OWL:TransitiveProperty> in the ontology or not.
+   * Checkes whether there exists a statement &lt;thePropertyURI, RDF:Type,
+   * OWL:TransitiveProperty&gt; in the ontology or not.
    * 
    * @param thePropertyURI
    * @return true, only if there exists the above statement, otherwise -

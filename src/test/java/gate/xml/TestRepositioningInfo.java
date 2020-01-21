@@ -30,7 +30,7 @@ import junit.framework.TestCase;
  * This class tests if Repositinioning Information works.
  * It creates a document using an inline xml file with preserveOriginalContent
  * and collectRepositioningInfo options keeping true, which has all
- * sorts of special entities like &amp, &quot etc. + it contains both
+ * sorts of special entities like &amp;, &quot; etc. + it contains both
  * kind of unix and dos types new line characters.  It then saves the
  * document to the temporary location on the disk using
  * "save preserving document format" option and then compares the contents of
@@ -79,7 +79,7 @@ public class TestRepositioningInfo
    * This method tests if Repositinioning Information works.
    * It creates a document using an xml file with preserveOriginalContent
    * and collectRepositioningInfo options keeping true and which has all
-   * sorts of special entities like &amp, &quot etc. + it contains both
+   * sorts of special entities like &amp;, &quot; etc. + it contains both
    * kind of unix and dos stype new line characters.  It then saves the
    * document to the temporary location on the disk using
    * "save preserving document format" option and then compares the contents of

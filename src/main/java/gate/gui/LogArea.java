@@ -73,7 +73,7 @@ import javax.swing.text.StyledDocument;
 
 /**
  * This class is used to log all messages from GATE. When an object of this
- * class is created, it redirects the output of {@link gate.util.Out} &
+ * class is created, it redirects the output of {@link gate.util.Out} &amp;
  * {@link gate.util.Err}. The output from Err is written with <font
  * color="red">red</font> and the one from Out is written in <b>black</b>.
  */
@@ -127,7 +127,7 @@ public class LogArea extends XJTextPane {
 
   /**
    * Constructs a LogArea object and captures the output from Err and Out. The
-   * output from System.out & System.err is not captured.
+   * output from System.out &amp; System.err is not captured.
    */
   public LogArea() {
     thisLogArea = this;

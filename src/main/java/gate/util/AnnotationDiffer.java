@@ -394,7 +394,7 @@ public class AnnotationDiffer {
 
   /**
    * Gets the number of correct matches.
-   * @return an <tt>int<tt> value.
+   * @return an <tt>int</tt> value.
    */
   public int getCorrectMatches(){
     return correctMatches;
@@ -402,7 +402,7 @@ public class AnnotationDiffer {
 
   /**
    * Gets the number of partially correct matches.
-   * @return an <tt>int<tt> value.
+   * @return an <tt>int</tt> value.
    */
   public int getPartiallyCorrectMatches(){
     return partiallyCorrectMatches;
@@ -410,7 +410,7 @@ public class AnnotationDiffer {
 
   /**
    * Gets the number of pairings of type {@link #MISSING_TYPE}.
-   * @return an <tt>int<tt> value.
+   * @return an <tt>int</tt> value.
    */
   public int getMissing(){
     return missing;
@@ -418,7 +418,7 @@ public class AnnotationDiffer {
 
   /**
    * Gets the number of pairings of type {@link #SPURIOUS_TYPE}.
-   * @return an <tt>int<tt> value.
+   * @return an <tt>int</tt> value.
    */
   public int getSpurious(){
     return spurious;
@@ -426,7 +426,7 @@ public class AnnotationDiffer {
 
   /**
    * Gets the number of pairings of type {@link #SPURIOUS_TYPE}.
-   * @return an <tt>int<tt> value.
+   * @return an <tt>int</tt> value.
    */
   public int getFalsePositivesStrict(){
     return responseList.size() - correctMatches;
@@ -435,7 +435,7 @@ public class AnnotationDiffer {
   /**
    * Gets the number of responses that aren't either correct or partially 
    * correct.
-   * @return an <tt>int<tt> value.
+   * @return an <tt>int</tt> value.
    */
   public int getFalsePositivesLenient(){
     return responseList.size() - correctMatches - partiallyCorrectMatches;
@@ -443,7 +443,7 @@ public class AnnotationDiffer {
 
   /**
    * Gets the number of keys provided.
-   * @return an <tt>int<tt> value.
+   * @return an <tt>int</tt> value.
    */
   public int getKeysCount() {
     return keyList.size();
@@ -451,7 +451,7 @@ public class AnnotationDiffer {
 
   /**
    * Gets the number of responses provided.
-   * @return an <tt>int<tt> value.
+   * @return an <tt>int</tt> value.
    */
   public int getResponsesCount() {
     return responseList.size();
@@ -570,7 +570,7 @@ public class AnnotationDiffer {
    * set value means that no features are significant while a set of String 
    * values specifies that only features with names included in the set are 
    * significant. 
-   * @param significantFeaturesSet a Set of String values or <tt>null<tt>.
+   * @param significantFeaturesSet a Set of String values or <tt>null</tt>.
    */
   public void setSignificantFeaturesSet(Set<String> significantFeaturesSet) {
     this.significantFeaturesSet = significantFeaturesSet;

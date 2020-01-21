@@ -367,7 +367,7 @@ public class Files {
   } // getResourceAsStream(String)
 
   /** Get a resource from the GATE resources directory as an InputStream.
-    * The resource name should be relative to <code>resourcePath<code> which
+    * The resource name should be relative to <code>resourcePath</code> which
     * is equal with <TT>gate/resources</TT>; e.g.
     * for a resource stored as <TT>gate/resources/jape/Test11.jape</TT>,
     * this method should be passed the name <TT>jape/Test11.jape</TT>.
@@ -409,7 +409,7 @@ public class Files {
    * Get a resource from the GATE resources directory.  The return value is a
    * {@link java.net.URL} that can be used to retrieve the contents of the
    * resource.
-   * The resource name should be relative to <code>resourcePath<code> which
+   * The resource name should be relative to <code>resourcePath</code> which
    * is equal with <TT>gate/resources</TT>; e.g.
    * for a resource stored as <TT>gate/resources/jape/Test11.jape</TT>,
    * this method should be passed the name <TT>jape/Test11.jape</TT>.

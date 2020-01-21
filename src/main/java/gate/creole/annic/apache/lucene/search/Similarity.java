@@ -35,6 +35,7 @@ import gate.creole.annic.apache.lucene.document.Field;          // for javadoc
  * in terms of these methods as follows:
  *
  * <table cellpadding="0" cellspacing="0" border="0">
+ *  <caption>Scoring Methods</caption>
  *  <tr>
  *    <td valign="middle" align="right" rowspan="2">score(q,d) =<br></td>
  *    <td valign="middle" align="center">

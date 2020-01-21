@@ -44,7 +44,7 @@ public final class Token implements Serializable {
 
   private int positionIncrement = 1;
 
-  /** Constructs a Token with the given term text, and start & end offsets.
+  /** Constructs a Token with the given term text, and start &amp; end offsets.
       The type defaults to "word." */
   public Token(String text, int start, int end) {
     termText = text;
@@ -52,7 +52,7 @@ public final class Token implements Serializable {
     endOffset = end;
   }
 
-  /** Constructs a Token with the given text, start and end offsets, & type. */
+  /** Constructs a Token with the given text, start and end offsets, &amp; type. */
   public Token(String text, int start, int end, String typ) {
     termText = text;
     startOffset = start;

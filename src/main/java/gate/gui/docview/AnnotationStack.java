@@ -466,11 +466,11 @@ public class AnnotationStack extends JPanel {
     /**
      * There is 3 cases for the parameters of createListener:
      * <ol>
-     * <li>first line of text -> createListener(word)
-     * <li>first column, header -> createListener(type),
-     *   createListener(type, feature)
-     * <li>annotation -> createListener(set, type, annotationId),
-     *   createListener(set, type, feature, value, annotationId)
+     * <li>first line of text -&gt; createListener(word)</li>
+     * <li>first column, header -&gt; createListener(type),
+     *   createListener(type, feature)</li>
+     * <li>annotation -&gt; createListener(set, type, annotationId),
+     *   createListener(set, type, feature, value, annotationId)</li>
      * </ol>
      * @param parameters see above
      * @return a MouseInputAdapter for the text, header or annotation

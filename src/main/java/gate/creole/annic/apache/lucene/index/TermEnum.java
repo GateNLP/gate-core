@@ -45,7 +45,7 @@ public abstract class TermEnum {
    *     do {
    *       if (!next())
    * 	     return false;
-   *     } while (target > term());
+   *     } while (target &gt; term());
    *     return true;
    *   }
    * </pre>

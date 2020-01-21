@@ -1373,7 +1373,7 @@ public class Gate implements GateConstants {
    * bar on the main frame or the progress listener that updates the
    * progress bar on the main frame). The keys used are the class names
    * of the listener interface and the values are the actual listeners
-   * (e.g "gate.event.StatusListener" -> this). The returned map is the
+   * (e.g "gate.event.StatusListener" -&gt; this). The returned map is the
    * actual data member used to store the listeners so any changes in
    * this map will be visible to everyone.
    * @return the listeners map

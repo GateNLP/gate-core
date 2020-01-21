@@ -193,9 +193,10 @@ public interface AnnotationSet extends SimpleAnnotationSet, Serializable {
    * Formally, for any annotation a, a will be included in the return
    * set if:
    * <ul>
-   * <li>a.getStartNode().getOffset() <= startOffset</li>
+   * <li>a.getStartNode().getOffset() &lt;= startOffset</li>
    * <li>and</li>
-   * <li>a.getEndNode().getOffset() >= endOffset</li>
+   * <li>a.getEndNode().getOffset() &gt;= endOffset</li>
+   * </ul>
    *
    * @param neededType Type of annotation to return. If empty, all
    *          annotation types will be returned.
@@ -214,7 +215,7 @@ public interface AnnotationSet extends SimpleAnnotationSet, Serializable {
    * the latter also provides annotations that have a span which covers
    * completely and is bigger than the given one. Here we only get the
    * annotations between the two offsets.  Formally, all annotations
-   * are returned whose start position is >= <code>startOffset</code>
+   * are returned whose start position is &gt;= <code>startOffset</code>
    * and whose end position is &lt;= <code>endOffset</code>.
    *
    * @param startOffset the start of the interval, inclusive

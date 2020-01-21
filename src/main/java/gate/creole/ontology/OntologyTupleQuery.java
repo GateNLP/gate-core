@@ -45,7 +45,7 @@ import java.util.Vector;
  * need any more results from the query.
  * <li>If you want to re-use the query with different variable bindings
  * use method setBinding() and reevaluate using the method evaluate().
- * </uk>
+ * </ul>
  *
  * @author Johann Petrak
  */

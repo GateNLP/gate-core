@@ -80,9 +80,9 @@ public interface ONodeID extends Comparable<ONodeID> {
    * Return a representation of the node that conforms to Turtle syntax.
    * This will return a string that conforms to TURTLE (Terse RDF Triple
    * Language) - see http://www.w3.org/TeamSubmission/turtle/
-   * <p>
+   * 
    * TODO: at the moment, this only returns either the blank node ID unchanged
-   * or the URI as returned by toString() between "<" and ">". This will have
+   * or the URI as returned by toString() between "&lt;" and "&gt;". This will have
    * to use a proper ASCII representation of the URI or an IRI representation
    * instead.
    */
@@ -92,7 +92,7 @@ public interface ONodeID extends Comparable<ONodeID> {
    * Validate if the string that was passed on as a bnode id or as an URI/IRI
    * to the constructor of the implementing class can be converted to
    * a blank node identifier or and URI/IRI that conforms to the implementaion.
-   * <p>
+   * 
    * TODO: this is not yet implemented.
    * 
    * @throws IllegalArgumentException

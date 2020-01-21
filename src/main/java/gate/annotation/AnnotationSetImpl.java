@@ -125,7 +125,7 @@ public class AnnotationSetImpl extends AbstractSet<Annotation> implements
    * the range. This mechanism is not perfect because we do not check if
    * we have to decrease it if an annotation is removed from the set.
    * However, usually annotations are removed because they are about to
-   * be replaced with another one that is >= to the length of the one
+   * be replaced with another one that is &gt;= to the length of the one
    * being replaced, so this isn't a big deal. At worst, it means that
    * the get methods simply checks a few more start positions than it
    * needs to.
@@ -550,6 +550,7 @@ public class AnnotationSetImpl extends AbstractSet<Annotation> implements
    * <li>start before the start offset and end strictly after it</li>
    * <li>OR</li>
    * <li>start at a position between the start and the end offsets</li>
+   * </ul>
    *
    * @return an ImmutableAnnotationSet
    */
@@ -600,6 +601,7 @@ public class AnnotationSetImpl extends AbstractSet<Annotation> implements
    * <li>start before the start offset and end strictly after it</li>
    * <li>OR</li>
    * <li>start at a position between the start and the end offsets</li>
+   * </ul>
    */
   @Override
   public AnnotationSet get(String neededType, Long startOffset, Long endOffset) {
@@ -663,9 +665,10 @@ public class AnnotationSetImpl extends AbstractSet<Annotation> implements
    * Formally, for any annotation a, a will be included in the return
    * set if:
    * <ul>
-   * <li>a.getStartNode().getOffset() <= startOffset</li>
+   * <li>a.getStartNode().getOffset() &lt;= startOffset</li>
    * <li>and</li>
-   * <li>a.getEndNode().getOffset() >= endOffset</li>
+   * <li>a.getEndNode().getOffset() &gt;= endOffset</li>
+   * </ul>
    *
    * @param neededType Type of annotation to return. If empty, all
    *          annotation types will be returned.
@@ -729,7 +732,7 @@ public class AnnotationSetImpl extends AbstractSet<Annotation> implements
   /**
    * Select annotations contained within an interval, i.e.
    * those annotations whose start position is
-   * >= <code>startOffset</code> and whose end position is &lt;= 
+   * &gt;= <code>startOffset</code> and whose end position is &lt;= 
    * <code>endOffset</code>.
    */
   @Override

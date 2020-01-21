@@ -522,7 +522,7 @@ public abstract class Factory {
   /**
    * Utility method to create an immutable annotation set. If the
    * provided collection of annotations is
-   * <code>null</null>, the newly created set will
+   * <code>null</code>, the newly created set will
    * be empty.
    * 
    * @param document the document this set belongs to.

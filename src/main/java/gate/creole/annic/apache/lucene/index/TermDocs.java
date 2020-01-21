@@ -66,7 +66,7 @@ public interface TermDocs {
    *     do {
    *       if (!next())
    * 	     return false;
-   *     } while (target > doc());
+   *     } while (target &gt; doc());
    *     return true;
    *   }
    * </pre>

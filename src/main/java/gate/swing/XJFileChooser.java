@@ -51,7 +51,7 @@ public class XJFileChooser extends JFileChooser {
   private String fileName;
   /** set to true when setSelectedFile has been used */
   private boolean isFileSelected = false;
-  /** map for (resource name -> path) saved in the user config file */
+  /** map for (resource name -&gt; path) saved in the user config file */
   private Map<String, String> locations;
 
   public XJFileChooser() {

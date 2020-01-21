@@ -358,10 +358,10 @@ public abstract class IndexReader {
    <code>term</code>. For each document, the document number, the frequency of
    the term in that document is also provided, for use in search scoring.
    Thus, this method implements the mapping:
-   <p><ul>
-   Term &nbsp;&nbsp; =&gt; &nbsp;&nbsp; &lt;docNum, freq&gt;<sup>*</sup>
+   <ul>
+   <li>Term &nbsp;&nbsp; =&gt; &nbsp;&nbsp; &lt;docNum, freq&gt;<sup>*</sup></li>
    </ul>
-   <p>The enumeration is ordered by document number.  Each document number
+   The enumeration is ordered by document number.  Each document number
    is greater than all that precede it in the enumeration.
    */
   public TermDocs termDocs(Term term) throws IOException {
@@ -379,14 +379,14 @@ public abstract class IndexReader {
    positions of the term in the document is available.  Thus, this method
    implements the mapping:
 
-   <p><ul>
-   Term &nbsp;&nbsp; =&gt; &nbsp;&nbsp; &lt;docNum, freq,
+   <ul>
+   <li>Term &nbsp;&nbsp; =&gt; &nbsp;&nbsp; &lt;docNum, freq,
    &lt;pos<sub>1</sub>, pos<sub>2</sub>, ...
    pos<sub>freq-1</sub>&gt;
-   &gt;<sup>*</sup>
+   &gt;<sup>*</sup></li>
    </ul>
-   <p> This positional information faciliates phrase and proximity searching.
-   <p>The enumeration is ordered by document number.  Each document number is
+   This positional information faciliates phrase and proximity searching.
+   The enumeration is ordered by document number.  Each document number is
    greater than all that precede it in the enumeration.
    */
   public TermPositions termPositions(Term term) throws IOException {

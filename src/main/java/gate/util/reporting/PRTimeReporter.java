@@ -156,7 +156,7 @@ public class PRTimeReporter implements BenchmarkReportable {
    * @param inputFile
    *          A File handle of the input log file.
    *
-   * @return An Object of type LinkedHashMap<String, Object> containing the
+   * @return An Object of type LinkedHashMap&lt;String, Object&gt; containing the
    *         processing elements (with time in milliseconds) in hierarchical
    *         structure. Null if there was an error.
    */
@@ -413,7 +413,7 @@ public class PRTimeReporter implements BenchmarkReportable {
    * Calculates the sub totals at each level.
    *
    * @param reportContainer
-   *          An Object of type LinkedHashMap<String, Object> containing the
+   *          An Object of type LinkedHashMap&lt;String, Object&gt; containing the
    *          processing elements (with time in milliseconds) in hierarchical
    *          structure.
    *
@@ -483,7 +483,7 @@ public class PRTimeReporter implements BenchmarkReportable {
    * Prints a report as per the value provided for print media option.
    *
    * @param reportSource
-   *          An Object of type LinkedHashMap<String, Object> containing the
+   *          An Object of type LinkedHashMap&lt;String, Object&gt; containing the
    *          processing elements (with time in milliseconds) in hierarchical
    *          structure.
    * @param outputFile

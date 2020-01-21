@@ -245,7 +245,7 @@ public class PersistenceManager {
    * gate.user.resourceshome is set to a directory path and the URL refers 
    * to a resource inside this directory, the relative path to this directory
    * will be stored.
-   * <ul>
+   * </ul>
    * If resources are stored relative to gate home or
    * resources home, a warning will also be logged.
    * <p>
@@ -258,7 +258,7 @@ public class PersistenceManager {
    * result of the normalization is checked using getCanonicalPath() to see if it refers to 
    * the same location as the non-normalized one (it could be different if the .. follows a
    * symbolic link, for example). If it is the same, then the normalized version is used, otherwise
-   * the original version is used. 
+   * the original version is used.</p> 
    * 
    */
   public static class URLHolder implements Persistence {

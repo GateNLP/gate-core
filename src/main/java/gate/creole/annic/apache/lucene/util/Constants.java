@@ -26,7 +26,7 @@ package gate.creole.annic.apache.lucene.util;
 public final class Constants {
   private Constants() {}			  // can't construct
 
-  /** The value of <tt>System.getProperty("java.version")<tt>. **/
+  /** The value of <tt>System.getProperty("java.version")</tt>. **/
   public static final String JAVA_VERSION = System.getProperty("java.version");
   /** True iff this is Java version 1.1. */
   public static final boolean JAVA_1_1 = JAVA_VERSION.startsWith("1.1.");
@@ -35,7 +35,7 @@ public final class Constants {
   /** True iff this is Java version 1.3. */
   public static final boolean JAVA_1_3 = JAVA_VERSION.startsWith("1.3.");
 
-  /** The value of <tt>System.getProperty("os.name")<tt>. **/
+  /** The value of <tt>System.getProperty("os.name")</tt>. **/
   public static final String OS_NAME = System.getProperty("os.name");
   /** True iff running on Linux. */
   public static final boolean LINUX = OS_NAME.startsWith("Linux");

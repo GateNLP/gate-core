@@ -212,7 +212,7 @@ public class Parser {
 
   /**
    * This method replaces all the special characters (invalid xml characters) with their respective legal sequences.
-   * These includes &, <, >, \ and '.
+   * These includes &amp;, &lt;, &gt;, \ and '.
    */
   public static String replaceAmpChars(String s) {
     s = s.replaceAll("&", "&amp;");

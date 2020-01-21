@@ -194,7 +194,7 @@ public class SearchAndAnnotatePanel extends JPanel {
    * Build the GUI with JPanels and Boxes.
    *
    * @param color
-   *          Color of the background. _ _ _ _ _ V Search & Annotate |_| Case
+   *          Color of the background. _ _ _ _ _ V Search &amp; Annotate |_| Case
    *          |_| Regexp |_| Whole |_| Highlights
    *          _______________________________________________
    *          |V_Searched_Expression__________________________| |?| |First|

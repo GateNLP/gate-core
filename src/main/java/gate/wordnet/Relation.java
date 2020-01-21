@@ -55,7 +55,7 @@ public interface Relation {
   /** *    Entailment (verb) */
   public static final int REL_ENTAILMENT = 10011;
 
-  /** >    Cause (verb)*/
+  /** &gt;    Cause (verb)*/
   public static final int REL_CAUSE = 10012;
 
   /** ^    Also see (verb,adjective)*/
@@ -64,10 +64,10 @@ public interface Relation {
   /** $    Verb Group (verb)*/
   public static final int REL_VERB_GROUP = 10014;
 
-  /** <    Participle of verb (adjective)*/
+  /** &lt;    Participle of verb (adjective)*/
   public static final int REL_PARTICIPLE_OF_VERB = 10015;
 
-  /** &    Similar to (adjective)*/
+  /** &amp;    Similar to (adjective)*/
   public static final int REL_SIMILAR_TO = 10016;
 
   /** \    Pertainym - pertains to noun (adjective)*/
@@ -79,7 +79,7 @@ public interface Relation {
   /** returns the type of the relation - one of REL_XXX*/
   public int getType();
 
-  /** returns the inverse relation (Hyponym  <-> Hypernym, etc)*/
+  /** returns the inverse relation (Hyponym  &lt;-&gt; Hypernym, etc)*/
   public int getInverseType();
 
   /** returns a label for the relation, e.g. "HYPERNYM" */

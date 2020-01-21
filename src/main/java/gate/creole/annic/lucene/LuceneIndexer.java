@@ -308,7 +308,7 @@ public class LuceneIndexer implements Indexer {
    * @param removedIDs - when documents are not
    *          peristed, Persistence IDs will not be available In that
    *          case provide the document Names instead of their IDs
-   * @throws Exception
+   * @throws IndexException if an error occurs while removing documents
    */
   @Override
   public void remove(List<Object> removedIDs) throws IndexException {
