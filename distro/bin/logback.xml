@@ -61,13 +61,14 @@
 
   <!-- Console appender that outputs messages of INFO level up to WARN to stdout -->
   <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
-    <filter.upToWarn>org.apache.log4j.varia.LevelRangeFilter</filter.upToWarn>
-    <filter.upToWarn.AcceptOnMatch>true</filter.upToWarn.AcceptOnMatch>
-    <filter.upToWarn.LevelMax>WARN</filter.upToWarn.LevelMax>
-    <Follow>true</Follow>
     <encoder>
       <pattern>%m%n</pattern>
     </encoder>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>ERROR</level>
+      <onMatch>DENY</onMatch>
+      <onMismatch>NEUTRAL</onMismatch>
+    </filter>
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
       <level>INFO</level>
     </filter>
@@ -75,7 +76,6 @@
 
   <!-- Console appender that outputs messages of ERROR or above to stderr -->
   <appender name="stderr" class="ch.qos.logback.core.ConsoleAppender">
-    <Follow>true</Follow>
     <Target>System.err</Target>
     <encoder>
       <pattern>%m%n</pattern>
