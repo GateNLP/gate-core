@@ -10,13 +10,12 @@ See the [user guide](http://gate.ac.uk/userguide) for more details
 
 Requirements:
 * Java 8 or above
-* Maven 3.5 or above
+* Maven 3.6.0 or above
 
 To build the development version of gate-core:
 * clone this repository: `git clone https://github.com/GateNLP/gate-core.git` 
 * change into the directory that has been created
 * compile the library and install into your local Maven cache: `mvn install`
-* prepare the files needed to run the GATE Developer GUI: change into the `./distro` directory (`cd distro`) then run `mvn compile`
 
 After this you can run the GUI from the `distro` directory as appropriate to your platform (`bin/gate.sh` on Linux, open `GATE.app` on Mac, or run `gate.exe` on Windows). When you update (`git pull`), it's the same procedure.
 
