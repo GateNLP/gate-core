@@ -54,7 +54,8 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -81,7 +82,7 @@ public class CreoleRegisterImpl extends HashMap<String, ResourceData>
 
   /** A logger to use instead of sending messages to Out or Err **/
   protected static final Logger log =
-      Logger.getLogger(CreoleRegisterImpl.class);
+      LoggerFactory.getLogger(CreoleRegisterImpl.class);
 
   /** Debug flag */
   protected static final boolean DEBUG = false;
@@ -343,7 +344,7 @@ public class CreoleRegisterImpl extends HashMap<String, ResourceData>
           + plugin.getVersion());
 
     } catch(Exception e) {
-      if(DEBUG) log.debug(e);
+      if(DEBUG) log.debug("unable to register built in creole",e);
       throw (new GateException(e));
     }
   } // registerBuiltins()

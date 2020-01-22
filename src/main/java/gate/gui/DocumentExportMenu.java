@@ -46,7 +46,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellEditor;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gate.Corpus;
 import gate.CorpusExporter;
@@ -75,7 +76,7 @@ import gate.util.Files;
 @SuppressWarnings("serial")
 public class DocumentExportMenu extends XJMenu implements CreoleListener {
 
-  private static final Logger log = Logger.getLogger(DocumentExportMenu.class);
+  private static final Logger log = LoggerFactory.getLogger(DocumentExportMenu.class);
 
   static DocumentExportDialog dialog = new DocumentExportDialog();
 

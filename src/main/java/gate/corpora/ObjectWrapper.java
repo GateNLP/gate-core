@@ -19,7 +19,8 @@ import gate.util.xml.XML11StaxDriver;
 
 import java.io.StringWriter;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
@@ -38,7 +39,7 @@ public class ObjectWrapper {
    */
   protected Object value;
   
-  protected static final Logger log = Logger.getLogger(ObjectWrapper.class);
+  protected static final Logger log = LoggerFactory.getLogger(ObjectWrapper.class);
 
   /**
    * Wraps an arbitrary value, which must be serialisable by XStream.

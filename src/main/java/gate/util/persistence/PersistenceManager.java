@@ -53,7 +53,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
@@ -266,7 +267,7 @@ public class PersistenceManager {
      * Populates this Persistence with the data that needs to be stored
      * from the original source object.
      */
-    static final Logger logger = Logger.getLogger(URLHolder.class);
+    static final Logger logger = LoggerFactory.getLogger(URLHolder.class);
     
     public static String relativize(File outFile, File urlFile) throws URISyntaxException {
           

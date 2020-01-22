@@ -47,10 +47,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Profiler {
-  protected static final Logger log = Logger.getLogger(Profiler.class);
+  protected static final Logger log = LoggerFactory.getLogger(Profiler.class);
 
   //private PrintStream m_out;
   private boolean m_enabled = true;

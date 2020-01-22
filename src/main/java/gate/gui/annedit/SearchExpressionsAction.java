@@ -102,7 +102,7 @@ public class SearchExpressionsAction extends AbstractAction {
       "Other surrogate",
       "Other private use",
       "Other not assigned",
-      "Any character except Category",
+      "Any character except Logger",
       "Category1 and/or Category2",
       "Category1 and Category2"
     };
@@ -297,7 +297,7 @@ public class SearchExpressionsAction extends AbstractAction {
       textField.getDocument().insertString(p, "^", null);
     } else if (modification.equals("The end of a line")) {
       textField.getDocument().insertString(p, "$", null);
-    } else if (modification.equals("Any character except Category")) {
+    } else if (modification.equals("Any character except Logger")) {
       textField.getDocument().insertString(p, "\\P{Category}", null);
     } else if (modification.equals("Category1 and/or Category2")) {
       textField.getDocument().insertString(p, "[\\p{Category1}\\p{Category2}]", null);

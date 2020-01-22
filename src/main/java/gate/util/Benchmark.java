@@ -18,7 +18,8 @@ import gate.creole.ExecutionException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides methods for making entries in the shared log
@@ -114,7 +115,7 @@ public class Benchmark {
   /**
    * Static shared logger used for logging.
    */
-  public static final Logger logger = Logger.getLogger(Benchmark.class);
+  public static final Logger logger = LoggerFactory.getLogger(Benchmark.class);
 
   /**
    * This returns the current system time.

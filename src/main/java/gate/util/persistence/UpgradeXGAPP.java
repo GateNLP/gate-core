@@ -12,9 +12,12 @@ import gate.swing.XJFileChooser;
 import gate.util.ExtensionFileFilter;
 import gate.util.maven.SimpleModelResolver;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.building.*;
 import org.apache.maven.settings.building.SettingsBuildingException;
@@ -56,7 +59,7 @@ import static gate.util.maven.Utils.*;
 @CreoleResource(tool = true, isPrivate = true, autoinstances = @AutoInstance, name = "Upgrade XGapp", comment = "Upgrades an XGapp to use new style GATE plugins")
 public class UpgradeXGAPP {
 
-  private static final Logger log = Logger.getLogger(UpgradeXGAPP.class);
+  private static final Logger log = LoggerFactory.getLogger(UpgradeXGAPP.class);
 
   private static final Pattern CREOLE_URI_PATTERN =
           Pattern.compile("^creole://(?<group>[^;/]+);(?<artifact>[^;/]+);(?<version>[^/]+)/$");
@@ -815,10 +818,7 @@ public class UpgradeXGAPP {
   }
 
   public static void main(String args[]) throws Exception {
-    BasicConfigurator.configure();
-    Logger.getRootLogger().setLevel(Level.ERROR);
-    Logger.getLogger("gate").setLevel(Level.INFO);
-
+    
     if(args.length == 0) {
       System.err.println("Usage:");
       System.err.println();

@@ -17,7 +17,8 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -33,7 +34,7 @@ public class TikaFormat extends DocumentFormat {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = Logger.getLogger(TikaFormat.class);
+  private static final Logger log = LoggerFactory.getLogger(TikaFormat.class);
 
   @Override
   public Resource init() throws ResourceInstantiationException {		

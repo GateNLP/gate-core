@@ -30,7 +30,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Holds the data needed to serialise and recreate a {@link Resource}.
@@ -39,7 +40,7 @@ import org.apache.log4j.Logger;
  */
 class ResourcePersistence extends AbstractPersistence{
 
-  protected static final Logger log = Logger.getLogger(ResourcePersistence.class);
+  protected static final Logger log = LoggerFactory.getLogger(ResourcePersistence.class);
   
   @Override
   public void extractDataFromSource(Object source) throws PersistenceException{

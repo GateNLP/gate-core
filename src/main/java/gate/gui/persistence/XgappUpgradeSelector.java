@@ -23,7 +23,8 @@ import gate.swing.XJTable;
 import gate.util.ExtensionFileFilter;
 import gate.util.persistence.PersistenceManager;
 import gate.util.persistence.UpgradeXGAPP;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.version.Version;
 
@@ -46,7 +47,7 @@ import java.util.stream.IntStream;
 
 public class XgappUpgradeSelector implements ActionListener {
 
-  private static final Logger log = Logger.getLogger(XgappUpgradeSelector.class);
+  private static final Logger log = LoggerFactory.getLogger(XgappUpgradeSelector.class);
 
   private List<UpgradeXGAPP.UpgradePath> upgrades;
 

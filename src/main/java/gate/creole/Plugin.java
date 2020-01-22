@@ -49,8 +49,11 @@ import java.util.Vector;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.building.DefaultModelBuilderFactory;
 import org.apache.maven.model.building.DefaultModelBuildingRequest;
@@ -168,7 +171,7 @@ public abstract class Plugin {
     }
   }
 
-  protected static final Logger log = Logger.getLogger(Plugin.class);
+  protected static final Logger log = LoggerFactory.getLogger(Plugin.class);
   
   private static GenericVersionScheme versionScheme =
       new GenericVersionScheme();

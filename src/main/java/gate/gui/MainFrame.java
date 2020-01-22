@@ -141,7 +141,8 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.codehaus.httpcache4j.HTTPRequest;
 import org.codehaus.httpcache4j.cache.CacheStorage;
 import org.codehaus.httpcache4j.cache.FilePersistentCacheStorage;
@@ -213,7 +214,7 @@ import gate.util.reporting.exceptions.BenchmarkReportException;
 public class MainFrame extends JFrame implements ProgressListener,
                                      StatusListener, CreoleListener, PluginListener {
 
-  protected static final Logger log = Logger.getLogger(MainFrame.class);
+  protected static final Logger log = LoggerFactory.getLogger(MainFrame.class);
   
   public static final Dimension ICON_DIMENSION = new Dimension(24, 24);
 

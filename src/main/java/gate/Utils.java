@@ -28,8 +28,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.event.Level;
 
 import gate.annotation.AnnotationSetImpl;
 import gate.annotation.ImmutableAnnotationSetImpl;
@@ -754,14 +754,70 @@ public class Utils {
    * repeated every time the same situation occurs.
    * 
    * @param logger - the logger instance to use
-   * @param level  - the severity level for the message
+   * @param level  - a Log4J severity level for the message
    * @param message - the message itself
+   * @deprecated Log4J support will be removed in future, please use SLF4J
    */
-  public static void logOnce (Logger logger, Level level, String message) {
+  @Deprecated
+  public static void logOnce (Logger logger, Object level, String message) {
     if(!alreadyLoggedMessages.contains(message)) { 
-      logger.log(level, message);
+    	switch (level.toString()) {
+    		case "TRACE":
+    			logger.trace(message);
+    			break;
+    		case "DEBUG":
+    			logger.debug(message);
+    			break;
+    		case "INFO":
+    			logger.info(message);
+    			break;
+    		case "WARN":
+    			logger.warn(message);
+    			break;
+    		case "ERROR":
+    		case "FATAL":
+    			logger.error(message);
+    			break;
+    		default:
+    			// unknown log level, should be impossible
+	  }
       alreadyLoggedMessages.add(message);
     }
+  }
+  
+  /**
+   * Issue a message to the log but only if the same message has not
+   * been logged already in the same GATE session.
+   * This is intended for explanations or warnings that should not be 
+   * repeated every time the same situation occurs.
+   * 
+   * @param logger - the logger instance to use
+   * @param level  - an SLF4J severity level for the message
+   * @param message - the message itself
+   */
+  public static void logOnce(Logger logger, Level level, String message) {
+	  if (!alreadyLoggedMessages.contains(message)) {
+		  switch (level) {
+		  	case TRACE:
+		  		logger.trace(message);
+		  		break;
+		  	case DEBUG:
+	  			logger.debug(message);
+		  		break;
+		  	case INFO:
+	  			logger.info(message);
+		  		break;
+		  	case WARN:
+	  			logger.warn(message);
+		  		break;
+		  	case ERROR:
+	  			logger.error(message);
+		  		break;
+		  	default:
+		  		// unknown log level, should be impossible
+		  }
+		  alreadyLoggedMessages.add(message);
+	  }
   }
 
   /**

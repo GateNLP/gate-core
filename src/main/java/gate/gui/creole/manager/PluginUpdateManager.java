@@ -43,7 +43,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gate.Main;
 import gate.creole.Plugin;
@@ -57,7 +58,7 @@ import gate.gui.MainFrame;
 @SuppressWarnings("serial")
 public class PluginUpdateManager extends JDialog {
 
-  private static final Logger log = Logger.getLogger(PluginUpdateManager.class);
+  private static final Logger log = LoggerFactory.getLogger(PluginUpdateManager.class);
 
   private AvailablePlugins installed = new AvailablePlugins();
 

@@ -81,7 +81,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildListener;
@@ -707,7 +708,7 @@ public class NameBearerHandle implements Handle, StatusListener,
   }
 
   class ExportApplicationAction extends AbstractAction {
-    private Logger log = Logger.getLogger("gate.gui.ExportApplicationAction");
+    private Logger log = LoggerFactory.getLogger("gate.gui.ExportApplicationAction");
 
     private static final long serialVersionUID = 1L;
 

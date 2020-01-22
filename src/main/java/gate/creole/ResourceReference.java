@@ -23,7 +23,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gate.Gate;
 
@@ -41,7 +42,7 @@ public class ResourceReference implements Serializable {
 
   private static final long serialVersionUID = 2526144106607856721L;
 
-  protected static final Logger log = Logger.getLogger(ResourceReference.class);
+  protected static final Logger log = LoggerFactory.getLogger(ResourceReference.class);
 
   // internal we store the location of the resource as a URI, the exact format
   // of the URI will depend on numerous factors and no specific URI scheme is

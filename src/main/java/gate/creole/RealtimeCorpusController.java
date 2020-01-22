@@ -36,7 +36,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A custom GATE controller that interrupts the execution over a document when a
@@ -58,7 +59,7 @@ public class RealtimeCorpusController extends SerialAnalyserController {
   /**
    * Shared logger object.
    */
-  private static final Logger logger = Logger.getLogger(
+  private static final Logger logger = LoggerFactory.getLogger(
           RealtimeCorpusController.class);
 
   /** Profiler to track PR execute time */

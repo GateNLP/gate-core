@@ -18,7 +18,8 @@ package gate.creole;
 
 import java.util.*;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gate.*;
 import gate.creole.metadata.*;
@@ -38,7 +39,7 @@ public class SerialController extends AbstractController implements
 
   private static final long serialVersionUID = 5865826535505675541L;
 
-  protected static final Logger log = Logger.getLogger(SerialController.class);
+  protected static final Logger log = LoggerFactory.getLogger(SerialController.class);
 
   /** Profiler to track PR execute time */
   protected Profiler prof;

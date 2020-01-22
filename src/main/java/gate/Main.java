@@ -54,7 +54,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Top-level entry point for the GATE command-line and GUI interfaces.
   * <P>
@@ -335,7 +336,7 @@ public class Main {
   public static final String version = Gate.VERSION_STRING;
   public static final String build = Gate.BUILD;
   
-  private static final Logger log = Logger.getLogger(Main.class);
+  private static final Logger log = LoggerFactory.getLogger(Main.class);
 
   /** Process arguments and set up member fields appropriately.
     * Will shut down the process (via System.exit) if there are

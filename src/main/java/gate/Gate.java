@@ -33,7 +33,8 @@ import java.util.regex.Pattern;
 
 import gate.util.*;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gate.config.ConfigDataProcessor;
 import gate.creole.CreoleRegisterImpl;
@@ -53,7 +54,7 @@ import org.eclipse.aether.version.Version;
 public class Gate implements GateConstants {
 
   /** A logger to use instead of sending messages to Out or Err **/
-  protected static final Logger log = Logger.getLogger(Gate.class);
+  protected static final Logger log = LoggerFactory.getLogger(Gate.class);
 
   /**
    * The default StringBuffer size, it seems that we need longer string than the

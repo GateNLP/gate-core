@@ -58,9 +58,12 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gate.Gate;
 import gate.creole.Plugin;
@@ -73,7 +76,7 @@ import gate.util.ExtensionFileFilter;
 @SuppressWarnings("serial")
 public class ResourceReferenceChooser implements PluginListener, TreeWillExpandListener {
 
-  private static final Logger log = Logger.getLogger(ResourceReferenceChooser.class);
+  private static final Logger log = LoggerFactory.getLogger(ResourceReferenceChooser.class);
 
 
   private static final int ERROR = -1;
@@ -722,17 +725,5 @@ public class ResourceReferenceChooser implements PluginListener, TreeWillExpandL
     public String toString() {
       return description;
     }
-  }
-
-  public static void main(String... args) throws Exception {
-    BasicConfigurator.configure();
-    Logger.getLogger("org.apache.http").setLevel(Level.ERROR);
-    Gate.runInSandbox(false);
-    Gate.init();
-    SwingUtilities.invokeLater(() -> {
-      ResourceReferenceChooser chooser = new ResourceReferenceChooser();
-      chooser.setSuffixes(Arrays.asList(".def", ".jape"));
-      System.out.println(chooser.showDialog(null, "Select a resource"));
-    });
   }
 }
