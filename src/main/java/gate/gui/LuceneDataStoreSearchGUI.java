@@ -141,8 +141,6 @@ import gate.gui.docview.TextualDocumentView;
 import gate.persist.LuceneDataStoreImpl;
 import gate.persist.PersistenceException;
 import gate.persist.SerialDataStore;
-import gate.resources.img.svg.GATEIcon;
-import gate.resources.img.svg.GATEVersionIcon;
 import gate.resources.img.svg.WindowNewIcon;
 import gate.swing.BlockingGlassPane;
 import gate.swing.XJFileChooser;

@@ -15,9 +15,6 @@
 
 package gate.swing;
 
-import gate.Gate;
-import gate.gui.MainFrame;
-
 import java.awt.Component;
 import java.awt.HeadlessException;
 import java.awt.event.HierarchyEvent;
@@ -26,9 +23,10 @@ import java.io.File;
 import java.util.Map;
 
 import javax.swing.JFileChooser;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 import javax.swing.filechooser.FileFilter;
+
+import gate.Gate;
+import gate.gui.MainFrame;
 
 /**
  * Extends {@link javax.swing.JFileChooser} to make sure the shared

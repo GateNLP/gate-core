@@ -16,31 +16,13 @@
 
 package gate;
 
-import gate.creole.Plugin;
-import gate.gui.MainFrame;
-import gate.gui.OptionsDialog;
-import gate.gui.creole.manager.PluginUpdateManager;
-import gate.util.BomStrippingInputStreamReader;
-import gate.util.Err;
-import gate.util.Files;
-import gate.util.GateException;
-import gate.util.OptionsMap;
-import gate.util.Out;
-import gate.util.Strings;
-import gate.util.ThreadWarningSystem;
-import gate.util.persistence.PersistenceManager;
-import gnu.getopt.Getopt;
-
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.management.ThreadInfo;
 import java.net.MalformedURLException;
@@ -53,9 +35,20 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gate.creole.Plugin;
+import gate.gui.MainFrame;
+import gate.gui.OptionsDialog;
+import gate.util.Err;
+import gate.util.GateException;
+import gate.util.OptionsMap;
+import gate.util.Out;
+import gate.util.Strings;
+import gate.util.ThreadWarningSystem;
+import gate.util.persistence.PersistenceManager;
+import gnu.getopt.Getopt;
 
 /** Top-level entry point for the GATE command-line and GUI interfaces.
   * <P>

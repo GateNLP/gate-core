@@ -14,36 +14,68 @@
  */
 package gate.gui.persistence;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.EventObject;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import javax.swing.AbstractCellEditor;
+import javax.swing.Box;
+import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+
+import org.eclipse.aether.resolution.VersionRangeResult;
+import org.eclipse.aether.version.Version;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gate.gui.AlternatingTableCellEditor;
 import gate.gui.MainFrame;
 import gate.persist.PersistenceException;
-import gate.resources.img.svg.*;
+import gate.resources.img.svg.GreenBallIcon;
+import gate.resources.img.svg.InvalidIcon;
+import gate.resources.img.svg.OpenFileIcon;
+import gate.resources.img.svg.RedBallIcon;
+import gate.resources.img.svg.SaveIcon;
+import gate.resources.img.svg.YellowBallIcon;
 import gate.swing.XJFileChooser;
 import gate.swing.XJTable;
 import gate.util.ExtensionFileFilter;
 import gate.util.persistence.PersistenceManager;
 import gate.util.persistence.UpgradeXGAPP;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.eclipse.aether.resolution.VersionRangeResult;
-import org.eclipse.aether.version.Version;
-
-import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class XgappUpgradeSelector implements ActionListener {
 

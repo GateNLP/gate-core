@@ -38,7 +38,6 @@ import gate.ProcessingResource;
 import gate.Resource;
 import gate.creole.metadata.Sharable;
 import gate.util.AbstractFeatureBearer;
-import gate.util.GateClassLoader;
 import gate.util.GateException;
 import gate.util.GateRuntimeException;
 

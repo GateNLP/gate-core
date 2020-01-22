@@ -35,8 +35,6 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
-
 import gate.util.reporting.exceptions.BenchmarkReportExecutionException;
 import gate.util.reporting.exceptions.BenchmarkReportFileAccessException;
 import gate.util.reporting.exceptions.BenchmarkReportInputFileFormatException;
@@ -963,9 +961,8 @@ public class DocTimeReporter implements BenchmarkReportable {
    */
   private long tail(File fileToBeRead, int chunkSize)
       throws BenchmarkReportInputFileFormatException {
-    RandomAccessFile raf = null;
-    try {
-      raf = new RandomAccessFile(fileToBeRead, "r");
+    try (RandomAccessFile raf = new RandomAccessFile(fileToBeRead, "r")){
+      ;
       Vector<String> lastNlines = new Vector<String>();
       int delta = 0;
       long curPos = 0;
@@ -1005,9 +1002,6 @@ public class DocTimeReporter implements BenchmarkReportable {
     } catch (IOException e) {
       e.printStackTrace();
       return -1;
-    }
-    finally {
-      IOUtils.closeQuietly(raf);
     }
   }
 

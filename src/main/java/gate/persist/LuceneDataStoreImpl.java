@@ -174,9 +174,7 @@ public class LuceneDataStoreImpl extends SerialDataStore implements
      * want to support old style: String versionInVersionFile = "1.0";
      * (but this means it will open *any* directory)
      */
-    BufferedReader isr = null;
-    try {
-      isr = new BufferedReader(new FileReader(getVersionFile()));
+    try (BufferedReader isr = new BufferedReader(new FileReader(getVersionFile()))) {
       currentProtocolVersion = isr.readLine();
       String indexDirRelativePath = isr.readLine();
 
@@ -199,8 +197,6 @@ public class LuceneDataStoreImpl extends SerialDataStore implements
       }
     } catch(IOException e) {
       throw new PersistenceException("Invalid storage directory: " + e);
-    } finally {
-      IOUtils.closeQuietly(isr);
     }
     
     if(!isValidProtocolVersion(currentProtocolVersion))

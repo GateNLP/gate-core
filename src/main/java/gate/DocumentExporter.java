@@ -13,9 +13,6 @@
 
 package gate;
 
-import gate.creole.AbstractResource;
-import gate.util.ExtensionFileFilter;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,7 +20,8 @@ import java.io.OutputStream;
 
 import javax.swing.filechooser.FileFilter;
 
-import org.apache.commons.io.IOUtils;
+import gate.creole.AbstractResource;
+import gate.util.ExtensionFileFilter;
 
 /**
  * Adds support for exporting documents from GATE. Subclasses of
@@ -107,13 +105,9 @@ public abstract class DocumentExporter extends AbstractResource {
    */
   public void export(Document doc, File file, FeatureMap options)
           throws IOException {
-    FileOutputStream out = null;
-    try {
-      out = new FileOutputStream(file);
+    try (FileOutputStream out = new FileOutputStream(file)){
       export(doc, out, options);
       out.flush();
-    } finally {
-      IOUtils.closeQuietly(out);
     }
   }
 
