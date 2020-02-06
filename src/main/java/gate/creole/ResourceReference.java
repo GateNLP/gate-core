@@ -135,6 +135,10 @@ public class ResourceReference implements Serializable {
     // empty string instead so we'll do that
     if(path == null) path = "";
 
+    // the similar URL constructor removes leading and trailing whitespace
+    // so we should probably do the same here.
+    path = path.trim();
+
     if(plugin != null) {
       // if the plugin isn't null then we can simply resolve the path against
       // it's base URI
@@ -165,6 +169,10 @@ public class ResourceReference implements Serializable {
    */
   public ResourceReference(ResourceReference context, String path)
       throws URISyntaxException {
+
+    // the similar URL constructor removes leading and trailing whitespace
+    // so we should probably do the same here.
+    path = path.trim();
 
     if(context != null) {
       // if a context is provided then try and resolve the path against the
