@@ -15,23 +15,6 @@
  */
 package gate.corpora;
 
-import gate.Annotation;
-import gate.AnnotationSet;
-import gate.Document;
-import gate.DocumentContent;
-import gate.Factory;
-import gate.FeatureMap;
-import gate.Gate;
-import gate.TextualDocument;
-import gate.event.StatusListener;
-import gate.relations.Relation;
-import gate.relations.RelationSet;
-import gate.relations.SimpleRelation;
-import gate.util.GateException;
-import gate.util.GateRuntimeException;
-import gate.util.InvalidOffsetException;
-import gate.util.Out;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,6 +45,22 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+
+import gate.Annotation;
+import gate.AnnotationSet;
+import gate.Document;
+import gate.DocumentContent;
+import gate.Factory;
+import gate.FeatureMap;
+import gate.Gate;
+import gate.TextualDocument;
+import gate.event.StatusListener;
+import gate.relations.Relation;
+import gate.relations.RelationSet;
+import gate.relations.SimpleRelation;
+import gate.util.GateRuntimeException;
+import gate.util.InvalidOffsetException;
+import gate.util.Out;
 
 /**
  * This class provides support for reading and writing GATE XML format

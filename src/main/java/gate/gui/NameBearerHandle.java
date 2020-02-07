@@ -1498,7 +1498,7 @@ public class NameBearerHandle implements Handle, StatusListener,
         for(int i = 0; i < vrs.length; i++) {
           if(vrs[i] instanceof VisualResource) {
             if(vrs[i] instanceof ActionsPublisher)
-              actionPublishers.remove(vrs[i]);
+              actionPublishers.remove((ActionsPublisher)vrs[i]);
             Factory.deleteResource((VisualResource)vrs[i]);
           }
         }
@@ -1518,7 +1518,7 @@ public class NameBearerHandle implements Handle, StatusListener,
         for(int i = 0; i < vrs.length; i++) {
           if(vrs[i] instanceof VisualResource) {
             if(vrs[i] instanceof ActionsPublisher)
-              actionPublishers.remove(vrs[i]);
+              actionPublishers.remove((ActionsPublisher)vrs[i]);
             Factory.deleteResource((VisualResource)vrs[i]);
           }
         }

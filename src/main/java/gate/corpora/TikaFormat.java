@@ -1,5 +1,22 @@
 package gate.corpora;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+
+import org.apache.tika.config.TikaConfig;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.metadata.Office;
+import org.apache.tika.metadata.Property;
+import org.apache.tika.metadata.TikaCoreProperties;
+import org.apache.tika.parser.ParseContext;
+import org.apache.tika.parser.Parser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
 import gate.Document;
 import gate.DocumentFormat;
 import gate.FeatureMap;
@@ -10,24 +27,6 @@ import gate.creole.metadata.CreoleResource;
 import gate.event.StatusListener;
 import gate.util.DocumentFormatException;
 import gate.xml.XmlDocumentHandler;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.tika.config.TikaConfig;
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.metadata.Office;
-import org.apache.tika.metadata.Property;
-import org.apache.tika.metadata.TikaCoreProperties;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.Parser;
-import org.xml.sax.SAXException;
 
 @CreoleResource(name = "Apache Tika Document Format", isPrivate = true, autoinstances = {@AutoInstance(hidden = true)})
 public class TikaFormat extends DocumentFormat {
@@ -103,10 +102,10 @@ public class TikaFormat extends DocumentFormat {
     ch.setRepositioningInfo(repInfo);
     // set the object with ampersand coding positions
     ch.setAmpCodingInfo(ampCodingInfo);
-    InputStream input = null;	   
-    try {
+    
+    try (InputStream input = doc.getSourceUrl().openStream()){
       Parser tikaParser = new TikaConfig().getParser();      
-      input = doc.getSourceUrl().openStream();
+      
       tikaParser.parse(input, ch, metadata, new ParseContext());
       setDocumentFeatures(metadata, doc);
     } catch (IOException e) {
@@ -117,7 +116,6 @@ public class TikaFormat extends DocumentFormat {
       throw new DocumentFormatException(e);
     }
     finally {
-      IOUtils.closeQuietly(input); // null safe
       ch.removeStatusListener(statusListener);
     }
 

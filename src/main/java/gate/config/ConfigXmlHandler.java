@@ -147,6 +147,7 @@ public class ConfigXmlHandler extends DefaultHandler {
   /** Called when the SAX parser encounts the end of an XML element.
     * This is actions happen.
     */
+  @SuppressWarnings("deprecation")
   @Override
   public void endElement (String uri, String qName, String elementName)
                                                       throws GateSaxException, SAXException {

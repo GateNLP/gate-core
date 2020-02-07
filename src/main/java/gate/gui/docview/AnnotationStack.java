@@ -41,7 +41,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.MouseInputAdapter;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  * Stack of annotations in a JPanel.
@@ -371,9 +371,9 @@ public class AnnotationStack extends JPanel {
               + key + "</strong></td><td>"
               + ((fv.length() > 500) ?
               "<textarea rows=\"20\" cols=\"40\" cellspacing=\"0\">"
-                + StringEscapeUtils.escapeHtml(fv.replaceAll("(.{50,60})\\b", "$1\n"))
+                + StringEscapeUtils.escapeHtml4(fv.replaceAll("(.{50,60})\\b", "$1\n"))
                 + "</textarea>" :
-              StringEscapeUtils.escapeHtml(fv).replaceAll("\n", "<br>"))
+              StringEscapeUtils.escapeHtml4(fv).replaceAll("\n", "<br>"))
               + "</td></tr>";
             odd = !odd;
           }

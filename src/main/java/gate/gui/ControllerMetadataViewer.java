@@ -28,7 +28,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.xerces.parsers.DOMParser;
 import org.cyberneko.html.HTMLConfiguration;
 import org.w3c.dom.Document;
@@ -156,8 +156,8 @@ public class ControllerMetadataViewer extends AbstractVisualResource {
       page.append("</head>");
       page.append("<body>");
       page.append("<h1><img style='vertical-align: middle;' src='")
-          .append(StringEscapeUtils.escapeHtml(iconDesc.toString())).append("'/> ")
-          .append(StringEscapeUtils.escapeHtml(text.getTextContent())).append("</h1>");
+          .append(StringEscapeUtils.escapeHtml4(iconDesc.toString())).append("'/> ")
+          .append(StringEscapeUtils.escapeHtml4(text.getTextContent())).append("</h1>");
       page.append(IOUtils.toString(longDesc, "UTF-8"));
       page.append("</body></html>");
 

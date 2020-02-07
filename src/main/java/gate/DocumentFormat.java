@@ -16,21 +16,12 @@
 
 package gate;
 
-import gate.corpora.MimeType;
-import gate.corpora.RepositioningInfo;
-import gate.creole.AbstractLanguageResource;
-import gate.event.StatusListener;
-import gate.util.BomStrippingInputStreamReader;
-import gate.util.DocumentFormatException;
-import gate.util.GateException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -41,6 +32,13 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.apache.commons.io.IOUtils;
+
+import gate.corpora.MimeType;
+import gate.corpora.RepositioningInfo;
+import gate.creole.AbstractLanguageResource;
+import gate.event.StatusListener;
+import gate.util.BomStrippingInputStreamReader;
+import gate.util.DocumentFormatException;
 
 /** The format of Documents. Subclasses of DocumentFormat know about
   * particular MIME types and how to unpack the information in any

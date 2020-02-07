@@ -81,14 +81,11 @@ import gate.gui.MainFrame;
 import gate.resources.img.svg.AddIcon;
 import gate.resources.img.svg.AvailableIcon;
 import gate.resources.img.svg.DeleteIcon;
-import gate.resources.img.svg.GATEIcon;
 import gate.resources.img.svg.InvalidIcon;
 import gate.resources.img.svg.MavenIcon;
 import gate.resources.img.svg.OpenFileIcon;
-import gate.resources.img.svg.RemotePluginIcon;
 import gate.resources.img.svg.RemoveIcon;
 import gate.resources.img.svg.SaveIcon;
-import gate.resources.img.svg.UserPluginIcon;
 import gate.swing.CheckBoxTableCellRenderer;
 import gate.swing.IconTableCellRenderer;
 import gate.swing.SpringUtilities;
@@ -426,13 +423,10 @@ public class AvailablePlugins extends JPanel {
 
   private class MainTableModel extends AbstractTableModel {
 
-    private Icon coreIcon, userIcon, remoteIcon, otherIcon, invalidIcon, mavenIcon;
+    private Icon otherIcon, invalidIcon, mavenIcon;
 
     public MainTableModel() {
       otherIcon = new OpenFileIcon(32, 32);
-      coreIcon = new GATEIcon(32, 32);
-      userIcon = new UserPluginIcon(32, 32);
-      remoteIcon = new RemotePluginIcon(32, 32);
       invalidIcon = new InvalidIcon(32, 32);
       mavenIcon = new MavenIcon(32, 32);
     }

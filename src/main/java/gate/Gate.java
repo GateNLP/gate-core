@@ -125,7 +125,7 @@ public class Gate implements GateConstants {
     } finally {
       IOUtils.closeQuietly(reader);
     }
-
+    
     VERSION_STRING = temp;
 
     // find out the build number
@@ -568,12 +568,6 @@ public class Gate implements GateConstants {
     // remember the init-time config options
     originalUserConfig.putAll(userConfig);
   } // initConfigData()
-
-  /**
-   * Flag controlling whether we should try to access the net, e.g. when setting
-   * up a base URL.
-   */
-  private static boolean netConnected = false;
 
   private static int lastSym;
 
