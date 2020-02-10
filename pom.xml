@@ -166,6 +166,17 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- gate-core no longer need this, but if we remove it we break some plugins.
+		     Current solution is to mark it as runtime so it's not exposed directly
+		     if someone depends on gate-core. It's inclusion should be considered
+		     DEPRECATED and it will be removed in a later version of gate-core -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+			<scope>runtime</scope>
+		</dependency>
+
 		<!-- used to load files into String variables as well as helping to close 
 			streams etc. -->
 		<dependency>
@@ -194,7 +205,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
 			<version>${slf4j.version}</version>
-			<scope>compile</scope>
+			<scope>runtime</scope>
 		</dependency>
 		
 		<!-- some of our dependencies use commons-logging, but we exclude those
