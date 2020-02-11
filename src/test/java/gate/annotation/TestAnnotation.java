@@ -1214,7 +1214,7 @@ public class TestAnnotation extends TestCase
       AnnotationSetImpl origimpl = (AnnotationSetImpl)originals;
       List<Annotation> ordered = origimpl.inDocumentOrder();
       assertNotNull(ordered);
-      assertEquals(19, ordered.size());
+      assertEquals(20, ordered.size());
       assertEquals(33, ordered.get(4).getStartNode().getOffset().intValue());
       for(int i=1;i<ordered.size();i++) {
         assertTrue("Elements "+(i-1)+"/"+i,

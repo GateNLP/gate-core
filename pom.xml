@@ -218,7 +218,7 @@
 			<version>${slf4j.version}</version>
 			<scope>runtime</scope>
 		</dependency>
-
+		
 		<!-- used extensively throughout GATE for processing XML files -->
 		<dependency>
 			<groupId>org.jdom</groupId>
@@ -231,7 +231,7 @@
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
-			<version>1.9.22</version>
+			<version>1.9.14</version>
 			<scope>compile</scope>
 			<exclusions>
 				<!-- exclude stuff that is now part of Java -->
