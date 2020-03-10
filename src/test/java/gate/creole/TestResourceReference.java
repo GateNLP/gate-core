@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.commons.io.IOUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -19,6 +18,9 @@ import gate.corpora.TestDocument;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.util.persistence.PersistenceManager;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import junit.framework.TestCase;
 
 @SuppressWarnings("serial")
@@ -51,7 +53,7 @@ public class TestResourceReference extends TestCase {
     public URL getBaseURL() {
       try {
         return new URL(TestDocument.getTestServerName() + "tests/");
-      } catch(Exception e) {
+      } catch(MalformedURLException e) {
         throw new RuntimeException(e);
       }
     }
@@ -64,7 +66,7 @@ public class TestResourceReference extends TestCase {
     @Override
     public Document getCreoleXML() throws Exception, JDOMException {
       Document doc = new Document();
-      Element element = null;
+      Element element;
       doc.addContent(element = new Element("CREOLE-DIRECTORY"));
 
       element.addContent(element = new Element("CREOLE"));
@@ -92,11 +94,18 @@ public class TestResourceReference extends TestCase {
         .getResource("gate/resources/gate.ac.uk/creole/creole.xml");
     ResourceReference rr = new ResourceReference(url);
 
-    try (InputStream in = rr.openStream()) {
-      String contents = IOUtils.toString(in);
-
-      assertEquals("Length of data read not as expected", 98,
-          contents.length());
+    try (InputStream in = rr.openStream();
+            InputStreamReader isr = new InputStreamReader(in);
+            BufferedReader br = new BufferedReader(isr)) {
+      int nlines = 0;
+      String line;
+      while((line=br.readLine()) != null) {
+        nlines++;
+        if(nlines == 1) {
+          assertEquals("First line not as expected", "<?xml version=\"1.0\"?>", line.trim());
+        }
+      }
+      assertEquals("Number of lines read not as expected", 6, nlines);
     }
   }
 
@@ -106,11 +115,18 @@ public class TestResourceReference extends TestCase {
     Plugin p = new Plugin.Directory(testURL);
     ResourceReference rr = new ResourceReference(p, "gate.xml");
 
-    try (InputStream in = rr.openStream()) {
-      String contents = IOUtils.toString(in);
-
-      assertEquals("Length of data read not as expected", 658,
-          contents.length());
+    try (InputStream in = rr.openStream();
+            InputStreamReader isr = new InputStreamReader(in);
+            BufferedReader br = new BufferedReader(isr)) {
+      int nlines = 0;
+      String line;
+      while((line = br.readLine()) != null) {
+        nlines++;
+        if(nlines == 1) {
+          assertEquals("First line not as expected", "<?xml version=\"1.0\"?>", line.trim());
+        }
+      }
+      assertEquals("Length of data read not as expected", 22, nlines);
     }
   }
 
