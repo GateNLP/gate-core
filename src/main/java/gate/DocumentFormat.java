@@ -178,7 +178,7 @@ extends AbstractLanguageResource {
   public static Set<String> getSupportedMimeTypes() {
     return Collections.unmodifiableSet(mimeString2mimeTypeMap.keySet());
   }
-
+  
   /**
     * Returns a MymeType having as input a URL object. If the MimeType wasn't
     * recognized it returns <b>null</b>.
@@ -546,8 +546,12 @@ extends AbstractLanguageResource {
    *         the MIME type does not have a registered DocumentFormat
    */
   public static DocumentFormat getDocumentFormat(MimeType mimeType) {
-    return mimeString2ClassHandlerMap.get(mimeType.getType() + "/"
+    if(mimeType != null) {
+      return mimeString2ClassHandlerMap.get(mimeType.getType() + "/"
             + mimeType.getSubtype());
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -613,6 +617,70 @@ extends AbstractLanguageResource {
     return Collections.unmodifiableSet(suffixes2mimeTypeMap.keySet());
   }
 
+  /**
+   * Utility function to determine if reading from the URL should be done
+   * during Document initialization.
+   * 
+   * This tries to find out if there is a registered DocumentFormat for 
+   * the mime type string or document URL. If yes, it is checked if that 
+   * document format implements BinaryDocumentFormat. If yes, the 
+   * BinaryDocumentFormat method shouldReadFromUrl is called to let the 
+   * document format decide if the document content should already be 
+   * created from reading the source URL at Document initialization time 
+   * (true) or deferred to when the document format is invoked (false).
+   * 
+   * If both the mime type and docUrl are null or empty, the default behavior
+   * of true is returned. 
+   * 
+   * @param mimeTypeStr the mime type string parameter for the Document
+   * @param docUrl the sourceUrl parameter for the Document
+   * @return true if the URL should be read during Document initialisation
+   */
+  public static boolean shouldReadFromUrl(String mimeTypeStr, URL docUrl) {
+    // figure out if we have a document format registered for the 
+    // mime type. If yes, check if the document format implemts 
+    // BinaryDocumentFormat. If yes, ask the document format if we 
+    // should create the content from the URL here or leave that for
+    // the DocumentFormat to do later. 
+    DocumentFormat docFormat = null;
+    // If a mimeTypeStr is specified, try to get the document format 
+    // registered for it
+    MimeType theType = null;
+    if (mimeTypeStr != null && mimeTypeStr.length() > 0) {
+      theType = DocumentFormat.getMimeTypeForString(mimeTypeStr);
+      if (theType != null) {
+        docFormat = DocumentFormat.getDocumentFormat(theType);
+      }
+    }
+    // If we could not get the docFormat from the mimeTypeStr, lets see
+    // if we can get it from the url
+    if (docFormat == null && docUrl != null) {
+      // if we do not have a mime type already, try to find one from the
+      // URL suffixes. Only if this fails, use the methods that actually
+      // open the URL to to get a content type or magic number
+      for (String suffix : getFileSuffixes(docUrl)) {
+        theType = getMimeType(suffix);
+        if (theType != null) {
+          break;
+        }
+      }
+      if(theType != null) {
+        docFormat = DocumentFormat.getDocumentFormat(theType);
+      }
+      if (docFormat != null) {
+        theType = DocumentFormat.getMimeType(docUrl);
+        docFormat = DocumentFormat.getDocumentFormat(theType);
+      }
+    }
+    
+    if (docFormat != null && docFormat instanceof BinaryDocumentFormat) {
+      return ((BinaryDocumentFormat) docFormat).shouldReadFromUrl(theType, docUrl);
+    } else {
+      return true;
+    }
+  }
+
+  
   //StatusReporter Implementation
 
 

@@ -252,21 +252,23 @@ public class DocumentImpl extends AbstractLanguageResource implements
       getFeatures().put("gate.SourceURL", "created from String");
     } else {
       try {
-        content = new DocumentContentImpl(sourceUrl, getEncoding(),
-                sourceUrlStartOffset, sourceUrlEndOffset);
+        if(DocumentFormat.shouldReadFromUrl(mimeType, sourceUrl)) {
+          content = new DocumentContentImpl(sourceUrl, getEncoding(),
+                  sourceUrlStartOffset, sourceUrlEndOffset);
+        }
         getFeatures().put("gate.SourceURL", sourceUrl.toExternalForm());
       } catch(IOException e) {
         throw new ResourceInstantiationException("DocumentImpl.init: " + e);
       }
     }
-    if(preserveOriginalContent.booleanValue() && content != null) {
+    if(preserveOriginalContent && content != null) {
       String originalContent = ((DocumentContentImpl)content)
               .getOriginalContent();
       getFeatures().put(GateConstants.ORIGINAL_DOCUMENT_CONTENT_FEATURE_NAME,
               originalContent);
     } // if
     // set up a DocumentFormat if markup unpacking required
-    if(getMarkupAware().booleanValue()) {
+    if(getMarkupAware()) {
       DocumentFormat docFormat = null;
       // if a specific MIME type has been given, use it
       if(this.mimeType != null && this.mimeType.length() > 0) {
@@ -288,7 +290,7 @@ public class DocumentImpl extends AbstractLanguageResource implements
           if(sListener != null) docFormat.addStatusListener(sListener);
           // set the flag if true and if the document format support collecting
           docFormat.setShouldCollectRepositioning(collectRepositioningInfo);
-          if(docFormat.getShouldCollectRepositioning().booleanValue()) {
+          if(docFormat.getShouldCollectRepositioning()) {
             // unpack with collectiong of repositioning information
             RepositioningInfo info = new RepositioningInfo();
             String origContent = (String)getFeatures().get(

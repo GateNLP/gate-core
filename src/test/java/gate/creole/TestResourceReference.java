@@ -19,6 +19,7 @@ import gate.corpora.TestDocument;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.util.persistence.PersistenceManager;
+import java.nio.charset.Charset;
 import junit.framework.TestCase;
 
 @SuppressWarnings("serial")
@@ -107,7 +108,7 @@ public class TestResourceReference extends TestCase {
     ResourceReference rr = new ResourceReference(p, "gate.xml");
 
     try (InputStream in = rr.openStream()) {
-      String contents = IOUtils.toString(in);
+      String contents = IOUtils.toString(in, Charset.forName("UTF-8"));
 
       assertEquals("Length of data read not as expected", 658,
           contents.length());
