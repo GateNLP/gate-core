@@ -618,25 +618,22 @@ extends AbstractLanguageResource {
   }
 
   /**
-   * Utility function to determine if reading from the URL should be done
-   * during Document initialization.
-   * 
+   * Utility function to determine if reading from the URL will be done by
+   * a registered DocumentFormat.
+   *  
    * This tries to find out if there is a registered DocumentFormat for 
    * the mime type string or document URL. If yes, it is checked if that 
-   * document format implements BinaryDocumentFormat. If yes, the 
-   * BinaryDocumentFormat method shouldReadFromUrl is called to let the 
-   * document format decide if the document content should already be 
-   * created from reading the source URL at Document initialization time 
-   * (true) or deferred to when the document format is invoked (false).
+   * document format implements DirectLoadingDocumentFormat. If yes, returns
+   * true, otherwise returns false. 
    * 
    * If both the mime type and docUrl are null or empty, the default behavior
-   * of true is returned. 
+   * of false is returned. 
    * 
    * @param mimeTypeStr the mime type string parameter for the Document
    * @param docUrl the sourceUrl parameter for the Document
-   * @return true if the URL should be read during Document initialisation
+   * @return true if the URL will be read directly by a document format.
    */
-  public static boolean shouldReadFromUrl(String mimeTypeStr, URL docUrl) {
+  public static boolean willReadFromUrl(String mimeTypeStr, URL docUrl) {
     // figure out if we have a document format registered for the 
     // mime type. If yes, check if the document format implemts 
     // BinaryDocumentFormat. If yes, ask the document format if we 
@@ -673,11 +670,7 @@ extends AbstractLanguageResource {
       }
     }
     
-    if (docFormat != null && docFormat instanceof BinaryDocumentFormat) {
-      return ((BinaryDocumentFormat) docFormat).shouldReadFromUrl(theType, docUrl);
-    } else {
-      return true;
-    }
+    return (docFormat != null && docFormat instanceof DirectLoadingDocumentFormat);
   }
 
   

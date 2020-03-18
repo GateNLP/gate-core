@@ -252,7 +252,7 @@ public class DocumentImpl extends AbstractLanguageResource implements
       getFeatures().put("gate.SourceURL", "created from String");
     } else {
       try {
-        if(DocumentFormat.shouldReadFromUrl(mimeType, sourceUrl)) {
+        if(!DocumentFormat.willReadFromUrl(mimeType, sourceUrl)) {
           content = new DocumentContentImpl(sourceUrl, getEncoding(),
                   sourceUrlStartOffset, sourceUrlEndOffset);
         }
