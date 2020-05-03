@@ -68,6 +68,7 @@ import gate.swing.XJFileChooser;
 import gate.swing.XJMenu;
 import gate.util.Err;
 import gate.util.Files;
+import java.text.NumberFormat;
 
 /**
  * A menu which updates as plugins are (un)loaded to allow the export of
@@ -298,9 +299,9 @@ public class DocumentExportMenu extends XJMenu implements CreoleListener {
                           }
   
                           MainFrame.lockGUI("Saving...");
-  
                           Corpus corpus = (Corpus)handle.getTarget();
   
+                          long startTime = System.currentTimeMillis();
                           // iterate through all the docs and save
                           // each of
                           // them
@@ -440,7 +441,11 @@ public class DocumentExportMenu extends XJMenu implements CreoleListener {
                             handle.progressChanged(100 * currentDocIndex++
                                     / docCnt);
                           }// while(docIter.hasNext())
-                          listener.statusChanged("Corpus Saved");
+                          long endTime = System.currentTimeMillis();
+                          listener.statusChanged("Corpus saved in "+ 
+                                  NumberFormat.getInstance().format(
+                                    (double)(endTime - startTime) / 1000)+
+                                  " seconds!");
                           handle.processFinished();
                         } finally {
                           MainFrame.unlockGUI();
