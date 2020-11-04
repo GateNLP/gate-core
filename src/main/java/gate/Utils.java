@@ -16,6 +16,10 @@
 package gate;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1419,4 +1423,40 @@ public class Utils {
     return new ImmutableAnnotationSetImpl(origSet.getDocument(),tmp);    
   }
   
+  public static URL resolveURL(String url) throws IOException {
+    while (true) {
+      // while we are still following redirects...
+
+      // create an actual URL instance from the string representation
+      URL resourceUrl = new URL(url);
+
+      if (!resourceUrl.getProtocol().startsWith("http"))
+          return resourceUrl;
+
+      // open a connection to the URL and...
+      HttpURLConnection conn = (HttpURLConnection) resourceUrl.openConnection();
+
+      // set a bunch of connection properties
+      conn.setRequestMethod("HEAD");
+      conn.setConnectTimeout(30000);
+      conn.setReadTimeout(30000);
+      conn.setInstanceFollowRedirects(false); // Make the logic below easier to detect redirections
+
+      switch (conn.getResponseCode()) {
+      case HttpURLConnection.HTTP_MOVED_PERM:
+      case HttpURLConnection.HTTP_MOVED_TEMP:
+        // if we've hit a redirect then get the location from the header
+        String location = conn.getHeaderField("Location");
+        location = URLDecoder.decode(location, "UTF-8");
+        URL base = new URL(url);
+        URL next = new URL(base, location); // Deal with relative URLs
+        url = next.toExternalForm();
+        continue;
+      }
+
+      // we've found a URL without a redirect so at this point we can stop
+      return resourceUrl;
+    }
+  }
+
 }
