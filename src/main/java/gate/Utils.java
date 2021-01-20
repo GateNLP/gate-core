@@ -763,28 +763,17 @@ public class Utils {
    * @deprecated Log4J support will be removed in future, please use SLF4J
    */
   @Deprecated
-  public static void logOnce (Logger logger, Object level, String message) {
-    if(!alreadyLoggedMessages.contains(message)) { 
-    	switch (level.toString()) {
-    		case "TRACE":
-    			logger.trace(message);
-    			break;
-    		case "DEBUG":
-    			logger.debug(message);
-    			break;
-    		case "INFO":
-    			logger.info(message);
-    			break;
-    		case "WARN":
-    			logger.warn(message);
-    			break;
-    		case "ERROR":
-    		case "FATAL":
-    			logger.error(message);
-    			break;
-    		default:
-    			// unknown log level, should be impossible
-	  }
+  public static void logOnce (org.apache.log4j.Logger logger, org.apache.log4j.Level level, String message) {
+    if(!alreadyLoggedMessages.contains(message)) {
+
+	   try {
+          logger.log(level, message);
+      } catch (Exception e) {
+         System.err.println(
+            "Failed to access logger through deprecated gate.Utils.logOnce method.\n"+
+            "Log message was: " + message);
+      }
+
       alreadyLoggedMessages.add(message);
     }
   }

@@ -200,12 +200,21 @@
 		      breaking existing code. Over time we should replace the legacy
 		      code and then remove this dependency, or at least change the
 		      scope to runtime to avoid breaking plugins which assume it
-		      is available via the main GATE classloader -->
+		      is available via the main GATE classloader.
+
+		      Note that in order to remove this we would need to also remove
+		      the gate.Utils.logOnce() method. I did wonder about changing the
+		      params to use Object instead of Logger and then access via reflection
+		      but that changes the method signature meaning plugins compiled against
+		      previous versions can't see the method at all and hence throw a
+		      NoSuchMethodError. Basically to fully remove this we need to
+		      update all the plugins to use SLF4J instead of Log4J (sigh).
+		 -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
 			<version>${slf4j.version}</version>
-			<scope>runtime</scope>
+			<scope>compile</scope>
 		</dependency>
 		
 		<!-- some of our dependencies use commons-logging, but we exclude those
