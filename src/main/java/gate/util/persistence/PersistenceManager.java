@@ -1463,6 +1463,8 @@ public class PersistenceManager {
     // make XStream load classes through the GATE ClassLoader
     xstream.setClassLoader(Gate.getClassLoader());
 
+    Gate.configureXStreamSecurity(xstream);
+
     persistentReplacementTypes = new HashMap<Class<?>, Class<?>>();
     try {
       // VRs don't get saved, ....sorry guys :)

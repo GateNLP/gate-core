@@ -48,6 +48,7 @@ import gate.util.Out;
 import gate.util.Strings;
 import gate.util.ThreadWarningSystem;
 import gate.util.persistence.PersistenceManager;
+import gate.util.persistence.XStreamSecurity;
 import gnu.getopt.Getopt;
 
 /** Top-level entry point for the GATE command-line and GUI interfaces.
@@ -109,6 +110,8 @@ public class Main {
 
     // process command-line options
     processArgs(args);
+    
+    Gate.setXStreamSecurity(new XStreamSecurity.MinimalBlacklist());
     
     runGui();
   } // main

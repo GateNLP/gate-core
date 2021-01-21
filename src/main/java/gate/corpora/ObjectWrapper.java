@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 
+import gate.Gate;
 import gate.util.xml.XML11StaxDriver;
 
 /**
@@ -38,11 +39,16 @@ public class ObjectWrapper {
    */
   protected Object value;
   
-  /**
-   * Use XML 1.1 in case the XML representation includes characters
-   * that 1.0 forbids (typically control characters).
-   */
-  private static final XStream xstream = new XStream(new XML11StaxDriver());
+  private static final XStream xstream;
+
+  static {
+	  /**
+	   * Use XML 1.1 in case the XML representation includes characters
+	   * that 1.0 forbids (typically control characters).
+	   */
+	  xstream = new XStream(new XML11StaxDriver());
+	  Gate.configureXStreamSecurity(xstream);
+  }
 
   protected static final Logger log = LoggerFactory.getLogger(ObjectWrapper.class);
 
