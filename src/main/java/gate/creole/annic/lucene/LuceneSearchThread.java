@@ -47,6 +47,8 @@ public class LuceneSearchThread {
    */
   private static boolean DEBUG = false;
 
+  private static final XStream xstream = new XStream(new StaxDriver());
+
   /**
    * Number of base token annotations to be used in context.
    */
@@ -217,7 +219,6 @@ public class LuceneSearchThread {
       Map<String,Object> indexInformation = null;
       
       // other wise read this file
-      XStream xstream = new XStream(new StaxDriver());
       try (FileReader fileReader =
           new FileReader(indexLocation + "LuceneIndexDefinition.xml");) {
 

@@ -15,15 +15,14 @@
  */
 package gate.corpora;
 
-import gate.util.xml.XML11StaxDriver;
-
 import java.io.StringWriter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
+
+import gate.util.xml.XML11StaxDriver;
 
 /**
  * Class used to wrap arbitrary values prior to saving as GATE XML. The 
@@ -39,6 +38,12 @@ public class ObjectWrapper {
    */
   protected Object value;
   
+  /**
+   * Use XML 1.1 in case the XML representation includes characters
+   * that 1.0 forbids (typically control characters).
+   */
+  private static final XStream xstream = new XStream(new XML11StaxDriver());
+
   protected static final Logger log = LoggerFactory.getLogger(ObjectWrapper.class);
 
   /**
@@ -56,7 +61,6 @@ public class ObjectWrapper {
    * {@link ObjectWrapper} instance.
    */
   public ObjectWrapper(String xmlSerialisation) {
-    XStream xstream = new XStream(new StaxDriver());
     Object other = xstream.fromXML(xmlSerialisation);
     if(other instanceof ObjectWrapper) {
       this.value = ((ObjectWrapper)other).value;
@@ -75,9 +79,6 @@ public class ObjectWrapper {
    */
   @Override
   public String toString() {
-    // Use XML 1.1 in case the XML representation includes characters
-    // that 1.0 forbids (typically control characters).
-    XStream xstream = new XStream(new XML11StaxDriver());
     StringWriter out  = new StringWriter();
     xstream.toXML(this, out);
     return out.toString();
