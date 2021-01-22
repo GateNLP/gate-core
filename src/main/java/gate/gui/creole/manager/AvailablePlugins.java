@@ -264,8 +264,13 @@ public class AvailablePlugins extends JPanel {
           @Override
           public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
-              showResourceHelpListener.setResource(resourcesList.getSelectedValue());
-              btnResourceHelp.setEnabled(resourcesList.getSelectedValue().getHelpURL() != null);
+              ResourceInfo selected = resourcesList.getSelectedValue();
+              showResourceHelpListener.setResource(selected);
+
+              if (selected == null)
+                btnResourceHelp.setEnabled(false);
+              else
+                btnResourceHelp.setEnabled(resourcesList.getSelectedValue().getHelpURL() != null);
             }
           }
     });
@@ -600,7 +605,10 @@ public class AvailablePlugins extends JPanel {
       fireContentsChanged(this, 0, getSize() - 1);
       lblPluginDetails.setText("");
       btnResources.setEnabled(false);
-      
+      btnResourceHelp.setEnabled(false);
+
+      resourcesList.clearSelection();
+
       int row = mainTable.getSelectedRow();
       if(row == -1) return;
       row = mainTable.rowViewToModel(row);
