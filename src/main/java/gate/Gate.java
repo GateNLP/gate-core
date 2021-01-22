@@ -1424,7 +1424,13 @@ public class Gate implements GateConstants {
   private static final java.util.Map<String, EventListener> listeners =
     new HashMap<String, EventListener>();
 
-  private static XStreamSecurity xStreamSecurity = null;
+  /**
+   * Default to using a minimal blacklist for XStream. This essentially
+   * allows us to continue to allow all types in features, while just
+   * blocking those obscure cases known to be dangerous, and it has the
+   * nice side effect of suppressing the scary looking warning.
+   */
+  private static XStreamSecurity xStreamSecurity = new XStreamSecurity.MinimalBlacklist();
 
   public static XStreamSecurity getXStreamSecurity() {
     return xStreamSecurity;

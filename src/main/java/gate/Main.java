@@ -111,8 +111,6 @@ public class Main {
     // process command-line options
     processArgs(args);
     
-    Gate.setXStreamSecurity(new XStreamSecurity.MinimalBlacklist());
-    
     runGui();
   } // main
 
