@@ -404,10 +404,11 @@ public abstract class Plugin {
           String resName = currentElem.getChildTextTrim("NAME");
           String resClass = currentElem.getChildTextTrim("CLASS");
           String resComment = currentElem.getChildTextTrim("COMMENT");
+          String resHelpURL = currentElem.getChildText("HELPURL");
           if(!resInfos.containsKey(resClass)) {
             // create the handler
             ResourceInfo rHandler =
-                new ResourceInfo(resName, resClass, resComment);
+                new ResourceInfo(resName, resClass, resComment, resHelpURL);
             resInfos.put(resClass, rHandler);
           }
         } else if(currentElem.getName().equalsIgnoreCase("REQUIRES")) {
@@ -1089,6 +1090,9 @@ public abstract class Plugin {
             } else if(name.equals("comment")
                 && resInfo.getResourceComment() == null) {
               resInfo.setResourceComment((String)value);
+            } else if (name.equals("helpURL")
+                && resInfo.getHelpURL() == null) {
+              resInfo.setHelpURL((String)value);
             }
           }
 

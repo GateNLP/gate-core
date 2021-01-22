@@ -81,6 +81,7 @@ import gate.gui.MainFrame;
 import gate.resources.img.svg.AddIcon;
 import gate.resources.img.svg.AvailableIcon;
 import gate.resources.img.svg.DeleteIcon;
+import gate.resources.img.svg.HelpIcon;
 import gate.resources.img.svg.InvalidIcon;
 import gate.resources.img.svg.MavenIcon;
 import gate.resources.img.svg.OpenFileIcon;
@@ -115,8 +116,9 @@ public class AvailablePlugins extends JPanel {
   private JLabel lblPluginDetails;
   
   //buttons on the plugin toolbar, should also be ones for homepage/help etc.
-  private JButton btnResources;
+  private JButton btnResources, btnResourceHelp;
   private ExtractResourcesActionListener extractResourcesListener = new ExtractResourcesActionListener();
+  private ShowResourceHelpActionListener showResourceHelpListener = new ShowResourceHelpActionListener();
 
   private JTextField filterTextField;
 
@@ -224,8 +226,16 @@ public class AvailablePlugins extends JPanel {
     btnResources.setToolTipText("Extract Plugin Resources");
     btnResources.setEnabled(false);
     btnResources.addActionListener(extractResourcesListener);
-    
+
     pluginToolbar.add(btnResources);
+
+    btnResourceHelp = new JButton(new HelpIcon(32,32));
+    btnResourceHelp.setDisabledIcon(new HelpIcon(32,32,true));
+    btnResourceHelp.setToolTipText("Show Help for Selected Resource");
+    btnResourceHelp.setEnabled(false);
+    btnResourceHelp.addActionListener(showResourceHelpListener);
+
+    pluginToolbar.add(btnResourceHelp);
 
     JPanel pluginDisplay = new JPanel(new BorderLayout());
     pluginDisplay.add(lblPluginDetails, BorderLayout.NORTH);
@@ -248,6 +258,17 @@ public class AvailablePlugins extends JPanel {
                 }
               }
             });
+
+    resourcesList.getSelectionModel().addListSelectionListener(
+        new ListSelectionListener() {
+          @Override
+          public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting()) {
+              showResourceHelpListener.setResource(resourcesList.getSelectedValue());
+              btnResourceHelp.setEnabled(resourcesList.getSelectedValue().getHelpURL() != null);
+            }
+          }
+    });
 
     // when typing a character in the table, use it for filtering
     mainTable.addKeyListener(new KeyAdapter() {
@@ -598,7 +619,25 @@ public class AvailablePlugins extends JPanel {
       lblPluginDetails.setText(details.toString());
     }
   }
-  
+
+  private class ShowResourceHelpActionListener implements ActionListener {
+    ResourceInfo resInfo = null;
+
+    public void setResource(ResourceInfo resInfo) {
+      this.resInfo = resInfo;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (resInfo == null) return;
+      if (resInfo.getHelpURL() == null) return;
+
+      MainFrame.getInstance().showHelpFrame(
+        resInfo.getHelpURL(),
+        resInfo.getResourceName());
+    }
+  }
+
   private class ExtractResourcesActionListener implements ActionListener {
 
     Plugin plugin = null;

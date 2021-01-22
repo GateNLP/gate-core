@@ -1168,6 +1168,13 @@ public class Gate implements GateConstants {
       this.resourceComment = comment;
     }
     
+    public ResourceInfo(String name, String className, String comment, String helpURL) {
+      this.resourceClassName = className;
+      this.resourceName = name;
+      this.resourceComment = comment;
+      this.helpURL = helpURL;
+    }
+
     public String toString() {
       return resourceName+" ("+resourceClassName+")";
     }
@@ -1201,7 +1208,15 @@ public class Gate implements GateConstants {
     	this.resourceName = resourceName;
     }
 
-    /**
+    public String getHelpURL() {
+	    return helpURL;
+    }
+
+    public void setHelpURL(String helpURL) {
+	    this.helpURL = helpURL;
+    }
+
+	/**
      * The class for the resource.
      */
     protected String resourceClassName;
@@ -1215,6 +1230,11 @@ public class Gate implements GateConstants {
      * The comment for the resource.
      */
     protected String resourceComment;
+
+    /**
+     * The help URL for the resource.
+     */
+    protected String helpURL;
   }
 
   /**
