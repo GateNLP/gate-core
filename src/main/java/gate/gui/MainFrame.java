@@ -2917,7 +2917,12 @@ public class MainFrame extends JFrame implements ProgressListener,
     	  
     	  Set<Plugin> allPlugins = new LinkedHashSet<Plugin>(Gate.getCreoleRegister().getPlugins());
     	  allPlugins.addAll(PluginUpdateManager.getDefaultPlugins());
-    	  
+
+          if (allPlugins.isEmpty()) {
+            System.err.println("No plugins are currently known to GATE, so we cannot load the requested application.\n"+
+            "If this is the first time you have opened GATE please wait a minute, while we build the cache of known plugins, and then try again.");
+          }
+
     	  for (Plugin plugin : allPlugins) {
     		  if (plugin instanceof Plugin.Maven) {
     			  Plugin.Maven mp = (Plugin.Maven)plugin;
@@ -2936,7 +2941,7 @@ public class MainFrame extends JFrame implements ProgressListener,
       }
       
       if (pipelineURL == null) {
-        System.err.println("The URL of the application has not been correctly set and cannot be loaded.");
+        System.err.println("The URL of the application does not point to a known plugin and so cannot be loaded.");
         return;
       }
       
