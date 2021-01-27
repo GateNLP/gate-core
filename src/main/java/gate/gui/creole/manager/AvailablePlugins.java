@@ -937,14 +937,18 @@ public class AvailablePlugins extends JPanel {
         final Plugin plugin;
         if (tabsPluginType.getSelectedIndex() == 0) {
           plugin = new Plugin.Maven(txtGroup.getText().trim(), txtArtifact.getText().trim(), txtVersion.getText().trim());
-          //Gate.addKnownPlugin()(plugin);
+
+          // this ensures the name is properly calculated prior to
+          // adding it to the table model so the sorting should
+          // work properly rather than using the artifact name
+          plugin.getRequiredPlugins();
         }
         else {
           plugin = new Plugin.Directory(new URL(urlTextField.getText()));
-          //Gate.addKnownPlugin(new Plugin.Directory(creoleURL));
         }
+
         Gate.addKnownPlugin(plugin);
-        
+
         mainTable.clearSelection();
         // redisplay the table without filtering
         filterRows("");
