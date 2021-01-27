@@ -16,7 +16,6 @@ package gate.gui.docview;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -1105,13 +1104,6 @@ public class AnnotationSetsView extends AbstractDocumentView
             typeLabel.setBackground(tHandler.colour);
             typeLabel.setText(tHandler.name);
             typeLabel.setBorder(isSelected ? selectedBorder : normalBorder);
-
-            int stringWidth = typeLabel.getFontMetrics(typeLabel.getFont())
-              .stringWidth(tHandler.name);
-
-            mainTable.getColumnModel().getColumn(NAME_COL)
-              .setMinWidth(Math.max(stringWidth, mainTable.getColumnModel().getColumn(NAME_COL).getWidth()));
-
             return typeLabel;
           case SELECTED_COL:
             typeChk.setBackground(isSelected ?
