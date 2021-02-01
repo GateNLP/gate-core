@@ -1187,13 +1187,13 @@ public class MainFrame extends JFrame implements ProgressListener,
         showHelpFrame("chap:developer", "Using GATE Developer");
       }
     }, this));
-    helpMenu.add(new XJMenuItem(new AbstractAction("Demo Movies") {
+    /*helpMenu.add(new XJMenuItem(new AbstractAction("Demo Movies") {
       { this.putValue(Action.SHORT_DESCRIPTION, "Movie tutorials"); }
       @Override
       public void actionPerformed(ActionEvent e) {
         showHelpFrame("http://gate.ac.uk/demos/developer-videos/", "movies");
       }
-    }, this));
+    }, this));*/
     //helpMenu.add(new XJMenuItem(new HelpMailingListAction(), this));
     helpMenu.addSeparator();
     JCheckBoxMenuItem toggleToolTipsCheckBoxMenuItem =
