@@ -657,7 +657,7 @@
 				<filtering>false</filtering>
 				<excludes>
 					<exclude>gate/resources/version.txt</exclude>
-					<exclude>gate/resources/creole/defaultPlugins.tsv</exclude>
+					<exclude>gate/resources/build.txt</exclude>
 				</excludes>
 			</resource>
 		</resources>
