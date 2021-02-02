@@ -1150,7 +1150,11 @@ public class PersistenceManager {
   public static Object loadObjectFromFile(File file)
           throws PersistenceException, IOException,
           ResourceInstantiationException {
-    return loadObjectFromUrl(file.toURI().toURL());
+    try {
+	  return loadObjectFromUri(file.toURI());
+    } catch (URISyntaxException e) {
+	  throw new PersistenceException(e);
+    }
   }
 
   public static Object loadObjectFromUrl(URL url) throws PersistenceException,
