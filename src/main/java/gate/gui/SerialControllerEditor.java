@@ -1422,7 +1422,8 @@ public class SerialControllerEditor extends AbstractVisualResource
         }catch(GateException ge){
           ge.printStackTrace(Err.getPrintWriter());
         }
-        return loadedCorpora == null? "" : loadedCorpora.get(index - 1);
+        return loadedCorpora == null ||
+          index > loadedCorpora.size() ? "" : loadedCorpora.get(index - 1);
       }
     }
 
