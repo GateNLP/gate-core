@@ -177,7 +177,7 @@ public class Files {
     if (resourceStream == null)
       throw new IOException("No such resource on classpath: " + resourceName);
     try {
-      return IOUtils.toString(resourceStream);
+      return IOUtils.toString(resourceStream,Charset.defaultCharset().name());
     }
     finally {
       resourceStream.close();

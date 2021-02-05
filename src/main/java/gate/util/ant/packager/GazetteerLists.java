@@ -1,23 +1,23 @@
 package gate.util.ant.packager;
 
-import gate.util.BomStrippingInputStreamReader;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.DataType;
 import org.apache.tools.ant.types.Resource;
 import org.apache.tools.ant.types.ResourceCollection;
 import org.apache.tools.ant.types.resources.FileResourceIterator;
+
+import gate.util.BomStrippingInputStreamReader;
 
 /**
  * Class that extracts the list of gazetteer .lst files from a .def.
@@ -103,15 +103,8 @@ public class GazetteerLists extends DataType implements ResourceCollection {
 
     Set<String> lists = new HashSet<String>();
 
-    BufferedReader in = null;
-    
-    try {
-      if(encoding == null) {
-        in = new BomStrippingInputStreamReader(new FileInputStream(definition));
-      }
-      else {
-        in = new BomStrippingInputStreamReader(new FileInputStream(definition), encoding);
-      }
+    try (BufferedReader in = new BomStrippingInputStreamReader(
+    		new FileInputStream(definition), encoding != null ? encoding : Charset.defaultCharset().name())) {
 
       String line;
       while((line = in.readLine()) != null) {
@@ -127,9 +120,6 @@ public class GazetteerLists extends DataType implements ResourceCollection {
     catch(IOException ioe) {
       throw new BuildException("Error reading gazetteer definition file "
               + definition, ioe);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
 
     listNames = lists.toArray(new String[lists.size()]);
