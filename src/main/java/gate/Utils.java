@@ -1437,8 +1437,7 @@ public class Utils {
         // if we've hit a redirect then get the location from the header
         String location = conn.getHeaderField("Location");
         location = URLDecoder.decode(location, "UTF-8");
-        URL base = new URL(url);
-        URL next = new URL(base, location); // Deal with relative URLs
+        URL next = new URL(resourceUrl, location); // Deal with relative URLs
         url = next.toExternalForm();
         continue;
       }
