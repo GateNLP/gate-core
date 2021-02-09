@@ -1,42 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="60"
-   height="60"
-   viewBox="0 0 60.000001 60.000001"
-   id="svg3416"
    version="1.1"
-   inkscape:version="0.91 r13725"
-   sodipodi:docname="GATEVersion.svg">
+   id="svg3416"
+   viewBox="0 0 60.000001 60.000001"
+   height="60"
+   width="60">
   <defs
      id="defs3418" />
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="26"
-     inkscape:cx="19.711538"
-     inkscape:cy="29.855916"
-     inkscape:document-units="px"
-     inkscape:current-layer="g3438"
-     showgrid="false"
-     units="px"
-     inkscape:window-width="3070"
-     inkscape:window-height="1752"
-     inkscape:window-x="130"
-     inkscape:window-y="48"
-     inkscape:window-maximized="1" />
   <metadata
      id="metadata3421">
     <rdf:RDF>
@@ -50,42 +25,25 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(0,-992.36216)">
+     transform="translate(0,-992.36216)"
+     id="layer1">
     <g
-       id="g3438"
-       transform="translate(11.230769,-2.1538462)">
+       transform="translate(11.230769,-2.1538462)"
+       id="g3438">
       <path
-         inkscape:connector-curvature="0"
-         id="path26"
+         style="fill:#009641;fill-opacity:1;fill-rule:nonzero;stroke:none"
          d="m 43.280494,1030.9531 0,-11.1144 -26.0164,0 0,8.8082 15.17476,0 c -1.81655,5.5237 -5.93884,8.6728 -11.88372,8.6728 -8.60341,0 -13.7798796,-5.3129 -13.7798796,-14.4069 0,-8.5294 5.1080496,-13.9842 12.8006196,-13.9842 4.47553,0 7.82893,1.7481 9.64549,5.0331 l 13.22183,0 c -2.59057,-10.0667 -11.12089,-16.0856 -22.86732,-16.0856 -14.6851296,0 -24.9687192,10.3515 -24.9687192,25.0367 0,14.6852 10.3515396,24.9633 25.0366692,24.9633 12.93698,0 21.12011,-8.4611 23.63667,-16.923"
-         style="fill:#009641;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+         id="path26" />
       <text
-         sodipodi:linespacing="125%"
-         id="text3773"
-         y="1051.6559"
-         x="23.374245"
+         xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:16px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold Semi-Condensed';text-align:justify;letter-spacing:-1.5px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#e60000;fill-opacity:1;stroke:none;stroke-opacity:1"
-         xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';text-align:justify;letter-spacing:-1.5px;writing-mode:lr-tb;text-anchor:start;fill:#e60000;fill-opacity:1;stroke:none"
-           y="1051.6559"
-           x="23.374245"
+         x="19.374245"
+         y="1049.6559"
+         id="text3773"><tspan
            id="tspan3821"
-           sodipodi:role="line">9.0</tspan></text>
-      <text
-         sodipodi:linespacing="125%"
-         id="text3773-7"
-         y="1052.0709"
-         x="-10.190726"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:6px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold Semi-Condensed';text-align:justify;letter-spacing:-0.5px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#e60000;fill-opacity:1;stroke:none"
-         xml:space="preserve"><tspan
-           y="1052.0709"
-           x="-10.190726"
-           id="tspan3844"
-           sodipodi:role="line"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';text-align:justify;letter-spacing:-0.5px;writing-mode:lr-tb;text-anchor:start;fill:#e60000;fill-opacity:1">SNAPSHOT</tspan></text>
+           x="19.374245"
+           y="1049.6559"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';text-align:justify;letter-spacing:-1.5px;writing-mode:lr-tb;text-anchor:start;fill:#e60000;fill-opacity:1;stroke:none">9.0</tspan></text>
     </g>
   </g>
 </svg>
