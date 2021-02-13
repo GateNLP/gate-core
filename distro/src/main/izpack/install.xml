@@ -112,7 +112,9 @@
             <file src="licence.html" targetdir="$INSTALL_PATH"/>
             <file src="gate.exe" targetdir="$INSTALL_PATH" os="windows"/>
             <file src="gate.l4j.ini" targetdir="$INSTALL_PATH"/>
-            <fileset dir="GATE.app" targetdir="$INSTALL_PATH/GATE.app" os="mac"/>
+            <file src="target/gate-developer-@{gate.version}-distro.zip" targetdir="$INSTALL_PATH/GATE.app" os="mac" unpack="true" override="true">
+              <archivefileset dir="gate-developer-@{gate.version}/GATE.app" />
+            </file>
             <fileset dir="build" targetdir="$INSTALL_PATH/build">
               <exclude name="deploy/**" />
               <exclude name="depcache/**" />
