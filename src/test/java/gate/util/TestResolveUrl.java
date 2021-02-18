@@ -30,6 +30,11 @@ public class TestResolveUrl extends TestCase {
           // simulates a redirection loop
           int nextNum = (path.charAt(6) - '0' + 1) % 4;
           String nextPath = "/loop/" + nextNum;
+          System.err.println("Redirecting to " + nextPath);
+          response.addHeader("Location", new URI("http", null, myAddress.getHostAddress(), port, nextPath, null, null).toString());
+        } else if(path.startsWith("/infinite/")) {
+          // simulates a redirection loop
+          String nextPath = path + "/x";
           System.err.println("Redirecting " + path + " to " + nextPath);
           response.addHeader("Location", new URI("http", null, myAddress.getHostAddress(), port, nextPath, null, null).toString());
         } else if(path.equals("/redirect-to-file")) {
@@ -64,6 +69,16 @@ public class TestResolveUrl extends TestCase {
     try {
       URL newUrl  = Utils.resolveURL(url);
       fail("resolveURL should have failed due to redirect loop");
+    } catch(IOException e) {
+      // exception expected
+    }
+  }
+
+  public void testTooManyRedirects() throws Exception {
+    URL url = new URL(baseUrl, "/infinite/x");
+    try {
+      URL newUrl  = Utils.resolveURL(url);
+      fail("resolveURL should have failed due to too many redirects");
     } catch(IOException e) {
       // exception expected
     }
