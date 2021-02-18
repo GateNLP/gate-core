@@ -252,7 +252,7 @@ public class DocumentImpl extends AbstractLanguageResource implements
       getFeatures().put("gate.SourceURL", "created from String");
     } else {
       try {
-        URL resolved = gate.Utils.resolveURL(sourceUrl.toExternalForm());
+        URL resolved = gate.Utils.resolveURL(sourceUrl);
         getFeatures().put("gate.OriginalURL", sourceUrl.toExternalForm());
         sourceUrl = resolved;
       }
