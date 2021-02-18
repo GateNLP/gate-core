@@ -1411,17 +1411,28 @@ public class Utils {
     }
     return new ImmutableAnnotationSetImpl(origSet.getDocument(),tmp);    
   }
-  
+
   public static URL resolveURL(String url) throws IOException {
-    while (true) {
-      // while we are still following redirects...
+    return resolveURL(new URL(url));
+  }
 
-      // create an actual URL instance from the string representation
-      URL resourceUrl = new URL(url);
+  public static URL resolveURL(URL url) throws IOException {
+    // if it's not http or https then there's no notion of redirection, so
+    // stick to the original URL object
+    if (!url.getProtocol().equalsIgnoreCase("http") &&
+            !url.getProtocol().equalsIgnoreCase("https")) {
+      return url;
+    }
 
-      if (!resourceUrl.getProtocol().startsWith("http"))
-          return resourceUrl;
-
+    URL resourceUrl = url;
+    Set<String> seenUrls = new HashSet<>();
+    int followedRedirects = 0;
+    // limit to 20 redirects, that's the most any of the major browsers will follow
+    while (followedRedirects++ < 20) {
+      // check for redirection loop
+      if(!seenUrls.add(resourceUrl.toExternalForm())) {
+        throw new IOException("Redirection loop detected for URL " + url);
+      }
       // open a connection to the URL and...
       HttpURLConnection conn = (HttpURLConnection) resourceUrl.openConnection();
 
@@ -1432,19 +1443,27 @@ public class Utils {
       conn.setInstanceFollowRedirects(false); // Make the logic below easier to detect redirections
 
       switch (conn.getResponseCode()) {
-      case HttpURLConnection.HTTP_MOVED_PERM:
-      case HttpURLConnection.HTTP_MOVED_TEMP:
-        // if we've hit a redirect then get the location from the header
-        String location = conn.getHeaderField("Location");
-        location = URLDecoder.decode(location, "UTF-8");
-        URL next = new URL(resourceUrl, location); // Deal with relative URLs
-        url = next.toExternalForm();
-        continue;
+        case 301: // moved permanently
+        case 302: // moved temporarily
+        case 303: // "see other"
+        case 307: // "temporary redirect"
+          // if we've hit a redirect then get the location from the header
+          String location = conn.getHeaderField("Location");
+          location = URLDecoder.decode(location, "UTF-8");
+          URL newUrl = new URL(resourceUrl, location); // Deal with relative URLs
+          // follow the redirect if (and only if) it goes to another http or https URL
+          if(newUrl.getProtocol().equalsIgnoreCase("http") ||
+                  newUrl.getProtocol().equalsIgnoreCase("https")) {
+            resourceUrl = newUrl;
+            continue;
+          }
       }
 
       // we've found a URL without a redirect so at this point we can stop
       return resourceUrl;
     }
+    
+    throw new IOException("Too many redirects for " + url);
   }
 
 }
