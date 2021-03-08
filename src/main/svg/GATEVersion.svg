@@ -5,11 +5,35 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    id="svg3416"
    viewBox="0 0 60.000001 60.000001"
    height="60"
-   width="60">
+   width="60"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="GATEVersion.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="3070"
+     inkscape:window-height="1752"
+     id="namedview12"
+     showgrid="false"
+     inkscape:zoom="28.739982"
+     inkscape:cx="30.16286"
+     inkscape:cy="23.298674"
+     inkscape:window-x="130"
+     inkscape:window-y="48"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g3438" />
   <defs
      id="defs3418" />
   <metadata
@@ -20,7 +44,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -37,23 +61,14 @@
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:16px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold Semi-Condensed';text-align:justify;letter-spacing:-1.5px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#e60000;fill-opacity:1;stroke:none;stroke-opacity:1"
-         x="23.374245"
+         x="5.3742447"
          y="1051.6559"
-         id="text3773"><tspan
+         id="text3773"
+         sodipodi:linespacing="125%"><tspan
            id="tspan3821"
-           x="23.374245"
+           x="5.3742447"
            y="1051.6559"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';text-align:justify;letter-spacing:-1.5px;writing-mode:lr-tb;text-anchor:start;fill:#e60000;fill-opacity:1;stroke:none">9.1</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:6px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold Semi-Condensed';text-align:justify;letter-spacing:-0.5px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#e60000;fill-opacity:1;stroke:none"
-         x="-10.190726"
-         y="1052.0709"
-         id="text3773-7"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';text-align:justify;letter-spacing:-0.5px;writing-mode:lr-tb;text-anchor:start;fill:#e60000;fill-opacity:1"
-           id="tspan3844"
-           x="-10.190726"
-           y="1052.0709">SNAPSHOT</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';text-align:justify;letter-spacing:-1.5px;writing-mode:lr-tb;text-anchor:start;fill:#e60000;fill-opacity:1;stroke:none">9.0.1</tspan></text>
     </g>
   </g>
 </svg>
