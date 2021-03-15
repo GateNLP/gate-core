@@ -25,9 +25,12 @@ while [ -h "$PRG" ]; do
     fi
 done
 
-progdir=`dirname "$PRG"`
+progdir="`dirname "$PRG"`"
+gatehome="$progdir/../../.."
+# Make sure GATE_HOME is the working directory
+cd "$gatehome"
 
-exec "$progdir/../../../bin/gate.sh" \
+exec "bin/gate.sh" \
       -Dapple.laf.useScreenMenuBar=true \
       -Dcom.apple.mrj.application.growbox.intrudes=true \
       -Dapple.awt.antialiasing=true \
