@@ -1,8 +1,10 @@
 package gate.util.persistence;
 
+import java.io.InputStream;
 import java.util.regex.Pattern;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.core.JVM;
 import com.thoughtworks.xstream.security.AnyTypePermission;
 
 public interface XStreamSecurity {
@@ -27,19 +29,41 @@ public interface XStreamSecurity {
 
 		private static final Pattern LAZY_ITERATORS = Pattern.compile(".*\\$LazyIterator");
 		private static final Pattern JAVAX_CRYPTO = Pattern.compile("javax\\.crypto\\..*");
-		private static final Pattern JAXWS_FILE_STREAM = Pattern.compile(".*\\.ReadAllStream\\$FileStream");
+	    private static final Pattern LAZY_ENUMERATORS = Pattern.compile(".*\\.Lazy(?:Search)?Enumeration.*");
+	    private static final Pattern GETTER_SETTER_REFLECTION = Pattern.compile(".*\\$GetterSetterReflection");
+	    private static final Pattern PRIVILEGED_GETTER = Pattern.compile(".*\\$PrivilegedGetter");
+	    private static final Pattern JAVA_RMI = Pattern.compile("(?:java|sun)\\.rmi\\..*");
+	    private static final Pattern JAXWS_ITERATORS = Pattern.compile(".*\\$ServiceNameIterator");
+	    private static final Pattern JAVAFX_OBSERVABLE_LIST__ = Pattern.compile("javafx\\.collections\\.ObservableList\\$.*");
+	    private static final Pattern BCEL_CL = Pattern.compile(".*\\.bcel\\..*\\.util\\.ClassLoader");
 
 		@Override
 		public void configure(XStream xstream) {
 			xstream.addPermission(AnyTypePermission.ANY);
-			xstream.denyTypes(new String[] {
-					"java.beans.EventHandler",
-					"java.lang.ProcessBuilder",
-					"javax.imageio.ImageIO$ContainsFilter",
-					"jdk.nashorn.internal.objects.NativeString" });
-			xstream.denyTypesByRegExp(new Pattern[] { LAZY_ITERATORS, JAVAX_CRYPTO, JAXWS_FILE_STREAM });
+			xstream.denyTypes(new String[]{
+	            "java.beans.EventHandler", //
+	            "java.lang.ProcessBuilder", //
+	            "javax.imageio.ImageIO$ContainsFilter", //
+	            "jdk.nashorn.internal.objects.NativeString", //
+	            "com.sun.corba.se.impl.activation.ServerTableEntry", //
+	            "com.sun.tools.javac.processing.JavacProcessingEnvironment$NameProcessIterator", //
+	            "sun.awt.datatransfer.DataTransferer$IndexOrderComparator", //
+	            "sun.swing.SwingLazyValue"});
+			xstream.denyTypesByRegExp(new Pattern[]{
+	            LAZY_ITERATORS, LAZY_ENUMERATORS, GETTER_SETTER_REFLECTION, PRIVILEGED_GETTER, JAVA_RMI, JAVAX_CRYPTO,
+	            JAXWS_ITERATORS, JAVAFX_OBSERVABLE_LIST__, BCEL_CL});
+			xstream.denyTypeHierarchy(InputStream.class);
+			denyTypeHierarchyDynamically(xstream, "java.nio.channels.Channel");
+			denyTypeHierarchyDynamically(xstream, "javax.activation.DataSource");
+			denyTypeHierarchyDynamically(xstream, "javax.sql.rowset.BaseRowSet");
 			xstream.allowTypeHierarchy(Exception.class);
-
 		}
+
+		private void denyTypeHierarchyDynamically(XStream xstream, String className) {
+	        Class<?> type = JVM.loadClassForName(className);
+	        if (type != null) {
+	            xstream.denyTypeHierarchy(type);
+	        }
+	    }
 	}
 }
