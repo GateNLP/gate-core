@@ -117,12 +117,12 @@ public class Utils {
     
     RemoteRepository central =
         new RemoteRepository.Builder("central", "default",
-                "http://repo1.maven.org/maven2/").build();
+                "https://repo1.maven.org/maven2/").build();
     
     // Without this we wouldn't be able to find SNAPSHOT builds of plugins we
     // haven't built and installed locally ourselves
     RemoteRepository gateRepo = new RemoteRepository.Builder("gate", "default",
-        "http://repo.gate.ac.uk/content/groups/public/").build();
+        "https://repo.gate.ac.uk/content/groups/public/").build();
 
     // Add all repos from settings.xml
     // http://stackoverflow.com/questions/27818659/loading-mavens-settings-xml-for-jcabi-aether-to-use
