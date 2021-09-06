@@ -8,7 +8,7 @@
 
 	<groupId>uk.ac.gate</groupId>
 	<artifactId>gate-core</artifactId>
-	<version>9.0-SNAPSHOT</version>
+	<version>9.1-SNAPSHOT</version>
 
 	<description>
         GATE - general architecture for text engineering - is open source
@@ -63,12 +63,12 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<tika.version>1.23</tika.version>
-		<pdfbox.version>2.0.18</pdfbox.version>
+		<tika.version>1.25</tika.version>
+		<pdfbox.version>2.0.22</pdfbox.version>
 		<jempbox.version>1.8.16</jempbox.version>
-		<bouncycastle.version>1.64</bouncycastle.version>
-		<poi.version>4.1.1</poi.version>
-		<maven.resolver.version>1.4.1</maven.resolver.version>
+		<bouncycastle.version>1.68</bouncycastle.version>
+		<poi.version>4.1.2</poi.version>
+		<maven.resolver.version>1.6.1</maven.resolver.version>
 		<maven.version>3.6.3</maven.version>
 		<slf4j.version>1.7.30</slf4j.version>
 	</properties>
@@ -78,7 +78,7 @@
 		<dependency>
 			<groupId>uk.ac.gate</groupId>
 			<artifactId>gate-asm</artifactId>
-			<version>6.1.1</version>
+			<version>9.0</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -162,7 +162,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.9</version>
+			<version>3.11</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -182,7 +182,7 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
+			<version>2.8.0</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -200,12 +200,21 @@
 		      breaking existing code. Over time we should replace the legacy
 		      code and then remove this dependency, or at least change the
 		      scope to runtime to avoid breaking plugins which assume it
-		      is available via the main GATE classloader -->
+		      is available via the main GATE classloader.
+
+		      Note that in order to remove this we would need to also remove
+		      the gate.Utils.logOnce() method. I did wonder about changing the
+		      params to use Object instead of Logger and then access via reflection
+		      but that changes the method signature meaning plugins compiled against
+		      previous versions can't see the method at all and hence throw a
+		      NoSuchMethodError. Basically to fully remove this we need to
+		      update all the plugins to use SLF4J instead of Log4J (sigh).
+		 -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
 			<version>${slf4j.version}</version>
-			<scope>runtime</scope>
+			<scope>compile</scope>
 		</dependency>
 		
 		<!-- some of our dependencies use commons-logging, but we exclude those
@@ -231,7 +240,13 @@
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
-			<version>1.9.14</version>
+			<!-- if we use a higher version then it brings in a version of
+			     Xerces that needs a newer version of the XML APIs than is
+			     bundled with Java 8. As we exclude the xml-apis throughout
+			     this pom file that means everything breaks. If we move the
+			     minimum Java version to 9 then that would include the right
+			     XML APIs. -->
+			<version>1.9.17</version>
 			<scope>compile</scope>
 			<exclusions>
 				<!-- exclude stuff that is now part of Java -->
@@ -349,7 +364,7 @@
 		<dependency>
 			<groupId>com.drewnoakes</groupId>
 			<artifactId>metadata-extractor</artifactId>
-			<version>2.13.0</version>
+			<version>2.15.0</version>
 		</dependency>
 		<!-- this marks the end of the Tika madness -->
 
@@ -375,7 +390,7 @@
 		<dependency>
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant</artifactId>
-			<version>1.10.7</version>
+			<version>1.10.9</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -384,7 +399,7 @@
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.4.11.1</version>
+			<version>1.4.17</version>
 			<scope>compile</scope>
 			<exclusions>
 				<!-- we will pull in the full xpp3 so we don't need these -->
@@ -446,7 +461,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.10.2</version>
+			<version>2.12.1</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -470,7 +485,7 @@
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
-			<version>2.10.5</version>
+			<version>2.10.9</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -499,7 +514,7 @@
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
-			<version>2.3.0</version>
+			<version>2.3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
@@ -509,7 +524,7 @@
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>
-			<version>2.3.0</version>
+			<version>2.3.3</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.activation</groupId>
@@ -642,7 +657,7 @@
 				<filtering>false</filtering>
 				<excludes>
 					<exclude>gate/resources/version.txt</exclude>
-					<exclude>gate/resources/creole/defaultPlugins.tsv</exclude>
+					<exclude>gate/resources/build.txt</exclude>
 				</excludes>
 			</resource>
 		</resources>

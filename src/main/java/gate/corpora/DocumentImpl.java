@@ -252,6 +252,16 @@ public class DocumentImpl extends AbstractLanguageResource implements
       getFeatures().put("gate.SourceURL", "created from String");
     } else {
       try {
+        URL resolved = gate.Utils.resolveURL(sourceUrl);
+        getFeatures().put("gate.OriginalURL", sourceUrl.toExternalForm());
+        sourceUrl = resolved;
+      }
+      catch (IOException e) {
+        System.err.println("Unable to resolve URL");
+        e.printStackTrace();
+      }
+
+      try {
         if(!DocumentFormat.willReadFromUrl(mimeType, sourceUrl)) {
           content = new DocumentContentImpl(sourceUrl, getEncoding(),
                   sourceUrlStartOffset, sourceUrlEndOffset);

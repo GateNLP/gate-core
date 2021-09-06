@@ -16,7 +16,13 @@
 
 package gate;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,10 +37,14 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import gate.util.*;
 import org.apache.commons.io.IOUtils;
+import org.eclipse.aether.util.version.GenericVersionScheme;
+import org.eclipse.aether.version.InvalidVersionSpecificationException;
+import org.eclipse.aether.version.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.XStream;
 
 import gate.config.ConfigDataProcessor;
 import gate.creole.CreoleRegisterImpl;
@@ -42,9 +52,15 @@ import gate.creole.Plugin;
 import gate.creole.ResourceData;
 import gate.event.CreoleListener;
 import gate.gui.creole.manager.PluginUpdateManager;
-import org.eclipse.aether.util.version.GenericVersionScheme;
-import org.eclipse.aether.version.InvalidVersionSpecificationException;
-import org.eclipse.aether.version.Version;
+import gate.util.Benchmark;
+import gate.util.BomStrippingInputStreamReader;
+import gate.util.Files;
+import gate.util.GateClassLoader;
+import gate.util.GateException;
+import gate.util.GateRuntimeException;
+import gate.util.OptionsMap;
+import gate.util.Strings;
+import gate.util.persistence.XStreamSecurity;
 
 /**
  * The class is responsible for initialising the GATE libraries, and providing
@@ -1152,6 +1168,13 @@ public class Gate implements GateConstants {
       this.resourceComment = comment;
     }
     
+    public ResourceInfo(String name, String className, String comment, String helpURL) {
+      this.resourceClassName = className;
+      this.resourceName = name;
+      this.resourceComment = comment;
+      this.helpURL = helpURL;
+    }
+
     public String toString() {
       return resourceName+" ("+resourceClassName+")";
     }
@@ -1185,7 +1208,15 @@ public class Gate implements GateConstants {
     	this.resourceName = resourceName;
     }
 
-    /**
+    public String getHelpURL() {
+	    return helpURL;
+    }
+
+    public void setHelpURL(String helpURL) {
+	    this.helpURL = helpURL;
+    }
+
+	/**
      * The class for the resource.
      */
     protected String resourceClassName;
@@ -1199,6 +1230,11 @@ public class Gate implements GateConstants {
      * The comment for the resource.
      */
     protected String resourceComment;
+
+    /**
+     * The help URL for the resource.
+     */
+    protected String helpURL;
   }
 
   /**
@@ -1388,4 +1424,28 @@ public class Gate implements GateConstants {
   private static final java.util.Map<String, EventListener> listeners =
     new HashMap<String, EventListener>();
 
+  /**
+   * Default to using a minimal blacklist for XStream. This essentially
+   * allows us to continue to allow all types in features, while just
+   * blocking those obscure cases known to be dangerous, and it has the
+   * nice side effect of suppressing the scary looking warning.
+   */
+  private static XStreamSecurity xStreamSecurity = new XStreamSecurity.MinimalBlacklist();
+
+  public static XStreamSecurity getXStreamSecurity() {
+    return xStreamSecurity;
+  }
+
+  public static void setXStreamSecurity(XStreamSecurity xStreamSecurity) {
+    if (Gate.isInitialised())
+      throw new IllegalStateException("XStream security must be set prior to initializing GATE");
+
+    Gate.xStreamSecurity = xStreamSecurity;
+  }
+
+  public static void configureXStreamSecurity(XStream xstream) {
+	  if (xStreamSecurity == null) return;
+
+	  xStreamSecurity.configure(xstream);
+  }
 } // class Gate

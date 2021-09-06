@@ -73,7 +73,7 @@ public class NekoHtmlDocumentFormat extends TextualDocumentFormat {
   private Set<String> ignorableTags = null;
 
   @CreoleParameter(comment = "HTML tags whose text content should be ignored",
-      defaultValue = "script;style")
+      defaultValue = "script;style;iframe")
   public void setIgnorableTags(Set<String> newTags) {
     this.ignorableTags = newTags;
   }

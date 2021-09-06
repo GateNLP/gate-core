@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>uk.ac.gate</groupId>
   <artifactId>gate-developer</artifactId>
-  <version>9.0-SNAPSHOT</version>
+  <version>9.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <url>http://gate.ac.uk/</url>
 
@@ -143,7 +143,7 @@
                     <startupErr>An error occurred while starting the installer.</startupErr>
                     <bundledJreErr>This application was configured to use a bundled Java Runtime Environment but the runtime is missing or corrupted.</bundledJreErr>
                     <jreVersionErr>GATE requires a Java Runtime Environment, and works best with a JDK.  Click OK to download one - minimum version</jreVersionErr>
-                    <launcherErr>The registry refers to a nonexistent Java Runtime Environment installation or the runtime is corrupted.  Please ensure you have a valid installation of Java 5.0 or later.</launcherErr>
+                    <launcherErr>The registry refers to a nonexistent Java Runtime Environment installation or the runtime is corrupted.  Please ensure you have a valid installation of Java 8.0 or later.</launcherErr>
                   </messages>
                 </configuration>
               </execution>
@@ -158,7 +158,7 @@
     <dependency>
       <groupId>uk.ac.gate</groupId>
       <artifactId>gate-core</artifactId>
-      <version>9.0-SNAPSHOT</version>
+      <version>9.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>

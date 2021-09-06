@@ -24,6 +24,7 @@ import java.util.Map;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
+import gate.Gate;
 import gate.creole.annic.Constants;
 import gate.creole.annic.Pattern;
 import gate.creole.annic.PatternAnnotation;
@@ -46,6 +47,13 @@ public class LuceneSearchThread {
    * Debug variable
    */
   private static boolean DEBUG = false;
+
+  private static final XStream xstream;
+  
+  static {
+	  xstream = new XStream(new StaxDriver());
+	  Gate.configureXStreamSecurity(xstream);
+  }
 
   /**
    * Number of base token annotations to be used in context.
@@ -217,7 +225,6 @@ public class LuceneSearchThread {
       Map<String,Object> indexInformation = null;
       
       // other wise read this file
-      XStream xstream = new XStream(new StaxDriver());
       try (FileReader fileReader =
           new FileReader(indexLocation + "LuceneIndexDefinition.xml");) {
 

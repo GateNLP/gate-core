@@ -16,6 +16,10 @@
 package gate;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -759,28 +763,17 @@ public class Utils {
    * @deprecated Log4J support will be removed in future, please use SLF4J
    */
   @Deprecated
-  public static void logOnce (Logger logger, Object level, String message) {
-    if(!alreadyLoggedMessages.contains(message)) { 
-    	switch (level.toString()) {
-    		case "TRACE":
-    			logger.trace(message);
-    			break;
-    		case "DEBUG":
-    			logger.debug(message);
-    			break;
-    		case "INFO":
-    			logger.info(message);
-    			break;
-    		case "WARN":
-    			logger.warn(message);
-    			break;
-    		case "ERROR":
-    		case "FATAL":
-    			logger.error(message);
-    			break;
-    		default:
-    			// unknown log level, should be impossible
-	  }
+  public static void logOnce (org.apache.log4j.Logger logger, org.apache.log4j.Level level, String message) {
+    if(!alreadyLoggedMessages.contains(message)) {
+
+	   try {
+          logger.log(level, message);
+      } catch (Exception e) {
+         System.err.println(
+            "Failed to access logger through deprecated gate.Utils.logOnce method.\n"+
+            "Log message was: " + message);
+      }
+
       alreadyLoggedMessages.add(message);
     }
   }
@@ -1418,5 +1411,59 @@ public class Utils {
     }
     return new ImmutableAnnotationSetImpl(origSet.getDocument(),tmp);    
   }
-  
+
+  public static URL resolveURL(String url) throws IOException {
+    return resolveURL(new URL(url));
+  }
+
+  public static URL resolveURL(URL url) throws IOException {
+    // if it's not http or https then there's no notion of redirection, so
+    // stick to the original URL object
+    if (!url.getProtocol().equalsIgnoreCase("http") &&
+            !url.getProtocol().equalsIgnoreCase("https")) {
+      return url;
+    }
+
+    URL resourceUrl = url;
+    Set<String> seenUrls = new HashSet<>();
+    int followedRedirects = 0;
+    // limit to 20 redirects, that's the most any of the major browsers will follow
+    while (followedRedirects++ < 20) {
+      // check for redirection loop
+      if(!seenUrls.add(resourceUrl.toExternalForm())) {
+        throw new IOException("Redirection loop detected for URL " + url);
+      }
+      // open a connection to the URL and...
+      HttpURLConnection conn = (HttpURLConnection) resourceUrl.openConnection();
+
+      // set a bunch of connection properties
+      conn.setRequestMethod("HEAD");
+      conn.setConnectTimeout(30000);
+      conn.setReadTimeout(30000);
+      conn.setInstanceFollowRedirects(false); // Make the logic below easier to detect redirections
+
+      switch (conn.getResponseCode()) {
+        case 301: // moved permanently
+        case 302: // moved temporarily
+        case 303: // "see other"
+        case 307: // "temporary redirect"
+          // if we've hit a redirect then get the location from the header
+          String location = conn.getHeaderField("Location");
+          location = URLDecoder.decode(location, "UTF-8");
+          URL newUrl = new URL(resourceUrl, location); // Deal with relative URLs
+          // follow the redirect if (and only if) it goes to another http or https URL
+          if(newUrl.getProtocol().equalsIgnoreCase("http") ||
+                  newUrl.getProtocol().equalsIgnoreCase("https")) {
+            resourceUrl = newUrl;
+            continue;
+          }
+      }
+
+      // we've found a URL without a redirect so at this point we can stop
+      return resourceUrl;
+    }
+    
+    throw new IOException("Too many redirects for " + url);
+  }
+
 }

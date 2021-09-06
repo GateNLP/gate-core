@@ -104,6 +104,8 @@ public class PersistenceManager {
 
   private static final boolean DEBUG = false;
 
+  private static final XStream xstream;
+
   /**
    * A reference to an object; it uses the identity hashcode and the
    * equals defined by object identity. These values will be used as
@@ -1032,23 +1034,14 @@ public class PersistenceManager {
     // The object output stream is used for native serialization,
     // but the xstream and filewriter are used for XML serialization.
     ObjectOutputStream oos = null;
-    com.thoughtworks.xstream.XStream xstream = null;
     HierarchicalStreamWriter writer = null;
     warnAboutGateHome.get().addFirst(warnaboutgatehome);
     useGateHome.get().addFirst(usegatehome);
     startPersistingTo(file);
     try {
       if(Gate.getUseXMLSerialization()) {
-        // Just create the xstream and the filewriter that will later be
+        // Just create the filewriter that will later be
         // used to serialize objects.
-        xstream = new XStream(
-          new SunUnsafeReflectionProvider(new FieldDictionary(new XStream12FieldKeySorter())),
-          new StaxDriver(new XStream11NameCoder())) {
-          @Override
-          protected boolean useXStream11XmlFriendlyMapper() {
-            return true;
-          }
-        };
         FileWriter fileWriter = new FileWriter(file);
         writer = new PrettyPrintWriter(fileWriter,
             new XmlFriendlyNameCoder("-", "_"));
@@ -1157,7 +1150,11 @@ public class PersistenceManager {
   public static Object loadObjectFromFile(File file)
           throws PersistenceException, IOException,
           ResourceInstantiationException {
-    return loadObjectFromUrl(file.toURI().toURL());
+    try {
+	  return loadObjectFromUri(file.toURI());
+    } catch (URISyntaxException e) {
+	  throw new PersistenceException(e);
+    }
   }
 
   public static Object loadObjectFromUrl(URL url) throws PersistenceException,
@@ -1197,7 +1194,6 @@ public class PersistenceManager {
       boolean xmlStream = isXmlApplicationFile(resourceReference.toURL());
       ObjectInputStream ois = null;
       HierarchicalStreamReader reader = null;
-      XStream xstream = null;
       // Make the appropriate kind of streams that will be used, depending
       // on
       // whether serialization is native or xml.
@@ -1218,14 +1214,6 @@ public class PersistenceManager {
           throw new PersistenceException("Error creating reader", xse);
         }
 
-        xstream = new XStream(new StaxDriver(new XStream11NameCoder())) {
-          @Override
-          protected boolean useXStream11XmlFriendlyMapper() {
-            return true;
-          }
-        };
-        // make XStream load classes through the GATE ClassLoader
-        xstream.setClassLoader(Gate.getClassLoader());
         // make the XML stream appear as a normal ObjectInputStream
         ois = xstream.createObjectInputStream(reader);
       }
@@ -1467,6 +1455,20 @@ public class PersistenceManager {
   
   
   static {
+
+    xstream = new XStream(new SunUnsafeReflectionProvider(new FieldDictionary(new XStream12FieldKeySorter())),
+        new StaxDriver(new XStream11NameCoder())) {
+            @Override
+            protected boolean useXStream11XmlFriendlyMapper() {
+                return true;
+            }
+        };
+
+    // make XStream load classes through the GATE ClassLoader
+    xstream.setClassLoader(Gate.getClassLoader());
+
+    Gate.configureXStreamSecurity(xstream);
+
     persistentReplacementTypes = new HashMap<Class<?>, Class<?>>();
     try {
       // VRs don't get saved, ....sorry guys :)
