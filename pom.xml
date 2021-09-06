@@ -64,7 +64,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<tika.version>1.25</tika.version>
-		<pdfbox.version>2.0.22</pdfbox.version>
+		<pdfbox.version>2.0.24</pdfbox.version>
 		<jempbox.version>1.8.16</jempbox.version>
 		<bouncycastle.version>1.68</bouncycastle.version>
 		<poi.version>4.1.2</poi.version>
