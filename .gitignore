@@ -14,5 +14,6 @@ buildNumber.properties
 *.iml
 lib
 .DS_Store
+.idea
 
 antlib
