@@ -877,7 +877,7 @@ public class Gate implements GateConstants {
         if(aPluginURL.getProtocol().equals("file")) {
           File pluginDirectory = Files.fileFromURL(aPluginURL);
           try {
-            if(pluginsHomeStr != null && pluginDirectory.getCanonicalPath().startsWith(pluginsHomeStr))
+            if(pluginsHomeStr != null && pluginDirectory.getCanonicalFile().toPath().startsWith(pluginsHomeStr))
               continue;
           } catch(IOException ioe) {
             throw new GateRuntimeException("Problem while locating the plug-in"
