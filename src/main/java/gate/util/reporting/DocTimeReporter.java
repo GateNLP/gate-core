@@ -21,6 +21,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -136,12 +137,7 @@ public class DocTimeReporter implements BenchmarkReportable {
 
   private void initTmpDir() {
      try {
-      temporaryDirectory = File.createTempFile("benchmark-reports", "", null);
-      if (!temporaryDirectory.delete()
-       || !temporaryDirectory.mkdir()) {
-        throw new IOException("Unable to create temporary directory.\n"
-          + temporaryDirectory.getCanonicalPath());
-      }
+      temporaryDirectory = Files.createTempDirectory("benchmark-reports").toFile();
     } catch (IOException e) {
       e.printStackTrace();
     }

@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -839,13 +840,7 @@ public class NameBearerHandle implements Handle, StatusListener,
               // create a temporary directory, and save the
               // application
               // in the normal way to that directory
-              File temporaryDirectory = File.createTempFile("gapp-packager",
-                      "", null);
-              if(!temporaryDirectory.delete() || !temporaryDirectory.mkdir()) {
-                throw new IOException(
-                        "Unable to create temporary directory.\n"
-                                + temporaryDirectory.getCanonicalPath());
-              }
+              File temporaryDirectory = Files.createTempDirectory("gapp-packager").toFile();
               // canonicalise (e.g. on Mac OS X java.io.tmpdir is
               // /var/folders/something, but /var is a symlink to
               // /private/var,

@@ -33,6 +33,7 @@ import gate.util.TestEqual;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -72,9 +73,7 @@ public class TestPersist extends TestCase {
 
   /** Test resource save and restore */
   public void testSaveRestore() throws Exception {
-    File storageDir = File.createTempFile("TestPersist__", "__StorageDir");
-    storageDir.delete(); // get rid of the temp file
-    storageDir.mkdir(); // create an empty dir of same name
+    File storageDir = Files.createTempDirectory("TestPersist__" + "__StorageDir").toFile(); // create an empty dir of same name
 
     SerialDataStore sds =
             new SerialDataStore(storageDir.toURI().toURL().toString());
