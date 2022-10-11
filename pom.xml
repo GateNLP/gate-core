@@ -78,7 +78,7 @@
 		<dependency>
 			<groupId>uk.ac.gate</groupId>
 			<artifactId>gate-asm</artifactId>
-			<version>9.0</version>
+			<version>9.4</version>
 			<scope>compile</scope>
 		</dependency>
 
