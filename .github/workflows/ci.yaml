@@ -91,11 +91,6 @@ jobs:
       - name: Build site
         run: mvn --batch-mode -e -DskipTests site
 
-      - name: Publish FindBugs Report
-        uses: jwgmeligmeyling/spotbugs-github-action@master
-        with:
-          path: '**/findbugsXml.xml'
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
