@@ -21,6 +21,15 @@
     <tao.pdf>/path/to/tao.pdf</tao.pdf>
   </properties>
 
+  <distributionManagement>
+    <snapshotRepository>
+      <id>gate.snapshots</id>
+      <name>GATE Snapshots Repository</name>
+      <url>https://repo.gate.ac.uk/content/repositories/snapshots</url>
+      <layout>default</layout>
+    </snapshotRepository>
+  </distributionManagement>
+
   <build>
     <plugins>
       <plugin>
@@ -145,6 +154,29 @@
                     <jreVersionErr>GATE requires a Java Runtime Environment, and works best with a JDK.  Click OK to download one - minimum version</jreVersionErr>
                     <launcherErr>The registry refers to a nonexistent Java Runtime Environment installation or the runtime is corrupted.  Please ensure you have a valid installation of Java 8.0 or later.</launcherErr>
                   </messages>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>3.3.0</version>
+            <executions>
+              <execution>
+                <id>attach-artifacts</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                  <artifacts>
+                    <artifact>
+                      <file>target/gate-developer-${project.version}-installer.exe</file>
+                      <type>exe</type>
+                      <classifier>installer</classifier>
+                    </artifact>
+                  </artifacts>
                 </configuration>
               </execution>
             </executions>
