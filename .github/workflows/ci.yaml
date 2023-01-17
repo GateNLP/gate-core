@@ -1,0 +1,116 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  checks: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Master Branch
+        uses: actions/checkout@v2
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'zulu'
+          cache: maven
+
+      # Override http://repo.gate.ac.uk to use https:// instead
+      - name: Configure Maven settings
+        uses: whelk-io/maven-settings-xml-action@v20
+        with:
+          mirrors: >
+            [
+              {
+                "id": "gate.ac.uk-https",
+                "name": "GATE repo (secure)",
+                "mirrorOf": "gate.ac.uk",
+                "url": "https://repo.gate.ac.uk/content/groups/public/"
+              }
+            ]
+          repositories: >
+            [
+              {
+                "id": "central",
+                "name": "Maven Central",
+                "url": "https://repo1.maven.org/maven2",
+                "releases": {
+                  "enabled": "true"
+                },
+                "snapshots": {
+                  "enabled": "false"
+                }
+              }
+            ]
+          plugin_repositories: > 
+            [
+              {
+                "id": "central",
+                "name": "Maven Central",
+                "url": "https://repo1.maven.org/maven2",
+                "releases": {
+                  "enabled": "true"
+                },
+                "snapshots": {
+                  "enabled": "false"
+                }
+              }
+            ]
+          servers: >
+            [
+              {
+                "id": "gate.snapshots",
+                "username": "${{ secrets.GATE_REPO_USERNAME }}",
+                "password": "${{ secrets.GATE_REPO_PASSWORD }}"
+              }
+            ]
+
+      - name: Build with Maven
+        run: mvn --batch-mode -e clean install 
+
+      - name: Publish Test Report
+        uses: scacap/action-surefire-report@v1
+        with:
+          fail_if_no_tests: false
+          
+      - name: Build site
+        run: mvn --batch-mode -e -DskipTests site
+
+      - name: Publish FindBugs Report
+        uses: jwgmeligmeyling/spotbugs-github-action@master
+        with:
+          path: '**/findbugsXml.xml'
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          # Upload entire repository
+          path: 'target/site'
+
+      - name: Deploy to repo.gate.ac.uk
+        run: mvn -e -Dmaven.test.skip=true source:jar javadoc:jar deploy
+
+      - name: Deploy site to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
+
+      - name: Fetch latest userguide
+        run: wget -O target/tao.pdf https://gate.ac.uk/sale/tao/tao.pdf
+
+      - name: Build and deploy distribution
+        run: cd distro && mvn -e "-Dtao.pdf=$GITHUB_WORKSPACE/target/tao.pdf" -Pinstaller deploy
