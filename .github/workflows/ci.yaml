@@ -100,12 +100,19 @@ jobs:
       - name: Deploy to repo.gate.ac.uk
         run: mvn --batch-mode -e -Dmaven.test.skip=true source:jar javadoc:jar deploy
 
-      - name: Deploy site to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
-
       - name: Fetch latest userguide
         run: wget -O target/tao.pdf https://gate.ac.uk/sale/tao/tao.pdf
 
       - name: Build and deploy distribution
-        run: cd distro && mvn -e "-Dtao.pdf=$GITHUB_WORKSPACE/target/tao.pdf" -Pinstaller deploy
+        run: cd distro && mvn --batch-mode -e "-Dtao.pdf=$GITHUB_WORKSPACE/target/tao.pdf" -Pinstaller deploy
+
+  publish-site:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy site to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
+
+
