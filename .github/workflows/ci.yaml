@@ -98,7 +98,7 @@ jobs:
           path: 'target/site'
 
       - name: Deploy to repo.gate.ac.uk
-        run: mvn -e -Dmaven.test.skip=true source:jar javadoc:jar deploy
+        run: mvn --batch-mode -e -Dmaven.test.skip=true source:jar javadoc:jar deploy
 
       - name: Deploy site to GitHub Pages
         id: deployment
