@@ -115,4 +115,23 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v1
 
+  downstream:
+    needs: build
+    runs-on: ubuntu-latest
 
+    # sanity check - only do the downstream trigger if we are actually on
+    # gate-core master branch, and not in another branch or fork
+    if: github.repository == 'GateNLP/gate-core' && github.ref == 'refs/heads/master'
+
+    steps:
+      - name: "Trigger gate-top"
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GATE_TOP_TOKEN }}
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: "GateNLP",
+              repo: "gate-top",
+              workflow_id: "ci.yaml",
+              ref: "master",
+            });
