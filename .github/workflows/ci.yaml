@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout Master Branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
