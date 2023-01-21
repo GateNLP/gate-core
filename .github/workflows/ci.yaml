@@ -120,12 +120,12 @@ jobs:
   publish-site:
     needs: build
     runs-on: ubuntu-latest
-    if: env.GITHUB_PAGES == 'true'
 
     steps:
       - name: Deploy site to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
+        if: env.GITHUB_PAGES == 'true'
 
   downstream:
     needs: build
