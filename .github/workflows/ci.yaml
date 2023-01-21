@@ -22,6 +22,12 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
+        continue-on-error: true
+        # This step may error out when run in a fork that doesn't have pages
+        # enabled - if this happens, run the rest but skip anything that
+        # involves publishing to pages.  The last thing configure-pages does
+        # is set an environment variable GITHUB_PAGES=true which is visible
+        # to subsequent steps, so we can condition on that.
 
       - name: Set up JDK 8
         uses: actions/setup-java@v3
@@ -92,23 +98,29 @@ jobs:
         run: mvn --batch-mode -e -DskipTests site
 
       - name: Upload artifact
+        if: env.GITHUB_PAGES == 'true'
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload entire repository
           path: 'target/site'
 
+      # Only do the deply and distro if we're in the main GateNLP repo, not a fork
       - name: Deploy to repo.gate.ac.uk
+        if: github.repository == 'GateNLP/gate-core' && github.ref == 'refs/heads/master'
         run: mvn --batch-mode -e -Dmaven.test.skip=true source:jar javadoc:jar deploy
 
       - name: Fetch latest userguide
+        if: github.repository == 'GateNLP/gate-core' && github.ref == 'refs/heads/master'
         run: wget -O target/tao.pdf https://gate.ac.uk/sale/tao/tao.pdf
 
       - name: Build and deploy distribution
+        if: github.repository == 'GateNLP/gate-core' && github.ref == 'refs/heads/master'
         run: cd distro && mvn --batch-mode -e "-Dtao.pdf=$GITHUB_WORKSPACE/target/tao.pdf" -Pinstaller deploy
 
   publish-site:
     needs: build
     runs-on: ubuntu-latest
+    if: env.GITHUB_PAGES == 'true'
 
     steps:
       - name: Deploy site to GitHub Pages
@@ -118,9 +130,6 @@ jobs:
   downstream:
     needs: build
     runs-on: ubuntu-latest
-
-    # sanity check - only do the downstream trigger if we are actually on
-    # gate-core master branch, and not in another branch or fork
     if: github.repository == 'GateNLP/gate-core' && github.ref == 'refs/heads/master'
 
     steps:
