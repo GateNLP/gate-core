@@ -5,6 +5,12 @@ on:
     branches:
       - master
 
+# Prevent concurrent builds of the same branch - a new push will cancel the
+# running workflow and start another
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
