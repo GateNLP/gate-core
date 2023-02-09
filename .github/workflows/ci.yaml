@@ -96,9 +96,10 @@ jobs:
         run: mvn --batch-mode -e clean install 
 
       - name: Publish Test Report
-        uses: scacap/action-surefire-report@v1
+        if: success() || failure()
+        uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          fail_if_no_tests: false
+          junit_files: "target/surefire-reports/*.xml"
           
       - name: Build site
         run: mvn --batch-mode -e -DskipTests site
