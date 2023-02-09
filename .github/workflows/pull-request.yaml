@@ -1,4 +1,4 @@
-name: CI (Pull Request)
+name: Pull Request
 
 on:
   pull_request:
@@ -65,12 +65,23 @@ jobs:
       - name: Build with Maven
         run: mvn --batch-mode -e clean install 
 
-      - name: Publish Test Report
-        uses: scacap/action-surefire-report@v1
+      - name: Upload Test Results
         if: success() || failure()
+        uses: actions/upload-artifact@v2
         with:
-          fail_if_no_tests: false
+          name: Test Results
+          path: |
+            target/surefire-reports/*.xml
           
       - name: Build site
         run: mvn --batch-mode -e -DskipTests site
 
+  event_file:
+    name: "Event File"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Event File
+          path: ${{ github.event_path }}
