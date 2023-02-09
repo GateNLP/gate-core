@@ -364,7 +364,7 @@
 		<dependency>
 			<groupId>com.drewnoakes</groupId>
 			<artifactId>metadata-extractor</artifactId>
-			<version>2.15.0</version>
+			<version>2.18.0</version>
 		</dependency>
 		<!-- this marks the end of the Tika madness -->
 
