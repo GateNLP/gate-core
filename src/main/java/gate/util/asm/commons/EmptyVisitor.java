@@ -10,7 +10,7 @@ import gate.util.asm.TypePath;
 
 public class EmptyVisitor extends ClassVisitor {
 
-  AnnotationVisitor av = new AnnotationVisitor(Opcodes.ASM5) {
+  AnnotationVisitor av = new AnnotationVisitor(Opcodes.ASM9) {
 
       @Override
       public AnnotationVisitor visitAnnotation(String name, String desc) {
@@ -24,7 +24,7 @@ public class EmptyVisitor extends ClassVisitor {
   };
 
   public EmptyVisitor() {
-      super(Opcodes.ASM5);
+      super(Opcodes.ASM9);
   }
 
   @Override
@@ -41,7 +41,7 @@ public class EmptyVisitor extends ClassVisitor {
   @Override
   public FieldVisitor visitField(int access, String name, String desc,
           String signature, Object value) {
-      return new FieldVisitor(Opcodes.ASM5) {
+      return new FieldVisitor(Opcodes.ASM9) {
 
           @Override
           public AnnotationVisitor visitAnnotation(String desc,
@@ -60,7 +60,7 @@ public class EmptyVisitor extends ClassVisitor {
   @Override
   public MethodVisitor visitMethod(int access, String name, String desc,
           String signature, String[] exceptions) {
-      return new MethodVisitor(Opcodes.ASM5) {
+      return new MethodVisitor(Opcodes.ASM9) {
 
           @Override
           public AnnotationVisitor visitAnnotationDefault() {
