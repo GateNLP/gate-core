@@ -20,6 +20,11 @@ jobs:
           distribution: 'zulu'
           cache: maven
 
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: "3.8.8"
+
       # Override http://repo.gate.ac.uk to use https:// instead
       - name: Configure Maven settings
         uses: whelk-io/maven-settings-xml-action@v20
