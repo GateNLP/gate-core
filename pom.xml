@@ -66,7 +66,7 @@
 		<tika.version>1.25</tika.version>
 		<pdfbox.version>2.0.24</pdfbox.version>
 		<jempbox.version>1.8.16</jempbox.version>
-		<bouncycastle.version>1.68</bouncycastle.version>
+		<bouncycastle.version>1.70</bouncycastle.version>
 		<poi.version>4.1.2</poi.version>
 		<maven.resolver.version>1.6.1</maven.resolver.version>
 		<maven.version>3.6.3</maven.version>
