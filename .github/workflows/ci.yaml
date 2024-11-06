@@ -24,10 +24,10 @@ jobs:
 
     steps:
       - name: Checkout Master Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v5
         continue-on-error: true
         # This step may error out when run in a fork that doesn't have pages
         # enabled - if this happens, run the rest but skip anything that
@@ -36,7 +36,7 @@ jobs:
         # to subsequent steps, so we can condition on that.
 
       - name: Set up JDK 8
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '8'
           distribution: 'zulu'
@@ -149,7 +149,7 @@ jobs:
 
     steps:
       - name: "Trigger gate-top"
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GATE_TOP_TOKEN }}
           script: |
